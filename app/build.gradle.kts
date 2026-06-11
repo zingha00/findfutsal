@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId = "com.utama.findfutsall"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
@@ -84,6 +84,16 @@ dependencies {
 
     // Fragment KTX
     implementation("androidx.fragment:fragment-ktx:1.8.4")
+
+    // Charts
+    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
+
+    // PDF Export
+    implementation("com.itextpdf:itextg:5.5.10")
+
+    // Excel Export
+    implementation("org.apache.poi:poi:5.2.5")
+    implementation("org.apache.poi:poi-ooxml:5.2.5")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

@@ -23,4 +23,9 @@
     <!-- Status -->
     <color name="error_red">#FF3B30</color>
     <color name="success_green">#34C759</color>
+
+    <!-- Keuangan Status -->
+    <color name="status_selesai_text">#1B5E20</color>
+    <color name="status_menunggu_text">#E65100</color>
+    <color name="status_batal_text">#B71C1C</color>
 </resources>

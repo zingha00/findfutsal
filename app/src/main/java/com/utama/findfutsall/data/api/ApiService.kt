@@ -9,6 +9,7 @@ import com.utama.findfutsall.data.model.RegisterResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST
+import com.utama.findfutsall.data.model.KeuanganResponse
 
 interface ApiService {
 
@@ -51,4 +52,9 @@ interface ApiService {
     suspend fun getOwnerStats(
         @Body request: Map<String, @JvmSuppressWildcards Any>
     ): Response<Map<String, @JvmSuppressWildcards Any>>
+
+    @POST("get_keuangan.php")
+    suspend fun getKeuangan(
+        @Body request: Map<String, @JvmSuppressWildcards Any>
+    ): Response<KeuanganResponse>
 }

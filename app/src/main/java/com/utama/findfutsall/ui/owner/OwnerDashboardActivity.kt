@@ -29,9 +29,7 @@ class OwnerDashboardActivity : AppCompatActivity() {
                 R.id.nav_beranda  -> loadFragment(OwnerBerandaFragment())
                 R.id.nav_booking  -> loadFragment(OwnerBookingFragment())
                 R.id.nav_lapangan -> loadFragment(OwnerLapanganFragment())
-                R.id.nav_keuangan -> loadFragment(OwnerPlaceholderFragment.newInstance(
-                    "Keuangan", "Laporan pendapatan dan keuangan venue"
-                ))
+                R.id.nav_keuangan -> loadFragment(OwnerKeuanganFragment())
                 R.id.nav_profil   -> loadFragment(OwnerProfilFragment())
             }
             true
