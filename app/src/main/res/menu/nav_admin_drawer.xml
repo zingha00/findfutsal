@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_dashboard"
+            android:icon="@drawable/ic_home"
+            android:title="Dashboard Utama"
+            android:checked="true"/>
+        <item
+            android:id="@+id/nav_booking"
+            android:icon="@drawable/ic_booking"
+            android:title="Kelola Booking"/>
+        <item
+            android:id="@+id/nav_jadwal"
+            android:icon="@android:drawable/ic_menu_day"
+            android:title="Jadwal Lapangan"/>
+        <item
+            android:id="@+id/nav_chat"
+            android:icon="@android:drawable/ic_menu_send"
+            android:title="Chat Pelanggan"/>
+        <item
+            android:id="@+id/nav_notifikasi"
+            android:icon="@drawable/ic_notification"
+            android:title="Notifikasi"/>
+        <item
+            android:id="@+id/nav_laporan"
+            android:icon="@drawable/ic_location"
+            android:title="Laporan Pendapatan"/>
+        <item
+            android:id="@+id/nav_kelola_lapangan"
+            android:icon="@drawable/ic_location"
+            android:title="Kelola Lapangan"/>
+    </group>
+    <item
+        android:id="@+id/nav_logout"
+        android:icon="@android:drawable/ic_menu_delete"
+        android:title="Keluar"/>
+</menu>

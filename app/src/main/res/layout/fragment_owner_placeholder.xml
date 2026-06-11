@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="#F5F5F5"
+    android:padding="32dp">
+
+    <TextView
+        android:id="@+id/tvPlaceholderIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="🚧"
+        android:textSize="48sp"
+        android:layout_marginBottom="16dp"/>
+
+    <TextView
+        android:id="@+id/tvPlaceholderTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Segera Hadir"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="#121212"
+        android:layout_marginBottom="8dp"/>
+
+    <TextView
+        android:id="@+id/tvPlaceholderDesc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Halaman ini sedang dalam pengembangan"
+        android:textSize="13sp"
+        android:textColor="#999999"
+        android:gravity="center"/>
+
+</LinearLayout>

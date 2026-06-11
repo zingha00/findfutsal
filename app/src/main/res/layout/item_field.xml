@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="16dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="4dp"
+    app:cardBackgroundColor="#FFFFFF">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!-- Foto Lapangan -->
+        <ImageView
+            android:id="@+id/ivFieldPhoto"
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:scaleType="centerCrop"/>
+
+        <!-- Rating Badge -->
+        <LinearLayout
+            android:id="@+id/layoutRating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/ivFieldPhoto"
+            android:layout_alignEnd="@id/ivFieldPhoto"
+            android:layout_margin="10dp"
+            android:background="@drawable/bg_rating"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp">
+
+            <ImageView
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:src="@android:drawable/btn_star_big_on"/>
+
+            <TextView
+                android:id="@+id/tvFieldRating"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:text="4.8"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:textColor="#121212"/>
+
+        </LinearLayout>
+
+        <!-- Favorite Button -->
+        <ImageView
+            android:id="@+id/ivFavorite"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_alignTop="@id/ivFieldPhoto"
+            android:layout_alignStart="@id/ivFieldPhoto"
+            android:layout_margin="10dp"
+            android:src="@drawable/ic_favorite"
+            android:background="@drawable/bg_favorite_btn"
+            android:padding="6dp"
+            app:tint="#FFFFFF"/>
+
+        <!-- Info Section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ivFieldPhoto"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Nama Lapangan -->
+            <TextView
+                android:id="@+id/tvFieldName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Siliwangi Indoor Futsal"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="#121212"/>
+
+            <!-- Alamat -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginTop="4dp">
+
+                <ImageView
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
+                    android:src="@android:drawable/ic_menu_mylocation"
+                    app:tint="#999999"/>
+
+                <TextView
+                    android:id="@+id/tvFieldAddress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:text="Sumur Bandung"
+                    android:textSize="12sp"
+                    android:textColor="#999999"/>
+
+            </LinearLayout>
+
+            <!-- Jarak -->
+            <TextView
+                android:id="@+id/tvFieldDistance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="2.4 km"
+                android:textSize="12sp"
+                android:textColor="#999999"/>
+
+            <!-- Divider -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="12dp"
+                android:background="#F5F5F5"/>
+
+            <!-- Harga + Booking -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="MULAI DARI"
+                        android:textSize="10sp"
+                        android:textColor="#999999"
+                        android:letterSpacing="0.05"/>
+
+                    <TextView
+                        android:id="@+id/tvFieldPrice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Rp150k/jam"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:textColor="#121212"/>
+
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/btnBooking"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:text="Booking"
+                    android:textSize="13sp"
+                    android:textColor="#FFFFFF"
+                    android:backgroundTint="#00A86B"
+                    app:cornerRadius="10dp"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>
