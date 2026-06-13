@@ -3,29 +3,38 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <!-- Brand -->
-    <color name="primary_green">#00A86B</color>
-    <color name="primary_dark">#1A4D2E</color>
-    <color name="primary_darker">#0D2B1A</color>
+    <!-- Brand — hijau lapangan futsal yang lebih segar -->
+    <color name="primary_green">#00C96E</color>
+    <color name="primary_dark">#00955A</color>
+    <color name="primary_darker">#006B3F</color>
+
+    <!-- Accent — kuning energik untuk highlight/CTA -->
+    <color name="accent_yellow">#FFD600</color>
+    <color name="accent_orange">#FF6B35</color>
 
     <!-- Text -->
-    <color name="text_primary">#121212</color>
-    <color name="text_secondary">#666666</color>
-    <color name="text_muted">#999999</color>
+    <color name="text_primary">#0D1B2A</color>
+    <color name="text_secondary">#4A5568</color>
+    <color name="text_muted">#A0AEC0</color>
     <color name="text_on_primary">#FFFFFF</color>
 
     <!-- Surfaces -->
     <color name="surface">#FFFFFF</color>
-    <color name="background">#FFFFFF</color>
-    <color name="input_bg">#FFFFFF</color>
-    <color name="divider">#E0E0E0</color>
+    <color name="background">#F0F4F8</color>
+    <color name="input_bg">#F7FAFC</color>
+    <color name="divider">#E2E8F0</color>
+    <color name="card_bg">#FFFFFF</color>
 
     <!-- Status -->
     <color name="error_red">#FF3B30</color>
-    <color name="success_green">#34C759</color>
+    <color name="success_green">#00C96E</color>
+    <color name="warning_yellow">#FFD600</color>
 
-    <!-- Keuangan Status -->
-    <color name="status_selesai_text">#1B5E20</color>
-    <color name="status_menunggu_text">#E65100</color>
-    <color name="status_batal_text">#B71C1C</color>
+    <!-- Status Badge -->
+    <color name="status_selesai_text">#006B3F</color>
+    <color name="status_selesai_bg">#E6FFF4</color>
+    <color name="status_menunggu_text">#B45309</color>
+    <color name="status_menunggu_bg">#FFFBEB</color>
+    <color name="status_batal_text">#C0392B</color>
+    <color name="status_batal_bg">#FFF0EE</color>
 </resources>
