@@ -20,12 +20,11 @@ object ApiClient {
         .writeTimeout(30, TimeUnit.SECONDS)
         .build()
 
-    val instance: ApiService by lazy {
-        Retrofit.Builder()
+    val instance: ApiService
+        get() = Retrofit.Builder()
             .baseUrl(Constants.BASE_URL)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(ApiService::class.java)
-    }
 }

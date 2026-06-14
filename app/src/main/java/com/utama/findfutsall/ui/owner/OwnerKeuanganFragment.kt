@@ -16,7 +16,6 @@ import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.utama.findfutsall.R
 import com.utama.findfutsall.data.model.*
@@ -33,7 +32,6 @@ class OwnerKeuanganFragment : Fragment() {
     private lateinit var session: SessionManager
     private lateinit var adapter: TransaksiAdapter
 
-    // Views – Summary
     private lateinit var tvHari: TextView
     private lateinit var tvMinggu: TextView
     private lateinit var tvBulan: TextView
@@ -43,7 +41,6 @@ class OwnerKeuanganFragment : Fragment() {
     private lateinit var tvPctChange: TextView
     private lateinit var ivPctIcon: ImageView
 
-    // Views – Chart
     private lateinit var chartRevenue: LineChart
     private lateinit var tabChart7Hari: TextView
     private lateinit var tabChart30Hari: TextView
@@ -52,25 +49,18 @@ class OwnerKeuanganFragment : Fragment() {
     private lateinit var tabChart1Tahun: TextView
     private var activeChartTab = "7_hari"
 
-    // Views – Export
     private lateinit var btnExportLaporan: Button
-
-    // Views – Riwayat
     private lateinit var rvTransaksi: RecyclerView
     private lateinit var tvEmpty: TextView
-
-    // Views – Loading
     private lateinit var progressBar: ProgressBar
 
-    // State
     private var allTransaksi = mutableListOf<TransaksiItem>()
     private var lastResponse: KeuanganResponse? = null
 
-    // Colors — otomatis ikut colors.xml
-    private val colorPrimary get() = ContextCompat.getColor(requireContext(), R.color.primary_green)
-    private val colorError   get() = ContextCompat.getColor(requireContext(), R.color.error_red)
-    private val colorDivider get() = ContextCompat.getColor(requireContext(), R.color.divider)
-    private val colorMuted   get() = ContextCompat.getColor(requireContext(), R.color.text_muted)
+    private val colorPrimary   get() = ContextCompat.getColor(requireContext(), R.color.primary_green)
+    private val colorError     get() = ContextCompat.getColor(requireContext(), R.color.error_red)
+    private val colorDivider   get() = ContextCompat.getColor(requireContext(), R.color.divider)
+    private val colorMuted     get() = ContextCompat.getColor(requireContext(), R.color.text_muted)
     private val colorSecondary get() = ContextCompat.getColor(requireContext(), R.color.text_secondary)
 
     override fun onCreateView(
@@ -81,6 +71,9 @@ class OwnerKeuanganFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         session = SessionManager(requireContext())
         bindViews(view)
+        view.post {
+            (view as? androidx.core.widget.NestedScrollView)?.scrollTo(0, 0)
+        }
         setupRecyclerView()
         setupChartFilterTabs()
         setupExport()
@@ -88,40 +81,36 @@ class OwnerKeuanganFragment : Fragment() {
         loadData()
     }
 
-    // ─── Bind Views ────────────────────────────────────────────────────────────
     private fun bindViews(v: View) {
-        tvHari         = v.findViewById(R.id.tvKeuanganHari)
-        tvMinggu       = v.findViewById(R.id.tvKeuanganMinggu)
-        tvBulan        = v.findViewById(R.id.tvKeuanganBulan)
-        tvTahun        = v.findViewById(R.id.tvKeuanganTahun)
-        tvTransaksi    = v.findViewById(R.id.tvKeuanganTransaksi)
-        tvRataRata     = v.findViewById(R.id.tvKeuanganRataRata)
-        tvPctChange    = v.findViewById(R.id.tvPctChange)
-        ivPctIcon      = v.findViewById(R.id.ivPctIcon)
-        chartRevenue   = v.findViewById(R.id.chartRevenue)
-        tabChart7Hari  = v.findViewById(R.id.tabChart7Hari)
-        tabChart30Hari = v.findViewById(R.id.tabChart30Hari)
-        tabChart2Bulan = v.findViewById(R.id.tabChart2Bulan)
-        tabChart6Bulan = v.findViewById(R.id.tabChart6Bulan)
-        tabChart1Tahun = v.findViewById(R.id.tabChart1Tahun)
+        tvHari           = v.findViewById(R.id.tvKeuanganHari)
+        tvMinggu         = v.findViewById(R.id.tvKeuanganMinggu)
+        tvBulan          = v.findViewById(R.id.tvKeuanganBulan)
+        tvTahun          = v.findViewById(R.id.tvKeuanganTahun)
+        tvTransaksi      = v.findViewById(R.id.tvKeuanganTransaksi)
+        tvRataRata       = v.findViewById(R.id.tvKeuanganRataRata)
+        tvPctChange      = v.findViewById(R.id.tvPctChange)
+        ivPctIcon        = v.findViewById(R.id.ivPctIcon)
+        chartRevenue     = v.findViewById(R.id.chartRevenue)
+        tabChart7Hari    = v.findViewById(R.id.tabChart7Hari)
+        tabChart30Hari   = v.findViewById(R.id.tabChart30Hari)
+        tabChart2Bulan   = v.findViewById(R.id.tabChart2Bulan)
+        tabChart6Bulan   = v.findViewById(R.id.tabChart6Bulan)
+        tabChart1Tahun   = v.findViewById(R.id.tabChart1Tahun)
         btnExportLaporan = v.findViewById(R.id.btnExportLaporan)
-        rvTransaksi    = v.findViewById(R.id.rvTransaksiKeuangan)
-        tvEmpty        = v.findViewById(R.id.tvTransaksiEmpty)
-        progressBar    = v.findViewById(R.id.progressKeuangan)
+        rvTransaksi      = v.findViewById(R.id.rvTransaksiKeuangan)
+        tvEmpty          = v.findViewById(R.id.tvTransaksiEmpty)
+        progressBar      = v.findViewById(R.id.progressKeuangan)
     }
 
-    // ─── RecyclerView ──────────────────────────────────────────────────────────
     private fun setupRecyclerView() {
         adapter = TransaksiAdapter()
         rvTransaksi.layoutManager = LinearLayoutManager(requireContext())
         rvTransaksi.adapter = adapter
     }
 
-    // ─── Chart Filter Tabs ─────────────────────────────────────────────────────
     private fun setupChartFilterTabs() {
         val tabs = listOf(tabChart7Hari, tabChart30Hari, tabChart2Bulan, tabChart6Bulan, tabChart1Tahun)
         val keys = listOf("7_hari", "30_hari", "2_bulan", "6_bulan", "1_tahun")
-
         tabs.forEachIndexed { i, tab ->
             tab.setOnClickListener {
                 activeChartTab = keys[i]
@@ -205,12 +194,10 @@ class OwnerKeuanganFragment : Fragment() {
         } catch (e: Exception) { label }
     }
 
-    // ─── Load Data ─────────────────────────────────────────────────────────────
     private fun loadData() {
         viewModel.loadKeuangan(userId = session.getUserId())
     }
 
-    // ─── Observer ──────────────────────────────────────────────────────────────
     private fun observeViewModel() {
         viewModel.isLoading.observe(viewLifecycleOwner) { loading ->
             progressBar.visibility = if (loading) View.VISIBLE else View.GONE
@@ -228,7 +215,6 @@ class OwnerKeuanganFragment : Fragment() {
         }
     }
 
-    // ─── Bind Summary ──────────────────────────────────────────────────────────
     private fun bindSummary(data: KeuanganResponse) {
         val s = data.summary ?: return
         tvHari.text      = formatRp(s.hari)
@@ -237,7 +223,6 @@ class OwnerKeuanganFragment : Fragment() {
         tvTahun.text     = formatRp(s.tahun)
         tvTransaksi.text = "${s.totalTransaksi} transaksi booking"
         tvRataRata.text  = formatRp(s.rataRata)
-
         val pct = s.pctChange
         tvPctChange.text = "${if (pct >= 0) "+" else ""}${pct}% vs periode lalu"
         tvPctChange.setTextColor(if (pct >= 0) colorPrimary else colorError)
@@ -245,7 +230,6 @@ class OwnerKeuanganFragment : Fragment() {
         ivPctIcon.setColorFilter(if (pct >= 0) colorPrimary else colorError)
     }
 
-    // ─── Bind Table ────────────────────────────────────────────────────────────
     private fun bindTable(data: KeuanganResponse) {
         val page = data.transaksi ?: return
         allTransaksi = page.data.toMutableList()
@@ -255,16 +239,16 @@ class OwnerKeuanganFragment : Fragment() {
 
     // ─── Export ────────────────────────────────────────────────────────────────
     private fun setupExport() {
-        btnExportLaporan.setOnClickListener { showExportBottomSheet() }
+        btnExportLaporan.setOnClickListener { showExportPopup() }
     }
 
-    private fun showExportBottomSheet() {
+    private fun showExportPopup() {
         val popupView = LayoutInflater.from(requireContext())
             .inflate(R.layout.popup_export_laporan, null)
 
-        val density     = resources.displayMetrics.density
-        val screenWidth = resources.displayMetrics.widthPixels
-        val popupWidth  = screenWidth - (32 * density).toInt()
+        val density    = resources.displayMetrics.density
+        val screenW    = resources.displayMetrics.widthPixels
+        val popupWidth = screenW - (32 * density).toInt()
 
         val popup = PopupWindow(
             popupView,
@@ -274,24 +258,18 @@ class OwnerKeuanganFragment : Fragment() {
         ).apply {
             elevation = 24f
             isOutsideTouchable = true
-            // Dim background saat popup muncul
             setBackgroundDrawable(
                 ContextCompat.getDrawable(requireContext(), android.R.color.transparent)
             )
             setOnDismissListener {
-                // Hilangkan dim saat popup tutup
-                val activity = requireActivity()
-                val layoutParams = activity.window.attributes
-                layoutParams.alpha = 1.0f
-                activity.window.attributes = layoutParams
+                requireActivity().window.attributes =
+                    requireActivity().window.attributes.also { it.alpha = 1.0f }
             }
         }
 
         // Dim background
-        val activity = requireActivity()
-        val layoutParams = activity.window.attributes
-        layoutParams.alpha = 0.6f
-        activity.window.attributes = layoutParams
+        requireActivity().window.attributes =
+            requireActivity().window.attributes.also { it.alpha = 0.6f }
 
         val tvFrom   = popupView.findViewById<TextView>(R.id.popupDateFrom)
         val tvTo     = popupView.findViewById<TextView>(R.id.popupDateTo)
@@ -326,9 +304,14 @@ class OwnerKeuanganFragment : Fragment() {
         btnPdf.setOnClickListener   { popup.dismiss(); exportPdf() }
         btnExcel.setOnClickListener { popup.dismiss(); exportExcel() }
 
-        // Posisi tepat di bawah tombol, center horizontal
-        val xOffset = -((popupWidth - btnExportLaporan.width) / 2)
-        popup.showAsDropDown(btnExportLaporan, xOffset, (8 * density).toInt())
+        // Center horizontal, tepat di bawah tombol Export
+        requireView().post {
+            val btnLoc = IntArray(2)
+            btnExportLaporan.getLocationInWindow(btnLoc)
+            val xPos = (screenW - popupWidth) / 2
+            val yPos = btnLoc[1] + btnExportLaporan.height + (8 * density).toInt()
+            popup.showAtLocation(requireView(), android.view.Gravity.NO_GRAVITY, xPos, yPos)
+        }
     }
 
     // ─── Export PDF ────────────────────────────────────────────────────────────
@@ -341,8 +324,7 @@ class OwnerKeuanganFragment : Fragment() {
             val dir  = requireContext().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)
             val name = "laporan_keuangan_${System.currentTimeMillis()}.pdf"
             val file = File(dir, name)
-
-            val doc        = com.itextpdf.text.Document()
+            val doc  = com.itextpdf.text.Document()
             com.itextpdf.text.pdf.PdfWriter.getInstance(doc, file.outputStream())
             doc.open()
 
@@ -377,8 +359,8 @@ class OwnerKeuanganFragment : Fragment() {
             doc.add(com.itextpdf.text.Paragraph("\n"))
             doc.add(com.itextpdf.text.Paragraph("RIWAYAT BOOKING", headFont))
 
-            val cols = arrayOf("ID","Penyewa","Lapangan","Tanggal","Waktu","Status","Nominal")
-            val tbl  = com.itextpdf.text.pdf.PdfPTable(cols.size).apply {
+            val cols      = arrayOf("ID","Penyewa","Lapangan","Tanggal","Waktu","Status","Nominal")
+            val tbl       = com.itextpdf.text.pdf.PdfPTable(cols.size).apply {
                 widthPercentage = 100f
                 setWidths(floatArrayOf(0.5f,1.5f,1.5f,1f,1f,1f,1.2f))
             }
@@ -422,11 +404,18 @@ class OwnerKeuanganFragment : Fragment() {
             }
             val s = data.summary
             if (s != null) {
-                listOf("Pendapatan Hari Ini" to s.hari, "Pendapatan Minggu Ini" to s.minggu,
-                    "Pendapatan Bulan Ini" to s.bulan, "Pendapatan Tahun Ini" to s.tahun,
-                    "Total Transaksi" to s.totalTransaksi.toDouble(), "Rata-rata per Booking" to s.rataRata
+                listOf(
+                    "Pendapatan Hari Ini"   to s.hari,
+                    "Pendapatan Minggu Ini" to s.minggu,
+                    "Pendapatan Bulan Ini"  to s.bulan,
+                    "Pendapatan Tahun Ini"  to s.tahun,
+                    "Total Transaksi"       to s.totalTransaksi.toDouble(),
+                    "Rata-rata per Booking" to s.rataRata
                 ).forEachIndexed { i, (k, v) ->
-                    ws1.createRow(4 + i).also { r -> r.createCell(0).setCellValue(k); r.createCell(1).setCellValue(v) }
+                    ws1.createRow(4 + i).also { r ->
+                        r.createCell(0).setCellValue(k)
+                        r.createCell(1).setCellValue(v)
+                    }
                 }
             }
             ws1.autoSizeColumn(0); ws1.autoSizeColumn(1)
@@ -456,7 +445,10 @@ class OwnerKeuanganFragment : Fragment() {
                 r.createCell(1).apply { setCellValue("Total Pendapatan"); cellStyle = hStyle }
             }
             data.charts?.monthly?.forEachIndexed { i, p ->
-                ws3.createRow(i + 1).also { r -> r.createCell(0).setCellValue(p.label); r.createCell(1).setCellValue(p.value) }
+                ws3.createRow(i + 1).also { r ->
+                    r.createCell(0).setCellValue(p.label)
+                    r.createCell(1).setCellValue(p.value)
+                }
             }
             ws3.autoSizeColumn(0); ws3.autoSizeColumn(1)
 
@@ -470,7 +462,6 @@ class OwnerKeuanganFragment : Fragment() {
         }
     }
 
-    // ─── Utility ───────────────────────────────────────────────────────────────
     private fun formatRp(amount: Double): String {
         val fmt = NumberFormat.getNumberInstance(Locale("id", "ID"))
         return "Rp ${fmt.format(amount.toLong())}"

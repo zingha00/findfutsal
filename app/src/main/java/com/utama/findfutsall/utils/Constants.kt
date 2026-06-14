@@ -2,11 +2,12 @@ package com.utama.findfutsall.utils
 
 object Constants {
 
-    // Ganti ini (untuk emulator):
+    // Gunakan ini jika menggunakan EMULATOR:
     // const val BASE_URL = "http://10.0.2.2/findfutsall/api/"
 
-    // Menjadi ini (untuk HP fisik + Laravel):
-    const val BASE_URL = "http://192.168.0.103/findfutsall/api/"
+    // Gunakan ini jika menggunakan HP FISIK (Ganti IP sesuai IP Laptop/PC Anda):
+    const val BASE_URL = "http://192.168.10.199/findfutsall/api/"
+
 
     const val PREF_NAME = "findfutsall_pref"
     const val KEY_TOKEN = "token"
