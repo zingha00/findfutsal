@@ -31,6 +31,7 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
+        isCoreLibraryDesugaringEnabled = true
     }
 
     kotlinOptions {
@@ -48,6 +49,7 @@ android {
 }
 
 dependencies {
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.3")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -82,18 +84,15 @@ dependencies {
     // Shimmer Loading
     implementation("com.facebook.shimmer:shimmer:0.5.0")
 
-    // Fragment KTX
-    implementation("androidx.fragment:fragment-ktx:1.8.4")
-
-    // Charts
+    // MPAndroidChart
     implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
 
-    // PDF Export
-    implementation("com.itextpdf:itextg:5.5.10")
-
-    // Excel Export
-    implementation("org.apache.poi:poi:5.2.5")
+    // Export Laporan (PDF & Excel)
+    implementation("com.itextpdf:itextpdf:5.5.13.5")
     implementation("org.apache.poi:poi-ooxml:5.2.5")
+
+    // Fragment KTX
+    implementation("androidx.fragment:fragment-ktx:1.8.4")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

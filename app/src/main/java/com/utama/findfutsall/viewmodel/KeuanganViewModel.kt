@@ -19,33 +19,17 @@ class KeuanganViewModel : ViewModel() {
     private val _error = MutableLiveData<String?>()
     val error: LiveData<String?> = _error
 
-    fun loadKeuangan(
-        userId: Int,
-        filter: String = "bulan",
-        status: String = "",
-        dateFrom: String = "",
-        dateTo: String = "",
-        page: Int = 1
-    ) {
+    fun loadKeuangan(userId: Int) {
         _isLoading.value = true
-        _error.value = null
-
         viewModelScope.launch {
             try {
-                val body = mutableMapOf<String, Any>(
-                    "user_id" to userId,
-                    "filter"  to filter,
-                    "page"    to page
+                val response = ApiClient.instance.getKeuangan(
+                    mapOf("owner_id" to userId)
                 )
-                if (status.isNotEmpty()) body["status"] = status
-                if (dateFrom.isNotEmpty()) body["date_from"] = dateFrom
-                if (dateTo.isNotEmpty())   body["date_to"]   = dateTo
-
-                val response = ApiClient.instance.getKeuangan(body)
-                if (response.isSuccessful && response.body()?.success == true) {
+                if (response.isSuccessful) {
                     _keuangan.value = response.body()
                 } else {
-                    _error.value = response.body()?.message ?: "Gagal memuat data keuangan"
+                    _error.value = "Gagal memuat data keuangan"
                 }
             } catch (e: Exception) {
                 _error.value = "Koneksi gagal: ${e.message}"
