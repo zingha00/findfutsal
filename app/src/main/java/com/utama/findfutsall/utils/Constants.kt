@@ -6,8 +6,7 @@ object Constants {
     // const val BASE_URL = "http://10.0.2.2/findfutsall/api/"
 
     // Gunakan ini jika menggunakan HP FISIK (Ganti IP sesuai IP Laptop/PC Anda):
-    const val BASE_URL = "http://192.168.10.199/findfutsall/api/"
-
+    var BASE_URL = "http://192.168.0.103/findfutsall/api/"
 
     const val PREF_NAME = "findfutsall_pref"
     const val KEY_TOKEN = "token"
