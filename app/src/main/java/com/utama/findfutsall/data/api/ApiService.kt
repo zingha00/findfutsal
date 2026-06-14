@@ -51,4 +51,9 @@ interface ApiService {
     suspend fun getOwnerStats(
         @Body request: Map<String, @JvmSuppressWildcards Any>
     ): Response<Map<String, @JvmSuppressWildcards Any>>
+
+    @POST("get_owner_keuangan.php")
+    suspend fun getKeuangan(
+        @Body request: Map<String, @JvmSuppressWildcards Any>
+    ): Response<com.utama.findfutsall.data.model.KeuanganResponse>
 }

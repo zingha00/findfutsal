@@ -23,4 +23,9 @@
     <!-- Status -->
     <color name="error_red">#FF3B30</color>
     <color name="success_green">#34C759</color>
+
+    <!-- Transaksi Status Colors -->
+    <color name="status_selesai_text">#1A4D2E</color>
+    <color name="status_menunggu_text">#B45309</color>
+    <color name="status_batal_text">#991B1B</color>
 </resources>

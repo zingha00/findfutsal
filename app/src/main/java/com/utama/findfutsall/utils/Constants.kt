@@ -6,7 +6,7 @@ object Constants {
     // const val BASE_URL = "http://10.0.2.2/findfutsall/api/"
 
     // Base URL API FindFutsall TEST 1
-    const val BASE_URL = "http://192.168.10.199/findfutsall/api/"
+    // const val BASE_URL = "http://192.168.10.199/findfutsall/api/"
 
     // Menjadi ini (untuk HP fisik + Laravel):
     const val BASE_URL = "http://192.168.0.103/findfutsall/api/"
