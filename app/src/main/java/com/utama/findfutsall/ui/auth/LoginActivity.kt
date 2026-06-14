@@ -13,7 +13,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
-import com.utama.findfutsall.MainActivity
+import com.utama.findfutsall.ui.main.MainActivity
 import com.utama.findfutsall.R
 import com.utama.findfutsall.databinding.ActivityLoginBinding
 import com.utama.findfutsall.ui.owner.OwnerDashboardActivity
@@ -128,6 +128,7 @@ class LoginActivity : AppCompatActivity() {
             result?.onSuccess { response ->
                 if (response.success) {
                     response.user?.let { user ->
+                        sessionManager.clearSession() // tambahkan ini
                         sessionManager.saveLoginSession(
                             token    = response.token ?: "",
                             userId   = user.id,
@@ -154,6 +155,7 @@ class LoginActivity : AppCompatActivity() {
             result.onSuccess { response ->
                 if (response.success) {
                     response.user?.let { user ->
+                        sessionManager.clearSession() // tambahkan ini
                         sessionManager.saveLoginSession(
                             token    = response.token ?: "",
                             userId   = user.id,

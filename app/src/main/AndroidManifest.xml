@@ -46,7 +46,7 @@
 
         <!-- Main -->
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.main.MainActivity"
             android:exported="false" />
 
         <!-- Detail Lapangan -->
@@ -92,6 +92,8 @@
             android:name=".ui.admin.AdminDashboardActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize"/>
+
+        <activity android:name=".ui.detail.BookingSuccessActivity"/>
 
     </application>
 

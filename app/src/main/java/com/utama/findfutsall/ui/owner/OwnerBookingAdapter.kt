@@ -36,17 +36,17 @@ class OwnerBookingAdapter(
     override fun getItemCount() = bookings.size
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val tvBookingId: TextView     = itemView.findViewById(R.id.tvBookingId)
-        private val tvStatus: TextView        = itemView.findViewById(R.id.tvBookingStatus)
-        private val tvCustomer: TextView      = itemView.findViewById(R.id.tvCustomerName)
-        private val tvFieldName: TextView     = itemView.findViewById(R.id.tvFieldName)
-        private val tvPlayDate: TextView      = itemView.findViewById(R.id.tvPlayDate)
-        private val tvTotalPrice: TextView    = itemView.findViewById(R.id.tvTotalPrice)
-        private val layoutAksi: View          = itemView.findViewById(R.id.layoutAksi)
+        private val tvBookingId: TextView         = itemView.findViewById(R.id.tvBookingId)
+        private val tvStatus: TextView            = itemView.findViewById(R.id.tvBookingStatus)
+        private val tvCustomer: TextView          = itemView.findViewById(R.id.tvCustomerName)
+        private val tvFieldName: TextView         = itemView.findViewById(R.id.tvFieldName)
+        private val tvPlayDate: TextView          = itemView.findViewById(R.id.tvPlayDate)
+        private val tvTotalPrice: TextView        = itemView.findViewById(R.id.tvTotalPrice)
+        private val layoutAksi: View              = itemView.findViewById(R.id.layoutAksi)
         private val btnKonfirmasi: MaterialButton = itemView.findViewById(R.id.btnKonfirmasi)
-        private val btnBatal: MaterialButton  = itemView.findViewById(R.id.btnBatal)
-        private val btnWhatsapp: MaterialButton = itemView.findViewById(R.id.btnWhatsapp)
-        private val btnDetail: MaterialButton = itemView.findViewById(R.id.btnDetail)
+        private val btnBatal: MaterialButton      = itemView.findViewById(R.id.btnBatal)
+        private val btnWhatsapp: MaterialButton   = itemView.findViewById(R.id.btnWhatsapp)
+        private val btnDetail: MaterialButton     = itemView.findViewById(R.id.btnDetail)
 
         fun bind(booking: OwnerBooking) {
             tvBookingId.text  = "#BK-${String.format("%03d", booking.id)}"
@@ -56,7 +56,6 @@ class OwnerBookingAdapter(
             tvTotalPrice.text = "Rp ${formatPrice(booking.totalPrice.toLong())}"
             tvStatus.text     = booking.status
 
-            // Warna status
             when (booking.status) {
                 "Menunggu" -> {
                     tvStatus.setTextColor(Color.parseColor("#856404"))

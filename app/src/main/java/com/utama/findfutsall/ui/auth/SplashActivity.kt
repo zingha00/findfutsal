@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
-import com.utama.findfutsall.MainActivity
+import com.utama.findfutsall.ui.main.MainActivity
 import com.utama.findfutsall.databinding.ActivitySplashBinding
 import com.utama.findfutsall.ui.owner.OwnerDashboardActivity
 import com.utama.findfutsall.utils.SessionManager

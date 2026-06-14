@@ -37,6 +37,7 @@ class OwnerBookingFragment : Fragment() {
     private lateinit var adapter: OwnerBookingAdapter
     private val allBookings = mutableListOf<OwnerBooking>()
     private var activeFilter = "Semua"
+    private var isLoading = false
 
     private val httpClient = OkHttpClient.Builder()
         .connectTimeout(30, TimeUnit.SECONDS)
@@ -54,7 +55,6 @@ class OwnerBookingFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         sessionManager = SessionManager(requireContext())
-
         setupRecyclerView()
         setupChips()
         loadBookings()
@@ -62,7 +62,7 @@ class OwnerBookingFragment : Fragment() {
 
     private fun setupRecyclerView() {
         adapter = OwnerBookingAdapter(
-            bookings    = allBookings,
+            bookings     = allBookings,
             onKonfirmasi = { booking -> updateStatus(booking, "Terkonfirmasi") },
             onBatal      = { booking ->
                 AlertDialog.Builder(requireContext())
@@ -72,7 +72,7 @@ class OwnerBookingFragment : Fragment() {
                     .setNegativeButton("Tidak", null)
                     .show()
             },
-            onWhatsapp   = { booking -> openWhatsapp(booking) }
+            onWhatsapp = { booking -> openWhatsapp(booking) }
         )
         binding.rvBooking.layoutManager = LinearLayoutManager(requireContext())
         binding.rvBooking.adapter = adapter
@@ -80,13 +80,12 @@ class OwnerBookingFragment : Fragment() {
 
     private fun setupChips() {
         val chips = mapOf(
-            "Semua"        to binding.chipSemua,
-            "Menunggu"     to binding.chipMenunggu,
+            "Semua"         to binding.chipSemua,
+            "Menunggu"      to binding.chipMenunggu,
             "Terkonfirmasi" to binding.chipTerkonfirmasi,
-            "Selesai"      to binding.chipSelesai,
-            "Batal"        to binding.chipBatal
+            "Selesai"       to binding.chipSelesai,
+            "Batal"         to binding.chipBatal
         )
-
         chips.forEach { (filter, chip) ->
             chip.setOnClickListener {
                 activeFilter = filter
@@ -106,16 +105,18 @@ class OwnerBookingFragment : Fragment() {
     }
 
     private fun applyFilter(filter: String) {
-        val filtered = if (filter == "Semua") allBookings
+        val filtered = if (filter == "Semua") allBookings.toList()
         else allBookings.filter { it.status == filter }
         adapter.updateData(filtered)
-        updateEmptyState(filtered.isEmpty())
+        binding.rvBooking.visibility   = if (filtered.isEmpty()) View.GONE else View.VISIBLE
+        binding.layoutEmpty.visibility = if (filtered.isEmpty()) View.VISIBLE else View.GONE
     }
 
     private fun loadBookings() {
+        if (isLoading) return
         if (_binding == null) return
+        isLoading = true
         binding.progressBooking.visibility = View.VISIBLE
-
         val userId = sessionManager.getUserId()
 
         lifecycleScope.launch(Dispatchers.IO) {
@@ -128,14 +129,17 @@ class OwnerBookingFragment : Fragment() {
                     .build()
                 val response = httpClient.newCall(request).execute()
                 val resStr   = response.body?.string() ?: "{}"
+                android.util.Log.d("BOOKING_UI", "Response: $resStr")
                 val resJson  = JSONObject(resStr)
 
                 withContext(Dispatchers.Main) {
                     if (_binding == null) return@withContext
+                    isLoading = false
                     binding.progressBooking.visibility = View.GONE
 
                     if (resJson.optBoolean("success")) {
                         val arr = resJson.optJSONArray("bookings") ?: JSONArray()
+                        android.util.Log.d("BOOKING_UI", "Bookings count: ${arr.length()}")
                         allBookings.clear()
                         for (i in 0 until arr.length()) {
                             val obj = arr.getJSONObject(i)
@@ -155,16 +159,26 @@ class OwnerBookingFragment : Fragment() {
                                 )
                             )
                         }
+                        android.util.Log.d("BOOKING_UI", "allBookings size: ${allBookings.size}")
                         applyFilter(activeFilter)
                     } else {
-                        updateEmptyState(true)
+                        Toast.makeText(
+                            requireContext(),
+                            resJson.optString("message", "Gagal load booking"),
+                            Toast.LENGTH_LONG
+                        ).show()
+                        binding.rvBooking.visibility   = View.GONE
+                        binding.layoutEmpty.visibility = View.VISIBLE
                     }
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
                     if (_binding == null) return@withContext
+                    isLoading = false
                     binding.progressBooking.visibility = View.GONE
-                    updateEmptyState(true)
+                    Toast.makeText(requireContext(), "Error: ${e.message}", Toast.LENGTH_LONG).show()
+                    binding.rvBooking.visibility   = View.GONE
+                    binding.layoutEmpty.visibility = View.VISIBLE
                 }
             }
         }
@@ -189,12 +203,11 @@ class OwnerBookingFragment : Fragment() {
                 withContext(Dispatchers.Main) {
                     if (_binding == null) return@withContext
                     if (resJson.optBoolean("success")) {
-                        Toast.makeText(requireContext(),
-                            "Booking $newStatus", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), "Booking $newStatus", Toast.LENGTH_SHORT).show()
+                        isLoading = false
                         loadBookings()
                     } else {
-                        Toast.makeText(requireContext(),
-                            resJson.optString("message", "Gagal"), Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), resJson.optString("message", "Gagal"), Toast.LENGTH_SHORT).show()
                     }
                 }
             } catch (e: Exception) {
@@ -215,20 +228,11 @@ class OwnerBookingFragment : Fragment() {
         val waPhone = if (phone.startsWith("0")) "62${phone.substring(1)}" else phone
         val message = "Halo ${booking.customerName}, konfirmasi booking lapangan ${booking.fieldName} " +
                 "pada ${booking.playDate} pukul ${booking.startTime}-${booking.endTime}."
-        val intent = Intent(Intent.ACTION_VIEW,
-            Uri.parse("https://wa.me/$waPhone?text=${Uri.encode(message)}"))
+        val intent = Intent(
+            Intent.ACTION_VIEW,
+            Uri.parse("https://wa.me/$waPhone?text=${Uri.encode(message)}")
+        )
         startActivity(intent)
-    }
-
-    private fun updateEmptyState(isEmpty: Boolean) {
-        if (_binding == null) return
-        binding.rvBooking.visibility    = if (isEmpty) View.GONE else View.VISIBLE
-        binding.layoutEmpty.visibility  = if (isEmpty) View.VISIBLE else View.GONE
-    }
-
-    override fun onResume() {
-        super.onResume()
-        loadBookings()
     }
 
     override fun onDestroyView() {

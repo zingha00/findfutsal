@@ -1,10 +1,10 @@
-package com.utama.findfutsall
+package com.utama.findfutsall.ui.main
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import com.utama.findfutsall.R
 import com.utama.findfutsall.databinding.ActivityMainBinding
-import com.utama.findfutsall.ui.main.*
 
 class MainActivity : AppCompatActivity() {
 

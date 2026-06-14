@@ -18,11 +18,13 @@ import com.utama.findfutsall.R
 import com.utama.findfutsall.adapter.FieldAdapter
 import com.utama.findfutsall.adapter.FieldHorizontalAdapter
 import com.utama.findfutsall.adapter.PromoAdapter
+import com.utama.findfutsall.data.api.ApiClient
 import com.utama.findfutsall.data.model.Field
 import com.utama.findfutsall.data.model.Promo
 import com.utama.findfutsall.databinding.FragmentHomeBinding
 import com.utama.findfutsall.ui.detail.DetailFieldActivity
 import com.utama.findfutsall.utils.Constants
+import com.utama.findfutsall.utils.SessionManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -37,6 +39,7 @@ class HomeFragment : Fragment() {
     private lateinit var fieldAdapter: FieldAdapter
     private lateinit var fieldHorizontalAdapter: FieldHorizontalAdapter
     private lateinit var promoAdapter: PromoAdapter
+    private lateinit var session: SessionManager
     private val handler = Handler(Looper.getMainLooper())
     private var currentPage = 0
     private val dots = mutableListOf<ImageView>()
@@ -61,10 +64,11 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        session = SessionManager(requireContext())
         setupPromo()
         setupRecyclerViews()
         setupClickListeners()
-        loadFields()
+        loadFieldsWithFavorites()
         binding.rvCategory.visibility = View.GONE
     }
 
@@ -115,7 +119,6 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupRecyclerViews() {
-        // Horizontal — lapangan terdekat
         fieldHorizontalAdapter = FieldHorizontalAdapter(emptyList()) { field ->
             openDetail(field)
         }
@@ -123,10 +126,10 @@ class HomeFragment : Fragment() {
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         binding.rvFieldsHorizontal.adapter = fieldHorizontalAdapter
 
-        // Vertical — rekomendasi
-        fieldAdapter = FieldAdapter(emptyList()) { field ->
-            openDetail(field)
-        }
+        fieldAdapter = FieldAdapter(
+            fields = emptyList(),
+            onItemClick = { field -> openDetail(field) },
+            onFavoriteClick = { field -> toggleFavorite(field) }        )
         binding.rvFields.adapter = fieldAdapter
     }
 
@@ -150,24 +153,54 @@ class HomeFragment : Fragment() {
 
     private fun setupClickListeners() {
         binding.tvSearch.setOnClickListener {
-            (activity as? com.utama.findfutsall.MainActivity)
-                ?.setSelectedNavItem(R.id.nav_explore)
+            (activity as? MainActivity)?.setSelectedNavItem(R.id.nav_explore)
         }
     }
 
-    private fun loadFields() {
-        lifecycleScope.launch {
+    private fun toggleFavorite(field: Field) {
+        val userId = session.getUserId()
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                ApiClient.instance.toggleFavorite(
+                    mapOf("user_id" to userId, "field_id" to field.id)
+                )
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    if (isAdded) fieldAdapter.toggleFavorite(field.id)
+                }
+            }
+        }
+    }
+
+    private fun loadFieldsWithFavorites() {
+        viewLifecycleOwner.lifecycleScope.launch {
             try {
                 val fields = withContext(Dispatchers.IO) { fetchFields() }
+                val favIds = withContext(Dispatchers.IO) { fetchFavoriteIds() }
                 if (_binding == null) return@launch
                 fieldHorizontalAdapter.updateData(fields)
                 fieldAdapter.updateData(fields)
+                fieldAdapter.setFavorites(favIds)
             } catch (e: Exception) {
                 if (_binding == null) return@launch
                 fieldHorizontalAdapter.updateData(emptyList())
                 fieldAdapter.updateData(emptyList())
             }
         }
+    }
+
+    private suspend fun fetchFavoriteIds(): Set<Int> {
+        return try {
+            val response = ApiClient.instance.getFavorites(
+                mapOf("user_id" to session.getUserId())
+            )
+            if (response.isSuccessful && response.body() != null) {
+                val body = response.body()!!
+                @Suppress("UNCHECKED_CAST")
+                val list = body["data"] as? List<Map<String, Any>> ?: emptyList()
+                list.map { (it["id"] as? Double)?.toInt() ?: 0 }.toSet()
+            } else emptySet()
+        } catch (e: Exception) { emptySet() }
     }
 
     private fun fetchFields(): List<Field> {
@@ -205,7 +238,7 @@ class HomeFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        loadFields()
+        loadFieldsWithFavorites()
         handler.postDelayed(slideRunnable, 3000)
     }
 

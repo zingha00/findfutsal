@@ -25,6 +25,7 @@ import java.io.File
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.*
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 
 class OwnerKeuanganFragment : Fragment() {
 
@@ -32,22 +33,32 @@ class OwnerKeuanganFragment : Fragment() {
     private lateinit var session: SessionManager
     private lateinit var adapter: TransaksiAdapter
 
-    private lateinit var tvPendapatan: TextView
-    private lateinit var tvBiaya: TextView
-    private lateinit var tvTotalKeuntungan: TextView
-    private lateinit var tvBookingMinggu: TextView
-    private lateinit var tvDenda: TextView
-    private lateinit var tvTotalSesi: TextView
-    private lateinit var tvOccupancy: TextView
+    // Header summary
     private lateinit var tvPctChange: TextView
+    private lateinit var tvKeuanganBulan: TextView
+    private lateinit var tvKeuanganBiaya: TextView
+    private lateinit var tvKeuanganTotalKeuntungan: TextView
+    private lateinit var tvKeuanganMinggu: TextView
+    private lateinit var tvKeuanganDenda: TextView
+    private lateinit var tvKeuanganTransaksi: TextView
+    private lateinit var tvKeuanganOccupancy: TextView
 
+    // Target
+    private lateinit var progressTarget: ProgressBar
+    private lateinit var tvKeuanganPencapaian: TextView
+    private lateinit var tvKeuanganTarget: TextView
+
+    // Chart
     private lateinit var chartRevenue: LineChart
     private lateinit var tabChart7Hari: TextView
     private lateinit var tabChart30Hari: TextView
     private lateinit var tabChart2Bulan: TextView
     private lateinit var tabChart6Bulan: TextView
+    private lateinit var cbPendapatan: CheckBox
+    private lateinit var cbPengeluaran: CheckBox
     private var activeChartTab = "7_hari"
 
+    // Export & list
     private lateinit var btnExportLaporan: Button
     private lateinit var rvTransaksi: RecyclerView
     private lateinit var tvEmpty: TextView
@@ -60,7 +71,9 @@ class OwnerKeuanganFragment : Fragment() {
     private val colorError     get() = ContextCompat.getColor(requireContext(), R.color.error_red)
     private val colorDivider   get() = ContextCompat.getColor(requireContext(), R.color.divider)
     private val colorMuted     get() = ContextCompat.getColor(requireContext(), R.color.text_muted)
-    private val colorSecondary get() = ContextCompat.getColor(requireContext(), R.color.text_secondary)
+
+    // Target bulan ini (bisa diambil dari API kalau ada)
+    private val TARGET_BULAN = 20_000_000.0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -74,29 +87,35 @@ class OwnerKeuanganFragment : Fragment() {
         bindViews(view)
         setupRecyclerView()
         setupChartFilterTabs()
+        setupCheckbox()
         setupExport()
         observeViewModel()
         loadData()
     }
 
     private fun bindViews(v: View) {
-        tvPendapatan      = v.findViewById(R.id.tvKeuanganBulan)
-        tvBiaya           = v.findViewById(R.id.tvKeuanganBiaya)
-        tvTotalKeuntungan = v.findViewById(R.id.tvKeuanganTotalKeuntungan)
-        tvBookingMinggu   = v.findViewById(R.id.tvKeuanganMinggu)
-        tvDenda           = v.findViewById(R.id.tvKeuanganDenda)
-        tvTotalSesi       = v.findViewById(R.id.tvKeuanganTransaksi)
-        tvOccupancy       = v.findViewById(R.id.tvKeuanganOccupancy)
-        tvPctChange       = v.findViewById(R.id.tvPctChange)
-        chartRevenue      = v.findViewById(R.id.chartRevenue)
-        tabChart7Hari     = v.findViewById(R.id.tabChart7Hari)
-        tabChart30Hari    = v.findViewById(R.id.tabChart30Hari)
-        tabChart2Bulan    = v.findViewById(R.id.tabChart2Bulan)
-        tabChart6Bulan    = v.findViewById(R.id.tabChart6Bulan)
-        btnExportLaporan  = v.findViewById(R.id.btnExportLaporan)
-        rvTransaksi       = v.findViewById(R.id.rvTransaksiKeuangan)
-        tvEmpty           = v.findViewById(R.id.tvTransaksiEmpty)
-        progressBar       = v.findViewById(R.id.progressKeuangan)
+        tvPctChange              = v.findViewById(R.id.tvPctChange)
+        tvKeuanganBulan          = v.findViewById(R.id.tvKeuanganBulan)
+        tvKeuanganBiaya          = v.findViewById(R.id.tvKeuanganBiaya)
+        tvKeuanganTotalKeuntungan = v.findViewById(R.id.tvKeuanganTotalKeuntungan)
+        tvKeuanganMinggu         = v.findViewById(R.id.tvKeuanganMinggu)
+        tvKeuanganDenda          = v.findViewById(R.id.tvKeuanganDenda)
+        tvKeuanganTransaksi      = v.findViewById(R.id.tvKeuanganTransaksi)
+        tvKeuanganOccupancy      = v.findViewById(R.id.tvKeuanganOccupancy)
+        progressTarget           = v.findViewById(R.id.progressTarget)
+        tvKeuanganPencapaian     = v.findViewById(R.id.tvKeuanganPencapaian)
+        tvKeuanganTarget         = v.findViewById(R.id.tvKeuanganTarget)
+        chartRevenue             = v.findViewById(R.id.chartRevenue)
+        tabChart7Hari            = v.findViewById(R.id.tabChart7Hari)
+        tabChart30Hari           = v.findViewById(R.id.tabChart30Hari)
+        tabChart2Bulan           = v.findViewById(R.id.tabChart2Bulan)
+        tabChart6Bulan           = v.findViewById(R.id.tabChart6Bulan)
+        cbPendapatan             = v.findViewById(R.id.cbPendapatan)
+        cbPengeluaran            = v.findViewById(R.id.cbPengeluaran)
+        btnExportLaporan         = v.findViewById(R.id.btnExportLaporan)
+        rvTransaksi              = v.findViewById(R.id.rvTransaksiKeuangan)
+        tvEmpty                  = v.findViewById(R.id.tvTransaksiEmpty)
+        progressBar              = v.findViewById(R.id.progressKeuangan)
     }
 
     private fun setupRecyclerView() {
@@ -122,34 +141,72 @@ class OwnerKeuanganFragment : Fragment() {
         }
     }
 
+    private fun setupCheckbox() {
+        cbPendapatan.setOnCheckedChangeListener { _, _ -> updateChartByTab() }
+        cbPengeluaran.setOnCheckedChangeListener { _, _ -> updateChartByTab() }
+    }
+
     private fun updateChartByTab() {
         val charts = lastResponse?.charts ?: return
         val points = when (activeChartTab) {
             "7_hari"  -> charts.daily.takeLast(7)
             "30_hari" -> charts.daily.takeLast(30)
             "2_bulan" -> charts.monthly.takeLast(2)
-            "6_bulan" -> charts.monthly.takeLast(6)
+            "6_bulan" -> charts.monthly.takeLast(12)
             else      -> charts.daily.takeLast(7)
         }
         setupRevenueChart(points)
     }
 
     private fun setupRevenueChart(points: List<ChartPoint>) {
-        if (points.isEmpty()) return
-        val entries = points.mapIndexed { i, p -> Entry(i.toFloat(), p.value.toFloat()) }
-        val ds = LineDataSet(entries, "Revenue").apply {
-            color = colorPrimary
-            setCircleColor(colorPrimary)
-            lineWidth = 2.5f
-            circleRadius = 4f
-            setDrawValues(false)
-            mode = LineDataSet.Mode.CUBIC_BEZIER
-            setDrawFilled(true)
-            fillAlpha = 30
-            fillColor = colorPrimary
+        if (points.isEmpty()) {
+            chartRevenue.clear()
+            chartRevenue.invalidate()
+            return
         }
+
+        val datasets = mutableListOf<ILineDataSet>()
+
+        if (cbPendapatan.isChecked) {
+            val entries = points.mapIndexed { i, p -> Entry(i.toFloat(), p.value.toFloat()) }
+            val ds = LineDataSet(entries, "Pendapatan").apply {
+                color = colorPrimary
+                setCircleColor(colorPrimary)
+                lineWidth = 2.5f
+                circleRadius = 4f
+                setDrawValues(false)
+                mode = LineDataSet.Mode.CUBIC_BEZIER
+                setDrawFilled(true)
+                fillAlpha = 30
+                fillColor = colorPrimary
+            }
+            datasets.add(ds)
+        }
+
+        if (cbPengeluaran.isChecked) {
+            val entries = points.mapIndexed { i, _ -> Entry(i.toFloat(), 0f) }
+            val ds = LineDataSet(entries, "Pengeluaran").apply {
+                color = Color.parseColor("#D85A30")
+                setCircleColor(Color.parseColor("#D85A30"))
+                lineWidth = 2f
+                circleRadius = 3f
+                setDrawValues(false)
+                mode = LineDataSet.Mode.CUBIC_BEZIER
+                setDrawFilled(true)
+                fillAlpha = 20
+                fillColor = Color.parseColor("#D85A30")
+            }
+            datasets.add(ds)
+        }
+
+        if (datasets.isEmpty()) {
+            chartRevenue.clear()
+            chartRevenue.invalidate()
+            return
+        }
+
         chartRevenue.apply {
-            this.data = LineData(ds)
+            data = LineData(datasets)
             xAxis.apply {
                 position = XAxis.XAxisPosition.BOTTOM
                 valueFormatter = IndexAxisValueFormatter(points.map { formatChartLabel(it.label) })
@@ -171,7 +228,7 @@ class OwnerKeuanganFragment : Fragment() {
                 }
             }
             axisRight.isEnabled   = false
-            legend.isEnabled      = false
+            legend.isEnabled      = true
             description.isEnabled = false
             setTouchEnabled(true)
             setPinchZoom(false)
@@ -213,15 +270,36 @@ class OwnerKeuanganFragment : Fragment() {
 
     private fun bindSummary(data: KeuanganResponse) {
         val s = data.summary ?: return
-        tvPendapatan.text      = formatRp(s.bulan)
-        tvTotalKeuntungan.text = formatRp(s.bulan - s.biaya)
-        tvBookingMinggu.text   = formatRp(s.minggu)
-        tvDenda.text           = formatRp(s.denda)
-        tvTotalSesi.text       = s.totalTransaksi.toString()
 
+        // Pct change badge
         val pct = s.pctChange
-        tvPctChange.text = "${if (pct >= 0) "+" else ""}${pct}% vs periode lalu"
-        tvPctChange.setTextColor(if (pct >= 0) colorPrimary else colorError)
+        tvPctChange.text = "${if (pct >= 0) "+" else ""}${pct}% vs Bln Lalu"
+        tvPctChange.setTextColor(if (pct >= 0) Color.parseColor("#4AE89A") else colorError)
+
+        // Card laba bersih
+        tvKeuanganBulan.text           = formatRp(s.bulan)
+        tvKeuanganBiaya.text           = formatRp(0.0) // biaya dari PHP belum ada, placeholder
+        tvKeuanganTotalKeuntungan.text = formatRp(s.bulan)
+
+        // Card booking & denda
+        tvKeuanganMinggu.text = formatRp(s.minggu)
+        tvKeuanganDenda.text  = formatRp(0.0)
+
+        // Card total booking & occupancy
+        tvKeuanganTransaksi.text = "${s.totalTransaksi}"
+        val occupancy = if (s.totalTransaksi > 0)
+            ((s.totalTransaksi.toFloat() / (s.totalTransaksi + 5)) * 100).toInt()
+        else 0
+        tvKeuanganOccupancy.text = "$occupancy%"
+
+        // Target
+        val pencapaian = s.bulan
+        val targetPct = if (TARGET_BULAN > 0)
+            ((pencapaian / TARGET_BULAN) * 100).toInt().coerceIn(0, 100)
+        else 0
+        progressTarget.progress    = targetPct
+        tvKeuanganPencapaian.text  = formatRp(pencapaian)
+        tvKeuanganTarget.text      = formatRp(TARGET_BULAN)
     }
 
     private fun bindTable(data: KeuanganResponse) {
@@ -231,6 +309,7 @@ class OwnerKeuanganFragment : Fragment() {
         tvEmpty.visibility = if (page.data.isEmpty()) View.VISIBLE else View.GONE
     }
 
+    // ─── Export ──────────────────────────────────────────────────────────────
     private fun setupExport() {
         btnExportLaporan.setOnClickListener { showExportPopup() }
     }
@@ -244,10 +323,7 @@ class OwnerKeuanganFragment : Fragment() {
         val popupWidth = screenW - (32 * density).toInt()
 
         val popup = PopupWindow(
-            popupView,
-            popupWidth,
-            ViewGroup.LayoutParams.WRAP_CONTENT,
-            true
+            popupView, popupWidth, ViewGroup.LayoutParams.WRAP_CONTENT, true
         ).apply {
             elevation = 24f
             isOutsideTouchable = true
@@ -279,7 +355,6 @@ class OwnerKeuanganFragment : Fragment() {
                 p.show(parentFragmentManager, "from")
             }
         }
-
         tvTo.setOnClickListener {
             MaterialDatePicker.Builder.datePicker().setTitleText("Sampai Tanggal").build().also { p ->
                 p.addOnPositiveButtonClickListener { ms -> tvTo.text = sdfDisplay.format(Date(ms)) }
@@ -318,7 +393,7 @@ class OwnerKeuanganFragment : Fragment() {
             com.itextpdf.text.pdf.PdfWriter.getInstance(doc, file.outputStream())
             doc.open()
 
-            val green     = com.itextpdf.text.BaseColor(0, 168, 107)
+            val green     = com.itextpdf.text.BaseColor(26, 77, 46)
             val titleFont = com.itextpdf.text.Font(com.itextpdf.text.Font.FontFamily.HELVETICA, 18f, com.itextpdf.text.Font.BOLD, green)
             val headFont  = com.itextpdf.text.Font(com.itextpdf.text.Font.FontFamily.HELVETICA, 12f, com.itextpdf.text.Font.BOLD)
             val bodyFont  = com.itextpdf.text.Font(com.itextpdf.text.Font.FontFamily.HELVETICA, 10f)
@@ -336,7 +411,9 @@ class OwnerKeuanganFragment : Fragment() {
                     "Pendapatan Hari Ini"   to formatRp(s.hari),
                     "Pendapatan Minggu Ini" to formatRp(s.minggu),
                     "Pendapatan Bulan Ini"  to formatRp(s.bulan),
-                    "Total Transaksi"       to "${s.totalTransaksi} booking"
+                    "Pendapatan Tahun Ini"  to formatRp(s.tahun),
+                    "Total Transaksi"       to "${s.totalTransaksi} booking",
+                    "Rata-rata per Booking" to formatRp(s.rataRata)
                 ).forEach { (k, v) ->
                     sumTable.addCell(com.itextpdf.text.pdf.PdfPCell(com.itextpdf.text.Phrase(k, bodyFont)).apply { border = 0; paddingBottom = 6f })
                     sumTable.addCell(com.itextpdf.text.pdf.PdfPCell(com.itextpdf.text.Phrase(v, bodyFont)).apply { border = 0; paddingBottom = 6f; horizontalAlignment = com.itextpdf.text.Element.ALIGN_RIGHT })
@@ -395,7 +472,9 @@ class OwnerKeuanganFragment : Fragment() {
                     "Pendapatan Hari Ini"   to s.hari,
                     "Pendapatan Minggu Ini" to s.minggu,
                     "Pendapatan Bulan Ini"  to s.bulan,
-                    "Total Transaksi"       to s.totalTransaksi.toDouble()
+                    "Pendapatan Tahun Ini"  to s.tahun,
+                    "Total Transaksi"       to s.totalTransaksi.toDouble(),
+                    "Rata-rata per Booking" to s.rataRata
                 ).forEachIndexed { i, (k, v) ->
                     ws1.createRow(4 + i).also { r ->
                         r.createCell(0).setCellValue(k)

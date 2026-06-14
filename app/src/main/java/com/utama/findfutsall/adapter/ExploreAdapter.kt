@@ -4,15 +4,33 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.utama.findfutsall.R
 import com.utama.findfutsall.data.model.Field
 import com.utama.findfutsall.databinding.ItemFieldExploreBinding
+import com.utama.findfutsall.utils.Constants
 
 class ExploreAdapter(
     private var fields: List<Field>,
     private val onItemClick: (Field) -> Unit,
-    private val onFavoriteClick: (Field) -> Unit
+    private val onFavoriteClick: (Field) -> Unit,
+    private val alwaysFavorite: Boolean = false
 ) : RecyclerView.Adapter<ExploreAdapter.ExploreViewHolder>() {
+
+    private val favoriteIds = mutableSetOf<Int>()
+
+    fun setFavorites(ids: Set<Int>) {
+        favoriteIds.clear()
+        favoriteIds.addAll(ids)
+        notifyDataSetChanged()
+    }
+
+    fun toggleFavorite(fieldId: Int) {
+        if (favoriteIds.contains(fieldId)) favoriteIds.remove(fieldId)
+        else favoriteIds.add(fieldId)
+        val position = fields.indexOfFirst { it.id == fieldId }
+        if (position != -1) notifyItemChanged(position)
+    }
 
     inner class ExploreViewHolder(val binding: ItemFieldExploreBinding) :
         RecyclerView.ViewHolder(binding.root)
@@ -34,30 +52,33 @@ class ExploreAdapter(
 
             val context   = root.context
             val photoName = field.photo ?: ""
-
-            when {
-                // URL dari server (http/https)
-                photoName.startsWith("http") -> {
-                    Glide.with(context)
-                        .load(photoName)
-                        .placeholder(R.drawable.field_1)
-                        .error(R.drawable.field_1)
-                        .centerCrop()
-                        .into(ivFieldPhoto)
-                }
-                // Nama drawable lokal
-                photoName.isNotEmpty() -> {
-                    val resourceId = context.resources.getIdentifier(
-                        photoName, "drawable", context.packageName
-                    )
-                    if (resourceId != 0) {
-                        Glide.with(context).load(resourceId).centerCrop().into(ivFieldPhoto)
-                    } else {
-                        ivFieldPhoto.setImageResource(R.drawable.field_1)
-                    }
-                }
-                else -> ivFieldPhoto.setImageResource(R.drawable.field_1)
+            val baseUrl   = Constants.BASE_URL.replace("/api/", "/")
+            val fullUrl   = when {
+                photoName.startsWith("http") -> photoName
+                photoName.isNotEmpty()       -> "$baseUrl$photoName"
+                else                         -> null
             }
+
+            if (fullUrl != null) {
+                Glide.with(context)
+                    .load(fullUrl)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .placeholder(R.color.divider)
+                    .error(R.drawable.field_1)
+                    .centerCrop()
+                    .into(ivFieldPhoto)
+            } else {
+                ivFieldPhoto.setImageResource(R.drawable.field_1)
+            }
+
+            // Icon favorit
+            val isFav = alwaysFavorite || favoriteIds.contains(field.id)
+            ivFavorite.setColorFilter(
+                androidx.core.content.ContextCompat.getColor(
+                    context,
+                    if (isFav) R.color.error_red else android.R.color.white
+                )
+            )
 
             root.setOnClickListener { onItemClick(field) }
             ivFavorite.setOnClickListener { onFavoriteClick(field) }

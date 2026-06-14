@@ -56,4 +56,29 @@ interface ApiService {
     suspend fun getKeuangan(
         @Body request: Map<String, @JvmSuppressWildcards Any>
     ): Response<com.utama.findfutsall.data.model.KeuanganResponse>
+
+    @POST("booking.php")
+    suspend fun createBooking(
+        @Body request: Map<String, @JvmSuppressWildcards Any>
+    ): Response<Map<String, @JvmSuppressWildcards Any>>
+
+    @POST("get_user_bookings.php")
+    suspend fun getUserBookings(
+        @Body request: Map<String, @JvmSuppressWildcards Any>
+    ): Response<Map<String, @JvmSuppressWildcards Any>>
+
+    @POST("get_owner_bookings.php")
+    suspend fun getOwnerBookings(
+        @Body request: Map<String, @JvmSuppressWildcards Any>
+    ): Response<Map<String, @JvmSuppressWildcards Any>>
+
+    @POST("toggle_favorite.php")
+    suspend fun toggleFavorite(
+        @Body request: Map<String, @JvmSuppressWildcards Any>
+    ): Response<Map<String, @JvmSuppressWildcards Any>>
+
+    @POST("get_favorites.php")
+    suspend fun getFavorites(
+        @Body request: Map<String, @JvmSuppressWildcards Any>
+    ): Response<Map<String, @JvmSuppressWildcards Any>>
 }

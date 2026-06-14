@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import com.utama.findfutsall.MainActivity
+import com.utama.findfutsall.ui.main.MainActivity
 import com.utama.findfutsall.databinding.ActivityPendingOwnerBinding
 import com.utama.findfutsall.ui.auth.LoginActivity
 import com.utama.findfutsall.utils.SessionManager
