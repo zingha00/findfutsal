@@ -52,13 +52,13 @@ data class ChartCompare(
 
 data class TransaksiItem(
     val id: Int,
-    val customerName: String,
-    val fieldName: String,
-    val playDate: String,
-    val startTime: String,
-    val endTime: String,
-    val bookingStatus: String,
-    val totalPrice: Double,
-    val paymentMethod: String = "",
-    val pendapatanBersih: Double = 0.0
+    val customerName: String? = null,
+    val fieldName: String? = null,
+    val playDate: String? = null,
+    val startTime: String? = null,
+    val endTime: String? = null,
+    val bookingStatus: String? = null,
+    val totalPrice: Double? = null,
+    val paymentMethod: String? = null,
+    val pendapatanBersih: Double? = null
 )

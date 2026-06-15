@@ -22,6 +22,9 @@ class SplashActivity : AppCompatActivity() {
 
         sessionManager = SessionManager(this)
 
+        // Load BASE_URL dari SharedPreferences saat app buka
+        sessionManager.loadBaseUrl()
+
         Handler(Looper.getMainLooper()).postDelayed({
             try {
                 if (sessionManager.isLoggedIn()) {

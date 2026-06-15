@@ -50,26 +50,23 @@ class TransaksiAdapter : ListAdapter<TransaksiItem, TransaksiAdapter.VH>(DIFF) {
         val ctx  = holder.itemView.context
 
         holder.tvNomor.text       = "#${item.id}"
-        holder.tvNamaPenyewa.text = item.customerName
-        holder.tvLapangan.text    = item.fieldName
-        holder.tvTanggal.text     = formatDate(item.playDate)
-        holder.tvWaktu.text       = "${item.startTime} – ${item.endTime}"
-        holder.tvMetode.text      = item.paymentMethod.ifEmpty { "-" }
-        holder.tvNominal.text     = formatRupiah(item.totalPrice)
-        holder.tvBersih.text      = formatRupiah(item.pendapatanBersih)
+        holder.tvNamaPenyewa.text = item.customerName ?: "-"
+        holder.tvLapangan.text    = item.fieldName ?: "-"
+        holder.tvTanggal.text     = formatDate(item.playDate ?: "")
+        holder.tvWaktu.text       = "${item.startTime ?: "-"} – ${item.endTime ?: "-"}"
+        holder.tvMetode.text      = item.paymentMethod?.ifEmpty { "-" } ?: "-"
+        holder.tvNominal.text     = formatRupiah(item.totalPrice ?: 0.0)
+        holder.tvBersih.text      = formatRupiah(item.pendapatanBersih ?: 0.0)
 
-        // Status badge color
         val statusInfo = when (item.bookingStatus) {
             "Terkonfirmasi" -> Pair(R.drawable.bg_status_selesai, R.color.status_selesai_text)
             "Menunggu"      -> Pair(R.drawable.bg_slot_booked,    R.color.status_menunggu_text)
             else            -> Pair(R.drawable.bg_status_batal,   R.color.status_batal_text)
         }
-        val bgRes = statusInfo.first
-        val txtColor = statusInfo.second
 
-        holder.tvStatus.text = item.bookingStatus
-        holder.tvStatus.background = ContextCompat.getDrawable(ctx, bgRes)
-        holder.tvStatus.setTextColor(ContextCompat.getColor(ctx, txtColor))
+        holder.tvStatus.text = item.bookingStatus ?: "-"
+        holder.tvStatus.background = ContextCompat.getDrawable(ctx, statusInfo.first)
+        holder.tvStatus.setTextColor(ContextCompat.getColor(ctx, statusInfo.second))
     }
 
     private fun formatDate(date: String): String {

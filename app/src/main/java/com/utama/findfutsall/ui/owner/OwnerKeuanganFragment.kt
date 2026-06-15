@@ -434,7 +434,15 @@ class OwnerKeuanganFragment : Fragment() {
                 tbl.addCell(com.itextpdf.text.pdf.PdfPCell(com.itextpdf.text.Phrase(col, whiteFont)).apply { backgroundColor = green; paddingBottom = 6f })
             }
             allTransaksi.forEach { t ->
-                listOf("#${t.id}", t.customerName, t.fieldName, t.playDate, "${t.startTime}-${t.endTime}", t.bookingStatus, formatRp(t.totalPrice)).forEach { cell ->
+                listOf(
+                    "#${t.id}",
+                    t.customerName ?: "-",
+                    t.fieldName ?: "-",
+                    t.playDate ?: "-",
+                    "${t.startTime ?: "-"}-${t.endTime ?: "-"}",
+                    t.bookingStatus ?: "-",
+                    formatRp(t.totalPrice ?: 0.0)
+                ).forEach { cell ->
                     tbl.addCell(com.itextpdf.text.pdf.PdfPCell(com.itextpdf.text.Phrase(cell, bodyFont)).apply { paddingBottom = 4f })
                 }
             }
@@ -493,12 +501,12 @@ class OwnerKeuanganFragment : Fragment() {
             allTransaksi.forEachIndexed { idx, t ->
                 ws2.createRow(idx + 1).also { r ->
                     r.createCell(0).setCellValue(t.id.toDouble())
-                    r.createCell(1).setCellValue(t.customerName)
-                    r.createCell(2).setCellValue(t.fieldName)
-                    r.createCell(3).setCellValue(t.playDate)
-                    r.createCell(4).setCellValue("${t.startTime}-${t.endTime}")
-                    r.createCell(5).setCellValue(t.bookingStatus)
-                    r.createCell(6).setCellValue(t.totalPrice)
+                    r.createCell(1).setCellValue(t.customerName ?: "-")
+                    r.createCell(2).setCellValue(t.fieldName ?: "-")
+                    r.createCell(3).setCellValue(t.playDate ?: "-")
+                    r.createCell(4).setCellValue("${t.startTime ?: "-"}-${t.endTime ?: "-"}")
+                    r.createCell(5).setCellValue(t.bookingStatus ?: "-")
+                    r.createCell(6).setCellValue(t.totalPrice ?: 0.0)
                 }
             }
             for (i in 0..6) ws2.autoSizeColumn(i)

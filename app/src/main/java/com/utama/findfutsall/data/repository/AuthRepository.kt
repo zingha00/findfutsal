@@ -11,7 +11,8 @@ import retrofit2.Response
 
 class AuthRepository {
 
-    private val api = ApiClient.instance
+    // Gunakan get() supaya selalu baca BASE_URL terbaru
+    private val api get() = ApiClient.instance
 
     suspend fun login(identifier: String, password: String): Response<LoginResponse> {
         return api.login(LoginRequest(identifier, password))

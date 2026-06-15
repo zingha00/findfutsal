@@ -5,9 +5,11 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -17,6 +19,7 @@ import com.utama.findfutsall.ui.main.MainActivity
 import com.utama.findfutsall.R
 import com.utama.findfutsall.databinding.ActivityLoginBinding
 import com.utama.findfutsall.ui.owner.OwnerDashboardActivity
+import com.utama.findfutsall.utils.Constants
 import com.utama.findfutsall.utils.SessionManager
 import com.utama.findfutsall.viewmodel.AuthViewModel
 
@@ -50,6 +53,7 @@ class LoginActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         sessionManager = SessionManager(this)
+        sessionManager.loadBaseUrl()
         setupGoogleSignIn()
         setupClickListeners()
         setupTextWatchers()
@@ -78,10 +82,40 @@ class LoginActivity : AppCompatActivity() {
         googleSignInClient = GoogleSignIn.getClient(this, gso)
     }
 
+    private fun showIpDialog() {
+        val currentIp = Constants.BASE_URL
+            .removePrefix("http://")
+            .removeSuffix("/findfutsall/api/")
+
+        val input = EditText(this).apply {
+            setText(currentIp)
+            hint = "Contoh: 192.168.0.103 atau 10.0.2.2"
+            setPadding(48, 32, 48, 32)
+        }
+
+        AlertDialog.Builder(this)
+            .setTitle("⚙️ Ganti IP Server")
+            .setMessage("Masukkan IP laptop yang menjalankan XAMPP.\nEmulator: 10.0.2.2\nHP Fisik: cek ipconfig")
+            .setView(input)
+            .setPositiveButton("Simpan") { _, _ ->
+                val ip = input.text.toString().trim()
+                if (ip.isNotEmpty()) {
+                    sessionManager.saveBaseUrl(ip)
+                    Toast.makeText(this, "IP disimpan: $ip", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(this, "IP tidak boleh kosong", Toast.LENGTH_SHORT).show()
+                }
+            }
+            .setNegativeButton("Batal", null)
+            .show()
+    }
+
     private fun setupClickListeners() {
         binding.btnLogin.setOnClickListener {
             val identifier = binding.etIdentifier.text.toString().trim()
             val password   = binding.etPassword.text.toString().trim()
+
+            android.util.Log.d("IP_DEBUG", "Login dengan BASE_URL: ${Constants.BASE_URL}")
 
             if (identifier.isEmpty()) {
                 binding.tilIdentifier.error = "Username, Email, atau Nomor HP tidak boleh kosong"
@@ -108,6 +142,10 @@ class LoginActivity : AppCompatActivity() {
         binding.btnGoogle.setOnClickListener {
             googleSignInLauncher.launch(googleSignInClient.signInIntent)
         }
+
+        binding.btnServerSettings.setOnClickListener {
+            showIpDialog()
+        }
     }
 
     private fun navigateAfterLogin() {
@@ -120,15 +158,15 @@ class LoginActivity : AppCompatActivity() {
 
     private fun observeViewModel() {
         viewModel.isLoading.observe(this) { isLoading ->
-            binding.btnLogin.isEnabled      = !isLoading
-            binding.progressBar.visibility  = if (isLoading) View.VISIBLE else View.GONE
+            binding.btnLogin.isEnabled     = !isLoading
+            binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
         }
 
         viewModel.loginResult.observe(this) { result ->
             result?.onSuccess { response ->
                 if (response.success) {
                     response.user?.let { user ->
-                        sessionManager.clearSession() // tambahkan ini
+                        sessionManager.clearSession()
                         sessionManager.saveLoginSession(
                             token    = response.token ?: "",
                             userId   = user.id,
@@ -155,7 +193,7 @@ class LoginActivity : AppCompatActivity() {
             result.onSuccess { response ->
                 if (response.success) {
                     response.user?.let { user ->
-                        sessionManager.clearSession() // tambahkan ini
+                        sessionManager.clearSession()
                         sessionManager.saveLoginSession(
                             token    = response.token ?: "",
                             userId   = user.id,
