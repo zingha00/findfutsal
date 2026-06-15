@@ -26,6 +26,7 @@ import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.*
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
+import android.content.Intent
 
 class OwnerKeuanganFragment : Fragment() {
 
@@ -386,7 +387,7 @@ class OwnerKeuanganFragment : Fragment() {
             return
         }
         try {
-            val dir  = requireContext().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)
+            val dir  = requireContext().cacheDir
             val name = "laporan_keuangan_${System.currentTimeMillis()}.pdf"
             val file = File(dir, name)
             val doc  = com.itextpdf.text.Document()
@@ -448,7 +449,19 @@ class OwnerKeuanganFragment : Fragment() {
             }
             doc.add(tbl)
             doc.close()
-            Toast.makeText(requireContext(), "PDF tersimpan: $name", Toast.LENGTH_LONG).show()
+
+            // Buka share dialog
+            val uri = androidx.core.content.FileProvider.getUriForFile(
+                requireContext(),
+                "${requireContext().packageName}.provider",
+                file
+            )
+            val intent = Intent(Intent.ACTION_VIEW).apply {
+                setDataAndType(uri, "application/pdf")
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            }
+            startActivity(Intent.createChooser(intent, "Buka PDF dengan..."))
+
         } catch (e: Exception) {
             Toast.makeText(requireContext(), "Gagal export PDF: ${e.message}", Toast.LENGTH_LONG).show()
         }

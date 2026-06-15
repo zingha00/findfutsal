@@ -1,5 +1,8 @@
 package com.utama.findfutsall.data.model
 
+import com.google.gson.annotations.SerializedName
+
+
 data class KeuanganResponse(
     val success: Boolean,
     val summary: KeuanganSummary?,
@@ -52,13 +55,22 @@ data class ChartCompare(
 
 data class TransaksiItem(
     val id: Int,
+    @SerializedName("customer_name")
     val customerName: String? = null,
+    @SerializedName("field_name")
     val fieldName: String? = null,
+    @SerializedName("play_date")
     val playDate: String? = null,
+    @SerializedName("start_time")
     val startTime: String? = null,
+    @SerializedName("end_time")
     val endTime: String? = null,
+    @SerializedName("booking_status")
     val bookingStatus: String? = null,
+    @SerializedName("total_price")
     val totalPrice: Double? = null,
+    @SerializedName("payment_method")
     val paymentMethod: String? = null,
+    @SerializedName("pendapatan_bersih")
     val pendapatanBersih: Double? = null
 )

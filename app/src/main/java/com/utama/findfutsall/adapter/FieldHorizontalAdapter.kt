@@ -33,23 +33,23 @@ class FieldHorizontalAdapter(
 
             val context   = root.context
             val photoName = field.photo ?: ""
-            when {
-                photoName.startsWith("http") -> {
-                    Glide.with(context)
-                        .load(photoName)
-                        .placeholder(R.drawable.field_1)
-                        .error(R.drawable.field_1)
-                        .centerCrop()
-                        .into(ivFieldPhoto)
-                }
-                photoName.isNotEmpty() -> {
-                    val resId = context.resources.getIdentifier(
-                        photoName, "drawable", context.packageName
-                    )
-                    if (resId != 0) Glide.with(context).load(resId).centerCrop().into(ivFieldPhoto)
-                    else ivFieldPhoto.setImageResource(R.drawable.field_1)
-                }
-                else -> ivFieldPhoto.setImageResource(R.drawable.field_1)
+            val baseUrl   = com.utama.findfutsall.utils.Constants.BASE_URL.replace("/api/", "/")
+            val fullUrl   = when {
+                photoName.startsWith("http") -> photoName
+                photoName.isNotEmpty()       -> "$baseUrl$photoName"
+                else                         -> null
+            }
+
+            if (fullUrl != null) {
+                Glide.with(context)
+                    .load(fullUrl)
+                    .diskCacheStrategy(com.bumptech.glide.load.engine.DiskCacheStrategy.ALL)
+                    .placeholder(R.color.divider)
+                    .error(R.drawable.field_1)
+                    .centerCrop()
+                    .into(ivFieldPhoto)
+            } else {
+                ivFieldPhoto.setImageResource(R.drawable.field_1)
             }
 
             root.setOnClickListener { onItemClick(field) }

@@ -127,7 +127,7 @@
                             android:paddingTop="4dp"
                             android:paddingEnd="10dp"
                             android:paddingBottom="4dp"
-                            android:text="+10% vs Bln Lalu"
+                            android:text="-"
                             android:textColor="#4AE89A"
                             android:textSize="11sp"
                             android:textStyle="bold"/>
@@ -158,7 +158,7 @@
                                 android:id="@+id/tvKeuanganBulan"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Rp 9.200.000"
+                                android:text="R 0"
                                 android:textColor="#FFFFFF"
                                 android:textSize="17sp"
                                 android:textStyle="bold"/>
@@ -183,7 +183,7 @@
                                 android:id="@+id/tvKeuanganBiaya"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Rp 250.000"
+                                android:text="Rp 0"
                                 android:textColor="#FFFFFF"
                                 android:textSize="17sp"
                                 android:textStyle="bold"/>
@@ -209,7 +209,7 @@
                         android:id="@+id/tvKeuanganTotalKeuntungan"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Rp 9.450.000"
+                        android:text="Rp 0"
                         android:textColor="#FFFFFF"
                         android:textSize="28sp"
                         android:textStyle="bold"
@@ -268,7 +268,7 @@
                             android:id="@+id/tvKeuanganMinggu"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Rp 9.2M"
+                            android:text="Rp 0"
                             android:textColor="#1A2E1A"
                             android:textSize="18sp"
                             android:textStyle="bold"/>
@@ -319,7 +319,7 @@
                             android:id="@+id/tvKeuanganDenda"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Rp 250rb"
+                            android:text="Rp 0"
                             android:textColor="#1A2E1A"
                             android:textSize="18sp"
                             android:textStyle="bold"/>
@@ -363,7 +363,7 @@
                             android:id="@+id/tvKeuanganTransaksi"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="45"
+                            android:text="0"
                             android:textColor="#1A2E1A"
                             android:textSize="26sp"
                             android:textStyle="bold"/>
@@ -407,7 +407,7 @@
                             android:id="@+id/tvKeuanganOccupancy"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="80%"
+                            android:text="0%"
                             android:textColor="#1A4D2E"
                             android:textSize="26sp"
                             android:textStyle="bold"/>
@@ -458,7 +458,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="75%"
+                            android:text="0%"
                             android:textColor="#1A4D2E"
                             android:textSize="13sp"
                             android:textStyle="bold"/>
@@ -498,7 +498,7 @@
                                 android:id="@+id/tvKeuanganPencapaian"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Rp 15.000.000"
+                                android:text="Rp 0"
                                 android:textColor="#1A2E1A"
                                 android:textSize="13sp"
                                 android:textStyle="bold"/>
@@ -523,7 +523,7 @@
                                 android:id="@+id/tvKeuanganTarget"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Rp 20.000.000"
+                                android:text="Rp 0"
                                 android:textColor="#1A2E1A"
                                 android:textSize="13sp"
                                 android:textStyle="bold"/>

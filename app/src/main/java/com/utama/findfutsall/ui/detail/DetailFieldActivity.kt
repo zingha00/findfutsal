@@ -61,18 +61,23 @@ class DetailFieldActivity : AppCompatActivity() {
 
         // Load foto
         val photoName = fieldPhoto ?: ""
-        when {
-            photoName.startsWith("http") -> {
-                Glide.with(this).load(photoName)
-                    .placeholder(R.drawable.findfutsall)
-                    .centerCrop().into(binding.ivFieldPhoto)
-            }
-            photoName.isNotEmpty() -> {
-                val resId = resources.getIdentifier(photoName, "drawable", packageName)
-                if (resId != 0) binding.ivFieldPhoto.setImageResource(resId)
-                else binding.ivFieldPhoto.setImageResource(R.drawable.findfutsall)
-            }
-            else -> binding.ivFieldPhoto.setImageResource(R.drawable.findfutsall)
+        val baseUrl   = com.utama.findfutsall.utils.Constants.BASE_URL.replace("/api/", "/")
+        val fullUrl   = when {
+            photoName.startsWith("http") -> photoName
+            photoName.isNotEmpty()       -> "$baseUrl$photoName"
+            else                         -> null
+        }
+
+        if (fullUrl != null) {
+            Glide.with(this)
+                .load(fullUrl)
+                .diskCacheStrategy(com.bumptech.glide.load.engine.DiskCacheStrategy.ALL)
+                .placeholder(R.color.divider)
+                .error(R.drawable.findfutsall)
+                .centerCrop()
+                .into(binding.ivFieldPhoto)
+        } else {
+            binding.ivFieldPhoto.setImageResource(R.drawable.findfutsall)
         }
 
         // Fasilitas
