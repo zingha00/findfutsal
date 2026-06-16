@@ -7,7 +7,7 @@
     android:layout_marginEnd="12dp"
     app:cardCornerRadius="14dp"
     app:cardElevation="3dp"
-    app:cardBackgroundColor="#FFFFFF">
+    app:cardBackgroundColor="@color/bg_card">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -58,7 +58,7 @@
                     android:text="0.0"
                     android:textSize="10sp"
                     android:textStyle="bold"
-                    android:textColor="#FFFFFF"/>
+                    android:textColor="@color/white"/>
             </LinearLayout>
         </FrameLayout>
 
@@ -133,14 +133,14 @@
                     android:text="Rp 0/jam"
                     android:textSize="12sp"
                     android:textStyle="bold"
-                    android:textColor="#1A4D2E"/>
+                    android:textColor="@color/primary_dark"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="BOOKING"
                     android:textSize="9sp"
                     android:textStyle="bold"
-                    android:textColor="#FFFFFF"
+                    android:textColor="@color/white"
                     android:background="@drawable/bg_slot_available"
                     android:paddingStart="8dp"
                     android:paddingEnd="8dp"

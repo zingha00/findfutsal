@@ -12,23 +12,6 @@ class SessionManager(context: Context) {
         Constants.PREF_NAME, Context.MODE_PRIVATE
     )
 
-    // ── Base URL ──────────────────────────────────────────────────────────
-
-    fun saveBaseUrl(ip: String) {
-        val url = "http://$ip/findfutsall/api/"
-        pref.edit().putString(Constants.KEY_BASE_URL, url).apply()
-        Constants.BASE_URL = url
-    }
-
-    fun getBaseUrl(): String {
-        return pref.getString(Constants.KEY_BASE_URL, "http://192.168.0.103/findfutsall/api/")
-            ?: "http://192.168.0.103/findfutsall/api/"
-    }
-
-    fun loadBaseUrl() {
-        Constants.BASE_URL = getBaseUrl()
-    }
-
     // ── Login Session ─────────────────────────────────────────────────────
 
     fun saveLoginSession(
@@ -188,9 +171,6 @@ class SessionManager(context: Context) {
     }
 
     fun clearSession() {
-        val baseUrl = getBaseUrl()
         pref.edit().clear().apply()
-        pref.edit().putString(Constants.KEY_BASE_URL, baseUrl).apply()
-        Constants.BASE_URL = baseUrl
     }
 }

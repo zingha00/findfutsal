@@ -31,7 +31,7 @@
             android:src="@android:drawable/ic_input_add"
             android:contentDescription="Tambah Lapangan"
             app:backgroundTint="@color/primary_green"
-            app:tint="#FFFFFF"
+            app:tint="@color/text_on_primary"
             app:fabSize="mini"/>
 
     </LinearLayout>

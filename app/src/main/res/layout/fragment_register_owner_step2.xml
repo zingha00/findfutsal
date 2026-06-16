@@ -20,7 +20,7 @@
             android:layout_marginBottom="12dp"
             app:cardCornerRadius="12dp"
             app:cardElevation="2dp"
-            app:cardBackgroundColor="#FFFFFF">
+            app:cardBackgroundColor="@color/bg_card">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -41,7 +41,7 @@
                         android:layout_height="28dp"
                         android:text="☑"
                         android:textSize="18sp"
-                        android:textColor="#00A86B"
+                        android:textColor="@color/primary_green"
                         android:gravity="center"/>
 
                     <TextView
@@ -70,7 +70,7 @@
                         android:text="Rumput Sintetis"
                         android:textSize="14sp"
                         android:textColor="#121212"
-                        android:buttonTint="#00A86B"
+                        android:buttonTint="@color/primary_green"
                         android:paddingStart="4dp"
                         android:paddingTop="8dp"
                         android:paddingBottom="8dp"/>
@@ -83,7 +83,7 @@
                         android:text="Parquet"
                         android:textSize="14sp"
                         android:textColor="#121212"
-                        android:buttonTint="#00A86B"
+                        android:buttonTint="@color/primary_green"
                         android:paddingStart="4dp"
                         android:paddingTop="8dp"
                         android:paddingBottom="8dp"/>
@@ -96,7 +96,7 @@
                         android:text="Vinyl"
                         android:textSize="14sp"
                         android:textColor="#121212"
-                        android:buttonTint="#00A86B"
+                        android:buttonTint="@color/primary_green"
                         android:paddingStart="4dp"
                         android:paddingTop="8dp"
                         android:paddingBottom="8dp"/>
@@ -109,7 +109,7 @@
                         android:text="Semen"
                         android:textSize="14sp"
                         android:textColor="#121212"
-                        android:buttonTint="#00A86B"
+                        android:buttonTint="@color/primary_green"
                         android:paddingStart="4dp"
                         android:paddingTop="8dp"
                         android:paddingBottom="8dp"/>
@@ -125,7 +125,7 @@
             android:layout_marginBottom="12dp"
             app:cardCornerRadius="12dp"
             app:cardElevation="2dp"
-            app:cardBackgroundColor="#FFFFFF">
+            app:cardBackgroundColor="@color/bg_card">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -146,7 +146,7 @@
                         android:layout_height="28dp"
                         android:text="$"
                         android:textSize="16sp"
-                        android:textColor="#00A86B"
+                        android:textColor="@color/primary_green"
                         android:textStyle="bold"
                         android:gravity="center"/>
 
@@ -179,7 +179,7 @@
                     app:boxCornerRadiusTopEnd="8dp"
                     app:boxCornerRadiusBottomStart="8dp"
                     app:boxCornerRadiusBottomEnd="8dp"
-                    app:boxStrokeColor="#E0E0E0">
+                    app:boxStrokeColor="@color/divider">
 
                     <AutoCompleteTextView
                         android:id="@+id/actvJumlahLapangan"
@@ -212,7 +212,7 @@
                     app:boxCornerRadiusTopEnd="8dp"
                     app:boxCornerRadiusBottomStart="8dp"
                     app:boxCornerRadiusBottomEnd="8dp"
-                    app:boxStrokeColor="#E0E0E0"
+                    app:boxStrokeColor="@color/divider"
                     app:prefixText="Rp  ">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -269,7 +269,7 @@
                             app:boxCornerRadiusTopEnd="8dp"
                             app:boxCornerRadiusBottomStart="8dp"
                             app:boxCornerRadiusBottomEnd="8dp"
-                            app:boxStrokeColor="#E0E0E0">
+                            app:boxStrokeColor="@color/divider">
 
                             <AutoCompleteTextView
                                 android:id="@+id/actvJamBuka"
@@ -319,7 +319,7 @@
                             app:boxCornerRadiusTopEnd="8dp"
                             app:boxCornerRadiusBottomStart="8dp"
                             app:boxCornerRadiusBottomEnd="8dp"
-                            app:boxStrokeColor="#E0E0E0">
+                            app:boxStrokeColor="@color/divider">
 
                             <AutoCompleteTextView
                                 android:id="@+id/actvJamTutup"
@@ -345,7 +345,7 @@
             android:layout_marginBottom="12dp"
             app:cardCornerRadius="12dp"
             app:cardElevation="2dp"
-            app:cardBackgroundColor="#FFFFFF">
+            app:cardBackgroundColor="@color/bg_card">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -366,7 +366,7 @@
                         android:layout_height="28dp"
                         android:text="☆"
                         android:textSize="18sp"
-                        android:textColor="#00A86B"
+                        android:textColor="@color/primary_green"
                         android:gravity="center"/>
 
                     <TextView
