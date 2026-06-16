@@ -34,5 +34,12 @@ data class Field(
     val description: String? = null,
     val facilities: String? = null,
     val openTime: String? = null,
-    val closeTime: String? = null
+    val closeTime: String? = null,
+
+    // BARU
+    @SerializedName("isActive")
+    val isActive: Boolean = true,
+
+    @SerializedName("status")
+    val status: String = "active"
 ) : Parcelable

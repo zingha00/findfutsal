@@ -5,16 +5,20 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.utama.findfutsall.R
 import com.utama.findfutsall.data.model.Field
+import com.utama.findfutsall.utils.Constants
 
 class OwnerFieldAdapter(
     private var fields: MutableList<Field>,
     private val onEdit: (Field) -> Unit,
     private val onDelete: (Field) -> Unit,
-    private val onView: (Field) -> Unit
+    private val onMore: (Field) -> Unit
 ) : RecyclerView.Adapter<OwnerFieldAdapter.ViewHolder>() {
 
     fun updateData(newFields: List<Field>) {
@@ -43,6 +47,7 @@ class OwnerFieldAdapter(
         private val tvHours: TextView    = itemView.findViewById(R.id.tvFieldHours)
         private val tvAddress: TextView  = itemView.findViewById(R.id.tvFieldAddress)
         private val tvRating: TextView   = itemView.findViewById(R.id.tvFieldRating)
+        private val tvStatus: TextView   = itemView.findViewById(R.id.tvFieldStatus)
 
         fun bind(field: Field) {
             tvName.text     = field.name
@@ -50,34 +55,39 @@ class OwnerFieldAdapter(
             tvAddress.text  = field.address
             tvPrice.text    = "Rp ${formatPrice(field.price)}/jam"
             tvRating.text   = if (field.rating > 0) String.format("%.1f", field.rating) else "0.0"
-
-            tvHours.text = if (!field.openTime.isNullOrEmpty() && !field.closeTime.isNullOrEmpty())
+            tvHours.text    = if (!field.openTime.isNullOrEmpty() && !field.closeTime.isNullOrEmpty())
                 "${field.openTime} - ${field.closeTime}" else "06:00 - 23:00"
 
-            val context   = itemView.context
-            val photoName = field.photo ?: ""
-            when {
-                photoName.startsWith("http") -> {
-                    Glide.with(context)
-                        .load(photoName)
-                        .placeholder(R.drawable.field_1)
-                        .error(R.drawable.field_1)
-                        .centerCrop()
-                        .into(ivPhoto)
-                }
-                photoName.isNotEmpty() -> {
-                    val resId = context.resources.getIdentifier(
-                        photoName, "drawable", context.packageName
-                    )
-                    if (resId != 0) Glide.with(context).load(resId).centerCrop().into(ivPhoto)
-                    else ivPhoto.setImageResource(R.drawable.field_1)
-                }
-                else -> ivPhoto.setImageResource(R.drawable.field_1)
+            // Badge status
+            if (field.isActive) {
+                tvStatus.text = "✓ Tersedia"
+                tvStatus.setBackgroundResource(R.drawable.bg_slot_available)
+                tvStatus.setTextColor(ContextCompat.getColor(itemView.context, R.color.success_green))
+            } else {
+                tvStatus.text = "✗ Nonaktif"
+                tvStatus.setBackgroundResource(R.drawable.bg_slot_unavailable)
+                tvStatus.setTextColor(ContextCompat.getColor(itemView.context, R.color.error_red))
             }
 
-            itemView.findViewById<View>(R.id.btnEdit).setOnClickListener { onEdit(field) }
+            // Foto
+            val context  = itemView.context
+            val fullUrl  = field.photo
+
+            if (!fullUrl.isNullOrEmpty()) {
+                Glide.with(context)
+                    .load(fullUrl)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .placeholder(R.color.divider)
+                    .error(R.drawable.field_1)
+                    .centerCrop()
+                    .into(ivPhoto)
+            } else {
+                ivPhoto.setImageResource(R.drawable.field_1)
+            }
+
+            itemView.findViewById<View>(R.id.btnEdit).setOnClickListener   { onEdit(field) }
             itemView.findViewById<View>(R.id.btnDelete).setOnClickListener { onDelete(field) }
-            itemView.findViewById<View>(R.id.btnView).setOnClickListener { onView(field) }
+            itemView.findViewById<View>(R.id.btnMore).setOnClickListener   { onMore(field) }
         }
 
         private fun formatPrice(price: Int): String {

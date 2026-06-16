@@ -15,7 +15,6 @@
         android:networkSecurityConfig="@xml/network_security_config"
         android:theme="@style/Theme.FindFutsall">
 
-        <!-- Splash Screen -->
         <activity
             android:name=".ui.auth.SplashActivity"
             android:exported="true"
@@ -27,41 +26,38 @@
             </intent-filter>
         </activity>
 
-        <!-- Login -->
         <activity
             android:name=".ui.auth.LoginActivity"
             android:exported="false"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="adjustResize"/>
 
-        <!-- Register -->
         <activity
             android:name=".ui.auth.RegisterActivity"
             android:exported="false"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="adjustResize"/>
 
-        <!-- Forgot Password -->
         <activity
             android:name=".ui.auth.ForgotPasswordActivity"
-            android:exported="false" />
+            android:exported="false"/>
 
-        <!-- Main -->
         <activity
             android:name=".ui.main.MainActivity"
-            android:exported="false" />
+            android:exported="false"/>
 
-        <!-- Detail Lapangan -->
         <activity
             android:name=".ui.detail.DetailFieldActivity"
             android:exported="false"/>
 
-        <!-- Payment -->
         <activity
             android:name=".ui.detail.PaymentActivity"
             android:exported="false"/>
 
-        <!-- Payment Instruction -->
         <activity
             android:name=".ui.detail.PaymentInstructionActivity"
+            android:exported="false"/>
+
+        <activity
+            android:name=".ui.detail.BookingSuccessActivity"
             android:exported="false"/>
 
         <activity
@@ -75,7 +71,8 @@
 
         <activity
             android:name=".ui.owner.OwnerDashboardActivity"
-            android:exported="false"/>
+            android:exported="false"
+            android:configChanges="uiMode"/>
 
         <activity
             android:name=".ui.owner.OwnerFieldFormActivity"
@@ -87,13 +84,10 @@
             android:exported="false"
             android:windowSoftInputMode="adjustResize"/>
 
-        <!-- Admin Dashboard -->
         <activity
             android:name=".ui.admin.AdminDashboardActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize"/>
-
-        <activity android:name=".ui.detail.BookingSuccessActivity"/>
 
         <provider
             android:name="androidx.core.content.FileProvider"
