@@ -123,6 +123,7 @@
         <activity android:name=".ui.main.HelpCenterActivity" android:exported="false"/>
         <activity android:name=".ui.main.BookingDetailActivity" android:exported="false"/>
         <activity android:name=".ui.owner.OwnerBookingDetailActivity" android:exported="false"/>
+        <activity android:name=".ui.owner.AboutAppActivity" android:exported="false"/>
 
     </application>
 

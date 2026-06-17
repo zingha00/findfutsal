@@ -22,9 +22,12 @@
             android:paddingBottom="28dp">
 
             <FrameLayout
+                android:id="@+id/btnChangePhoto"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp">
+                android:layout_marginBottom="10dp"
+                android:clickable="true"
+                android:focusable="true">
 
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/ivProfilPhoto"
@@ -38,7 +41,7 @@
                     android:layout_width="22dp"
                     android:layout_height="22dp"
                     android:layout_gravity="bottom|end"
-                    android:src="@drawable/ic_search"
+                    android:src="@drawable/ic_edit"
                     android:background="@drawable/bg_chip_active"
                     android:padding="4dp"
                     app:tint="@color/white"/>
@@ -63,8 +66,9 @@
                 android:layout_marginTop="3dp"/>
         </LinearLayout>
 
-        <!-- Informasi Pribadi -->
+        <!-- Informasi Pribadi (SATU area klik tunggal -> EditProfileActivity) -->
         <androidx.cardview.widget.CardView
+            android:id="@+id/btnEditProfile"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
@@ -75,7 +79,10 @@
             app:cardElevation="0dp"
             app:cardBackgroundColor="@color/bg_card"
             app:strokeWidth="1dp"
-            app:strokeColor="@color/stroke_color">
+            app:strokeColor="@color/stroke_color"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -84,14 +91,14 @@
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp"
                 android:paddingTop="14dp"
-                android:paddingBottom="6dp">
+                android:paddingBottom="14dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
-                    android:layout_marginBottom="10dp">
+                    android:layout_marginBottom="14dp">
                     <ImageView
                         android:layout_width="16dp"
                         android:layout_height="16dp"
@@ -99,24 +106,27 @@
                         app:tint="@color/primary_green"
                         android:layout_marginEnd="6dp"/>
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:text="Informasi Pribadi"
                         android:textSize="13sp"
                         android:textStyle="bold"
                         android:textColor="@color/text_primary"/>
+                    <ImageView
+                        android:layout_width="14dp"
+                        android:layout_height="14dp"
+                        android:src="@drawable/ic_arrow_right"
+                        app:tint="@color/text_muted"/>
                 </LinearLayout>
 
                 <!-- Nama -->
                 <LinearLayout
-                    android:id="@+id/btnEditNama"
                     android:layout_width="match_parent"
-                    android:layout_height="52dp"
+                    android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:background="?attr/selectableItemBackground">
+                    android:layout_marginBottom="10dp">
                     <ImageView
                         android:layout_width="18dp"
                         android:layout_height="18dp"
@@ -144,26 +154,15 @@
                             android:textColor="@color/text_primary"
                             android:layout_marginTop="1dp"/>
                     </LinearLayout>
-                    <ImageView
-                        android:layout_width="14dp"
-                        android:layout_height="14dp"
-                        android:src="@drawable/ic_arrow_right"
-                        app:tint="@color/text_muted"/>
                 </LinearLayout>
-
-                <View android:layout_width="match_parent" android:layout_height="0.5dp"
-                    android:background="@color/divider_color" android:layout_marginStart="32dp"/>
 
                 <!-- Email -->
                 <LinearLayout
-                    android:id="@+id/btnEditEmail"
                     android:layout_width="match_parent"
-                    android:layout_height="52dp"
+                    android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:background="?attr/selectableItemBackground">
+                    android:layout_marginBottom="10dp">
                     <ImageView
                         android:layout_width="18dp"
                         android:layout_height="18dp"
@@ -191,26 +190,14 @@
                             android:textColor="@color/text_primary"
                             android:layout_marginTop="1dp"/>
                     </LinearLayout>
-                    <ImageView
-                        android:layout_width="14dp"
-                        android:layout_height="14dp"
-                        android:src="@drawable/ic_arrow_right"
-                        app:tint="@color/text_muted"/>
                 </LinearLayout>
-
-                <View android:layout_width="match_parent" android:layout_height="0.5dp"
-                    android:background="@color/divider_color" android:layout_marginStart="32dp"/>
 
                 <!-- Telepon -->
                 <LinearLayout
-                    android:id="@+id/btnEditPhone"
                     android:layout_width="match_parent"
-                    android:layout_height="52dp"
+                    android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:background="?attr/selectableItemBackground">
+                    android:gravity="center_vertical">
                     <ImageView
                         android:layout_width="18dp"
                         android:layout_height="18dp"
@@ -238,11 +225,6 @@
                             android:textColor="@color/text_primary"
                             android:layout_marginTop="1dp"/>
                     </LinearLayout>
-                    <ImageView
-                        android:layout_width="14dp"
-                        android:layout_height="14dp"
-                        android:src="@drawable/ic_arrow_right"
-                        app:tint="@color/text_muted"/>
                 </LinearLayout>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
@@ -322,6 +304,7 @@
                 <View android:layout_width="match_parent" android:layout_height="0.5dp"
                     android:background="@color/divider_color" android:layout_marginStart="32dp"/>
 
+                <!-- Autentikasi Dua Faktor: ditunda dulu, tetap tampil tapi non-fungsional -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
@@ -351,7 +334,7 @@
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- Preferensi Aplikasi -->
+        <!-- Preferensi Aplikasi (semua item di sini DITUNDA dulu, tetap tampil non-fungsional) -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -398,10 +381,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:background="?attr/selectableItemBackground">
+                    android:gravity="center_vertical">
                     <ImageView
                         android:layout_width="18dp"
                         android:layout_height="18dp"
@@ -429,10 +409,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
                     android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:background="?attr/selectableItemBackground">
+                    android:gravity="center_vertical">
                     <ImageView
                         android:layout_width="18dp"
                         android:layout_height="18dp"
@@ -542,6 +519,7 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/btnHelpCenter"
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:orientation="horizontal"
@@ -573,6 +551,7 @@
                     android:background="@color/divider_color" android:layout_marginStart="32dp"/>
 
                 <LinearLayout
+                    android:id="@+id/btnPrivacyPolicy"
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:orientation="horizontal"
@@ -604,6 +583,7 @@
                     android:background="@color/divider_color" android:layout_marginStart="32dp"/>
 
                 <LinearLayout
+                    android:id="@+id/btnAboutApp"
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:orientation="horizontal"
@@ -625,14 +605,16 @@
                         android:textSize="15sp"
                         android:textColor="@color/text_primary"/>
                     <ImageView
-                        android:layout_width="16dp"
-                        android:layout_height="16dp"
-                        android:src="@drawable/findfutsall"/>
+                        android:layout_width="14dp"
+                        android:layout_height="14dp"
+                        android:src="@drawable/ic_arrow_right"
+                        app:tint="@color/text_muted"/>
                 </LinearLayout>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- Keluar -->
+        <!-- Keluar: dikurangi kemencolokannya -> outline merah dengan background putih,
+             bukan solid merah penuh, supaya tidak terlalu agresif secara visual -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -641,8 +623,9 @@
             android:layout_marginBottom="12dp"
             app:cardCornerRadius="12dp"
             app:cardElevation="0dp"
-            app:cardBackgroundColor="@color/error_red"
-            app:strokeWidth="0dp">
+            app:cardBackgroundColor="@color/bg_card"
+            app:strokeWidth="1dp"
+            app:strokeColor="@color/error_red">
 
             <LinearLayout
                 android:id="@+id/btnLogout"
@@ -658,7 +641,7 @@
                     android:layout_width="18dp"
                     android:layout_height="18dp"
                     android:src="@drawable/ic_profile"
-                    app:tint="@color/white"
+                    app:tint="@color/error_red"
                     android:layout_marginEnd="8dp"/>
 
                 <TextView
@@ -666,7 +649,7 @@
                     android:layout_height="wrap_content"
                     android:text="Keluar"
                     android:textSize="15sp"
-                    android:textColor="@color/white"
+                    android:textColor="@color/error_red"
                     android:textStyle="bold"/>
             </LinearLayout>
         </androidx.cardview.widget.CardView>

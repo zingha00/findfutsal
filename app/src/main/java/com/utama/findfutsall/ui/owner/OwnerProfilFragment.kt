@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
@@ -14,6 +13,10 @@ import com.bumptech.glide.Glide
 import com.utama.findfutsall.R
 import com.utama.findfutsall.databinding.FragmentOwnerProfilBinding
 import com.utama.findfutsall.ui.auth.LoginActivity
+import com.utama.findfutsall.ui.main.ChangePasswordActivity
+import com.utama.findfutsall.ui.main.EditProfileActivity
+import com.utama.findfutsall.ui.main.HelpCenterActivity
+import com.utama.findfutsall.ui.main.StaticPageActivity
 import com.utama.findfutsall.utils.Constants
 import com.utama.findfutsall.utils.SessionManager
 
@@ -36,10 +39,18 @@ class OwnerProfilFragment : Fragment() {
         sessionManager = SessionManager(requireContext())
         setupProfile()
         setupDarkMode()
+        setupMenus()
         setupLogout()
     }
 
-    private fun setupProfile() {
+    override fun onResume() {
+        super.onResume()
+        // Refresh data tampilan setiap kembali ke halaman ini
+        // (misal habis edit profil dari EditProfileActivity)
+        refreshProfileDisplay()
+    }
+
+    private fun refreshProfileDisplay() {
         val name = sessionManager.getUserName() ?: "Arena Manager"
         binding.tvProfilName.text  = name
         binding.tvProfilName2.text = name
@@ -56,20 +67,35 @@ class OwnerProfilFragment : Fragment() {
                 .error(R.drawable.ic_profile)
                 .into(binding.ivProfilPhoto)
         }
+    }
 
-        binding.btnEditNama.setOnClickListener {
-            showEditDialog("Nama Lengkap", name) { newVal ->
-                binding.tvProfilName.text  = newVal
-                binding.tvProfilName2.text = newVal
-                sessionManager.updateName(newVal)
-            }
+    private fun setupProfile() {
+        refreshProfileDisplay()
+
+        // Seluruh card Informasi Pribadi sekarang SATU tombol -> EditProfileActivity
+        // (sama seperti pola yang dipakai di sisi user, sudah termasuk ganti foto, nama, telepon)
+        binding.btnEditProfile.setOnClickListener {
+            startActivity(Intent(requireContext(), EditProfileActivity::class.java))
         }
+        binding.btnChangePhoto.setOnClickListener {
+            startActivity(Intent(requireContext(), EditProfileActivity::class.java))
+        }
+    }
 
-        binding.btnEditPhone.setOnClickListener {
-            showEditDialog("Nomor Telepon", sessionManager.getUserPhone() ?: "") { newVal ->
-                binding.tvProfilPhone.text = newVal
-                sessionManager.updatePhone(newVal)
-            }
+    private fun setupMenus() {
+        binding.btnUbahPassword.setOnClickListener {
+            startActivity(Intent(requireContext(), ChangePasswordActivity::class.java))
+        }
+        binding.btnHelpCenter.setOnClickListener {
+            startActivity(Intent(requireContext(), HelpCenterActivity::class.java))
+        }
+        binding.btnPrivacyPolicy.setOnClickListener {
+            val intent = Intent(requireContext(), StaticPageActivity::class.java)
+            intent.putExtra(StaticPageActivity.EXTRA_TYPE, StaticPageActivity.TYPE_PRIVACY)
+            startActivity(intent)
+        }
+        binding.btnAboutApp.setOnClickListener {
+            startActivity(Intent(requireContext(), AboutAppActivity::class.java))
         }
     }
 
@@ -98,22 +124,6 @@ class OwnerProfilFragment : Fragment() {
                 }
                 .start()
         }
-    }
-
-    private fun showEditDialog(field: String, current: String, onSave: (String) -> Unit) {
-        val input = EditText(requireContext()).apply {
-            setText(current)
-            setPadding(48, 32, 48, 32)
-        }
-        AlertDialog.Builder(requireContext())
-            .setTitle("Edit $field")
-            .setView(input)
-            .setPositiveButton("Simpan") { _, _ ->
-                val value = input.text.toString().trim()
-                if (value.isNotEmpty()) onSave(value)
-            }
-            .setNegativeButton("Batal", null)
-            .show()
     }
 
     private fun setupLogout() {

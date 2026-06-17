@@ -11,6 +11,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.utama.findfutsall.R
 import com.utama.findfutsall.data.model.Field
+import com.utama.findfutsall.utils.Constants
 import com.utama.findfutsall.utils.PriceFormatter
 
 class OwnerFieldAdapter(
@@ -60,19 +61,26 @@ class OwnerFieldAdapter(
             // Badge status
             if (field.isActive) {
                 tvStatus.text = "✓ Tersedia"
-                tvStatus.setBackgroundResource(R.drawable.bg_slot_available)
-                tvStatus.setTextColor(ContextCompat.getColor(itemView.context, R.color.success_green))
+                tvStatus.setBackgroundResource(R.drawable.bg_chip_active)
+                tvStatus.setTextColor(ContextCompat.getColor(itemView.context, android.R.color.white))
             } else {
                 tvStatus.text = "✗ Nonaktif"
-                tvStatus.setBackgroundResource(R.drawable.bg_slot_unavailable)
+                tvStatus.setBackgroundResource(R.drawable.bg_status_batal)
                 tvStatus.setTextColor(ContextCompat.getColor(itemView.context, R.color.error_red))
             }
 
-            // Foto
-            val context  = itemView.context
-            val fullUrl  = field.photo
+            // Foto -- gabungkan dengan BASE_URL kalau masih path relatif dari server
+            // (sebelumnya bug: field.photo dipakai mentah tanpa BASE_URL, jadi gagal load)
+            val context   = itemView.context
+            val photoName = field.photo ?: ""
+            val baseUrl   = Constants.BASE_URL.replace("/api/", "/")
+            val fullUrl   = when {
+                photoName.startsWith("http") -> photoName
+                photoName.isNotEmpty()       -> "$baseUrl$photoName"
+                else                         -> null
+            }
 
-            if (!fullUrl.isNullOrEmpty()) {
+            if (fullUrl != null) {
                 Glide.with(context)
                     .load(fullUrl)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
