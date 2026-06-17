@@ -4,8 +4,11 @@ import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.utama.findfutsall.data.model.Booking
 import com.utama.findfutsall.databinding.ItemBookingBinding
+import com.utama.findfutsall.utils.Constants
 
 class BookingAdapter(
     private var bookings: List<Booking>,
@@ -34,9 +37,16 @@ class BookingAdapter(
 
             // Warna badge status
             when (booking.status.lowercase()) {
-                "mendatang" -> {
+                "mendatang", "terkonfirmasi" -> {
                     tvStatus.setBackgroundResource(com.utama.findfutsall.R.drawable.bg_chip_active)
                     tvStatus.setTextColor(Color.WHITE)
+                    btnAction.text = "Detail"
+                    btnAction.backgroundTintList = android.content.res.ColorStateList
+                        .valueOf(Color.parseColor("#00A86B"))
+                }
+                "menunggu" -> {
+                    tvStatus.setBackgroundResource(com.utama.findfutsall.R.drawable.bg_status_selesai)
+                    tvStatus.setTextColor(Color.parseColor("#B45309"))
                     btnAction.text = "Detail"
                     btnAction.backgroundTintList = android.content.res.ColorStateList
                         .valueOf(Color.parseColor("#00A86B"))
@@ -44,33 +54,49 @@ class BookingAdapter(
                 "selesai" -> {
                     tvStatus.setBackgroundResource(com.utama.findfutsall.R.drawable.bg_status_selesai)
                     tvStatus.setTextColor(Color.parseColor("#00A86B"))
-                    btnAction.text = "Beri Ulasan"
+                    btnAction.text = "Detail"
                     btnAction.backgroundTintList = android.content.res.ColorStateList
                         .valueOf(Color.parseColor("#00A86B"))
                 }
-                "dibatalkan" -> {
+                "batal" -> {
                     tvStatus.setBackgroundResource(com.utama.findfutsall.R.drawable.bg_status_batal)
                     tvStatus.setTextColor(Color.parseColor("#FF3B30"))
-                    btnAction.text = "Pesan Lagi"
+                    btnAction.text = "Detail"
                     btnAction.backgroundTintList = android.content.res.ColorStateList
                         .valueOf(Color.parseColor("#999999"))
                 }
+                else -> {
+                    btnAction.text = "Detail"
+                    btnAction.backgroundTintList = android.content.res.ColorStateList
+                        .valueOf(Color.parseColor("#00A86B"))
+                }
             }
 
-            // Load foto
-            val context = root.context
-            val photoName = booking.fieldPhoto ?: ""
-            val resourceId = if (photoName.isNotEmpty()) {
-                context.resources.getIdentifier(photoName, "drawable", context.packageName)
-            } else 0
+            // Load foto dari URL server pakai Glide (bukan resource lokal)
+            val context   = root.context
+            val baseUrl   = Constants.BASE_URL.replace("/api/", "/")
+            val photoPath = booking.fieldPhoto ?: ""
 
-            if (resourceId != 0) {
-                ivFieldPhoto.setImageResource(resourceId)
+            val fullUrl = when {
+                photoPath.isEmpty()        -> null
+                photoPath.startsWith("http") -> photoPath
+                else                        -> baseUrl + photoPath
+            }
+
+            if (fullUrl != null) {
+                Glide.with(context)
+                    .load(fullUrl)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .placeholder(com.utama.findfutsall.R.drawable.bg_logo)
+                    .error(com.utama.findfutsall.R.drawable.findfutsall)
+                    .centerCrop()
+                    .into(ivFieldPhoto)
             } else {
-                ivFieldPhoto.setImageResource(android.R.drawable.ic_menu_gallery)
+                ivFieldPhoto.setImageResource(com.utama.findfutsall.R.drawable.findfutsall)
             }
 
             btnAction.setOnClickListener { onActionClick(booking) }
+            root.setOnClickListener { onActionClick(booking) }
         }
     }
 

@@ -1,11 +1,11 @@
 package com.utama.findfutsall.ui.main
 
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -38,12 +38,29 @@ class BookingFragment : Fragment() {
         rvBooking   = view.findViewById(R.id.rvBooking)
         layoutEmpty = view.findViewById(R.id.layoutEmpty)
 
-        adapter = BookingAdapter(emptyList()) {}
+        adapter = BookingAdapter(emptyList()) { booking ->
+            openDetail(booking)
+        }
         rvBooking.layoutManager = LinearLayoutManager(requireContext())
         rvBooking.adapter = adapter
 
         setupChips(view)
         loadBookings()
+    }
+
+    private fun openDetail(booking: Booking) {
+        val intent = Intent(requireContext(), BookingDetailActivity::class.java).apply {
+            putExtra(BookingDetailActivity.EXTRA_BOOKING_ID, booking.id)
+            putExtra(BookingDetailActivity.EXTRA_FIELD_NAME, booking.fieldName)
+            putExtra(BookingDetailActivity.EXTRA_FIELD_ADDRESS, booking.courtName)
+            putExtra(BookingDetailActivity.EXTRA_FIELD_PHOTO, booking.fieldPhoto ?: "")
+            putExtra(BookingDetailActivity.EXTRA_DATE, booking.date)
+            putExtra(BookingDetailActivity.EXTRA_TIME, booking.time)
+            putExtra(BookingDetailActivity.EXTRA_PRICE, "Rp ${booking.price}")
+            putExtra(BookingDetailActivity.EXTRA_STATUS, booking.status)
+            putExtra(BookingDetailActivity.EXTRA_CREATED_AT, booking.createdAt)
+        }
+        startActivity(intent)
     }
 
     private fun setupChips(view: View) {
@@ -52,7 +69,7 @@ class BookingFragment : Fragment() {
             "Menunggu"     to view.findViewById(R.id.chipMenunggu),
             "Terkonfirmasi" to view.findViewById(R.id.chipDikonfirmasi),
             "Selesai"      to view.findViewById(R.id.chipSelesai),
-            "Dibatalkan"   to view.findViewById(R.id.chipDibatalkan)
+            "Batal"        to view.findViewById(R.id.chipDibatalkan)
         )
         chips.forEach { (filter, chip) ->
             chip.setOnClickListener {

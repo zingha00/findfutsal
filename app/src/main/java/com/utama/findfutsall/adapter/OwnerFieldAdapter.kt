@@ -1,18 +1,16 @@
-package com.utama.findfutsall.ui.owner
+package com.utama.findfutsall.adapter
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.utama.findfutsall.R
 import com.utama.findfutsall.data.model.Field
-import com.utama.findfutsall.utils.Constants
 
 class OwnerFieldAdapter(
     private var fields: MutableList<Field>,
@@ -40,14 +38,14 @@ class OwnerFieldAdapter(
     override fun getItemCount() = fields.size
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val ivPhoto: ImageView   = itemView.findViewById(R.id.ivFieldPhoto)
-        private val tvName: TextView     = itemView.findViewById(R.id.tvFieldName)
+        private val ivPhoto: ImageView = itemView.findViewById(R.id.ivFieldPhoto)
+        private val tvName: TextView = itemView.findViewById(R.id.tvFieldName)
         private val tvCategory: TextView = itemView.findViewById(R.id.tvFieldCategory)
-        private val tvPrice: TextView    = itemView.findViewById(R.id.tvFieldPrice)
-        private val tvHours: TextView    = itemView.findViewById(R.id.tvFieldHours)
-        private val tvAddress: TextView  = itemView.findViewById(R.id.tvFieldAddress)
-        private val tvRating: TextView   = itemView.findViewById(R.id.tvFieldRating)
-        private val tvStatus: TextView   = itemView.findViewById(R.id.tvFieldStatus)
+        private val tvPrice: TextView = itemView.findViewById(R.id.tvFieldPrice)
+        private val tvHours: TextView = itemView.findViewById(R.id.tvFieldHours)
+        private val tvAddress: TextView = itemView.findViewById(R.id.tvFieldAddress)
+        private val tvRating: TextView = itemView.findViewById(R.id.tvFieldRating)
+        private val tvStatus: TextView = itemView.findViewById(R.id.tvFieldStatus)
 
         fun bind(field: Field) {
             tvName.text     = field.name

@@ -13,6 +13,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.utama.findfutsall.adapter.OwnerFieldAdapter
 import com.utama.findfutsall.data.api.ApiClient
 import com.utama.findfutsall.data.model.Field
 import com.utama.findfutsall.databinding.FragmentOwnerLapanganBinding
@@ -62,10 +63,10 @@ class OwnerLapanganFragment : Fragment() {
 
     private fun setupRecyclerView() {
         adapter = OwnerFieldAdapter(
-            fields   = allFields,
-            onEdit   = { field -> openEditForm(field) },
+            fields = allFields,
+            onEdit = { field -> openEditForm(field) },
             onDelete = { field -> deleteLapangan(field) },
-            onMore   = { field ->
+            onMore = { field ->
                 Toast.makeText(requireContext(), "Detail: ${field.name}", Toast.LENGTH_SHORT).show()
             }
         )

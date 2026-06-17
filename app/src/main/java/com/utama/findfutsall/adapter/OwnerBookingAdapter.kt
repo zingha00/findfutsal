@@ -1,4 +1,4 @@
-package com.utama.findfutsall.ui.owner
+package com.utama.findfutsall.adapter
 
 import android.graphics.Color
 import android.view.LayoutInflater
@@ -6,20 +6,25 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.google.android.material.button.MaterialButton
 import com.utama.findfutsall.R
 import com.utama.findfutsall.data.model.OwnerBooking
+import de.hdodenhof.circleimageview.CircleImageView
 
 class OwnerBookingAdapter(
-    private var bookings: MutableList<OwnerBooking>,
+    bookings: List<OwnerBooking>,
     private val onKonfirmasi: (OwnerBooking) -> Unit,
     private val onBatal: (OwnerBooking) -> Unit,
-    private val onWhatsapp: (OwnerBooking) -> Unit
+    private val onWhatsapp: (OwnerBooking) -> Unit,
+    private val onDetail: (OwnerBooking) -> Unit
 ) : RecyclerView.Adapter<OwnerBookingAdapter.ViewHolder>() {
 
+    // Selalu buat list BARU (independent copy), jangan pegang referensi list asli dari luar
+    private var bookings: MutableList<OwnerBooking> = bookings.toMutableList()
+
     fun updateData(newBookings: List<OwnerBooking>) {
-        bookings.clear()
-        bookings.addAll(newBookings)
+        bookings = newBookings.toMutableList()
         notifyDataSetChanged()
     }
 
@@ -39,6 +44,7 @@ class OwnerBookingAdapter(
         private val tvBookingId: TextView         = itemView.findViewById(R.id.tvBookingId)
         private val tvStatus: TextView            = itemView.findViewById(R.id.tvBookingStatus)
         private val tvCustomer: TextView          = itemView.findViewById(R.id.tvCustomerName)
+        private val ivUserPhoto: CircleImageView  = itemView.findViewById(R.id.ivUserPhoto)
         private val tvFieldName: TextView         = itemView.findViewById(R.id.tvFieldName)
         private val tvPlayDate: TextView          = itemView.findViewById(R.id.tvPlayDate)
         private val tvTotalPrice: TextView        = itemView.findViewById(R.id.tvTotalPrice)
@@ -55,6 +61,16 @@ class OwnerBookingAdapter(
             tvPlayDate.text   = "${formatDate(booking.playDate)} | ${booking.startTime} - ${booking.endTime}"
             tvTotalPrice.text = "Rp ${formatPrice(booking.totalPrice.toLong())}"
             tvStatus.text     = booking.status
+
+            if (booking.userPhoto.isNotEmpty()) {
+                Glide.with(itemView.context)
+                    .load(booking.userPhoto)
+                    .placeholder(R.drawable.ic_profile)
+                    .error(R.drawable.ic_profile)
+                    .into(ivUserPhoto)
+            } else {
+                ivUserPhoto.setImageResource(R.drawable.ic_profile)
+            }
 
             when (booking.status) {
                 "Menunggu" -> {
@@ -90,6 +106,8 @@ class OwnerBookingAdapter(
             btnKonfirmasi.setOnClickListener { onKonfirmasi(booking) }
             btnBatal.setOnClickListener { onBatal(booking) }
             btnWhatsapp.setOnClickListener { onWhatsapp(booking) }
+            btnDetail.setOnClickListener { onDetail(booking) }
+            itemView.setOnClickListener { onDetail(booking) }
         }
 
         private fun formatDate(date: String): String {

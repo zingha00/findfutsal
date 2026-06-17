@@ -81,4 +81,9 @@ interface ApiService {
     suspend fun getFavorites(
         @Body request: Map<String, @JvmSuppressWildcards Any>
     ): Response<Map<String, @JvmSuppressWildcards Any>>
+
+    @POST("cancel_booking.php")
+    suspend fun cancelBooking(
+        @Body request: Map<String, @JvmSuppressWildcards Any>
+    ): Response<Map<String, @JvmSuppressWildcards Any>>
 }

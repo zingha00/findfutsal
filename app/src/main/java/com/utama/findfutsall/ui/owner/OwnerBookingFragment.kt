@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.utama.findfutsall.R
+import com.utama.findfutsall.adapter.OwnerBookingAdapter
 import com.utama.findfutsall.data.model.OwnerBooking
 import com.utama.findfutsall.databinding.FragmentOwnerBookingBinding
 import com.utama.findfutsall.utils.Constants
@@ -72,10 +73,31 @@ class OwnerBookingFragment : Fragment() {
                     .setNegativeButton("Tidak", null)
                     .show()
             },
-            onWhatsapp = { booking -> openWhatsapp(booking) }
+            onWhatsapp = { booking -> openWhatsapp(booking) },
+            onDetail   = { booking -> openDetail(booking) }
         )
         binding.rvBooking.layoutManager = LinearLayoutManager(requireContext())
         binding.rvBooking.adapter = adapter
+    }
+
+    private fun openDetail(booking: OwnerBooking) {
+        val intent = Intent(requireContext(), OwnerBookingDetailActivity::class.java).apply {
+            putExtra(OwnerBookingDetailActivity.EXTRA_BOOKING_ID, booking.id)
+            putExtra(OwnerBookingDetailActivity.EXTRA_USER_NAME, booking.userName)
+            putExtra(OwnerBookingDetailActivity.EXTRA_USER_PHONE, booking.userPhone)
+            putExtra(OwnerBookingDetailActivity.EXTRA_USER_PHOTO, booking.userPhoto)
+            putExtra(OwnerBookingDetailActivity.EXTRA_USER_EMAIL, booking.userEmail)
+            putExtra(OwnerBookingDetailActivity.EXTRA_FIELD_NAME, booking.fieldName)
+            putExtra(OwnerBookingDetailActivity.EXTRA_FIELD_ADDRESS, booking.fieldAddress)
+            putExtra(OwnerBookingDetailActivity.EXTRA_FIELD_PHOTO, booking.fieldPhoto)
+            putExtra(OwnerBookingDetailActivity.EXTRA_PLAY_DATE, booking.playDate)
+            putExtra(OwnerBookingDetailActivity.EXTRA_START_TIME, booking.startTime)
+            putExtra(OwnerBookingDetailActivity.EXTRA_END_TIME, booking.endTime)
+            putExtra(OwnerBookingDetailActivity.EXTRA_TOTAL_PRICE, booking.totalPrice)
+            putExtra(OwnerBookingDetailActivity.EXTRA_STATUS, booking.status)
+            putExtra(OwnerBookingDetailActivity.EXTRA_CREATED_AT, booking.createdAt)
+        }
+        startActivity(intent)
     }
 
     private fun setupChips() {
@@ -129,7 +151,6 @@ class OwnerBookingFragment : Fragment() {
                     .build()
                 val response = httpClient.newCall(request).execute()
                 val resStr   = response.body?.string() ?: "{}"
-                android.util.Log.d("BOOKING_UI", "Response: $resStr")
                 val resJson  = JSONObject(resStr)
 
                 withContext(Dispatchers.Main) {
@@ -139,7 +160,6 @@ class OwnerBookingFragment : Fragment() {
 
                     if (resJson.optBoolean("success")) {
                         val arr = resJson.optJSONArray("bookings") ?: JSONArray()
-                        android.util.Log.d("BOOKING_UI", "Bookings count: ${arr.length()}")
                         allBookings.clear()
                         for (i in 0 until arr.length()) {
                             val obj = arr.getJSONObject(i)
@@ -149,7 +169,11 @@ class OwnerBookingFragment : Fragment() {
                                     customerName = obj.optString("customer_name"),
                                     userName     = obj.optString("user_name"),
                                     userPhone    = obj.optString("user_phone"),
+                                    userPhoto    = obj.optString("user_photo"),
+                                    userEmail    = obj.optString("user_email"),
                                     fieldName    = obj.optString("field_name"),
+                                    fieldAddress = obj.optString("field_address"),
+                                    fieldPhoto   = obj.optString("field_photo"),
                                     playDate     = obj.optString("play_date"),
                                     startTime    = obj.optString("start_time"),
                                     endTime      = obj.optString("end_time"),
@@ -159,7 +183,6 @@ class OwnerBookingFragment : Fragment() {
                                 )
                             )
                         }
-                        android.util.Log.d("BOOKING_UI", "allBookings size: ${allBookings.size}")
                         applyFilter(activeFilter)
                     } else {
                         Toast.makeText(
