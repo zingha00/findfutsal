@@ -6,13 +6,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
+import com.utama.findfutsall.R
 import com.utama.findfutsall.databinding.FragmentProfileBinding
 import com.utama.findfutsall.ui.auth.LoginActivity
-import com.utama.findfutsall.ui.owner.OwnerDashboardActivity
 import com.utama.findfutsall.ui.owner.RegisterOwnerActivity
+import com.utama.findfutsall.utils.Constants
 import com.utama.findfutsall.utils.SessionManager
 
 class ProfileFragment : Fragment() {
@@ -39,32 +40,41 @@ class ProfileFragment : Fragment() {
     }
 
     private fun setupUserData() {
-        binding.tvName.text = sessionManager.getUserName() ?: "Nama User"
-        binding.tvPhone.text = sessionManager.getUserPhone() ?: "+62 812 3456 7890"
+        binding.tvName.text  = sessionManager.getUserName() ?: "Nama User"
+        binding.tvPhone.text = sessionManager.getUserPhone() ?: "-"
+
+        val photo = sessionManager.getUserPhoto()
+        if (!photo.isNullOrEmpty()) {
+            Glide.with(this)
+                .load(photo)
+                .placeholder(R.drawable.ic_profile)
+                .error(R.drawable.ic_profile)
+                .circleCrop()
+                .into(binding.ivPhoto)
+        } else {
+            binding.ivPhoto.setImageResource(R.drawable.ic_profile)
+        }
     }
 
-    // ✅ Selalu tampil, hanya sembunyi jika sudah owner
     private fun setupOwnerStatus() {
         val role   = sessionManager.getUserRole()
         val status = sessionManager.getOwnerStatus()
 
-        android.util.Log.d("PROFILE_DEBUG", "role=$role, status=$status")
-
         when {
             role == "owner" -> {
-                binding.cardOwnerStatus.visibility = View.GONE
+                binding.cardOwnerStatus.visibility   = View.GONE
                 binding.cardDaftarPemilik.visibility = View.GONE
             }
             status == "pending" -> {
-                binding.cardOwnerStatus.visibility = View.VISIBLE
+                binding.cardOwnerStatus.visibility   = View.VISIBLE
                 binding.cardDaftarPemilik.visibility = View.GONE
-                binding.tvOwnerStatusIcon.text = "⏳"
+                binding.tvOwnerStatusIcon.text  = "⏳"
                 binding.tvOwnerStatusTitle.text = "Menunggu Verifikasi"
-                binding.tvOwnerStatusDesc.text = "Akun pemilik lapangan Anda sedang diproses."
+                binding.tvOwnerStatusDesc.text  = "Akun pemilik lapangan Anda sedang diproses."
                 binding.btnSimulasiVerifikasi.visibility = View.VISIBLE
             }
             else -> {
-                binding.cardOwnerStatus.visibility = View.GONE
+                binding.cardOwnerStatus.visibility   = View.GONE
                 binding.cardDaftarPemilik.visibility = View.VISIBLE
             }
         }
@@ -72,23 +82,27 @@ class ProfileFragment : Fragment() {
 
     private fun setupClickListeners() {
         binding.menuEditProfile.setOnClickListener {
-            Toast.makeText(requireContext(), "Edit profil akan segera hadir", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(requireContext(), EditProfileActivity::class.java))
         }
 
-        binding.menuPayment.setOnClickListener {
-            Toast.makeText(requireContext(), "Pengaturan pembayaran akan segera hadir", Toast.LENGTH_SHORT).show()
+        binding.menuSecurity.setOnClickListener {
+            startActivity(Intent(requireContext(), SecurityPrivacyActivity::class.java))
         }
 
         binding.menuTerms.setOnClickListener {
-            Toast.makeText(requireContext(), "Syarat & ketentuan akan segera hadir", Toast.LENGTH_SHORT).show()
-        }
-
-        binding.menuHelp.setOnClickListener {
-            Toast.makeText(requireContext(), "Pusat bantuan akan segera hadir", Toast.LENGTH_SHORT).show()
+            val intent = Intent(requireContext(), StaticPageActivity::class.java)
+            intent.putExtra(StaticPageActivity.EXTRA_TYPE, StaticPageActivity.TYPE_TERMS)
+            startActivity(intent)
         }
 
         binding.menuPrivacy.setOnClickListener {
-            Toast.makeText(requireContext(), "Kebijakan privasi akan segera hadir", Toast.LENGTH_SHORT).show()
+            val intent = Intent(requireContext(), StaticPageActivity::class.java)
+            intent.putExtra(StaticPageActivity.EXTRA_TYPE, StaticPageActivity.TYPE_PRIVACY)
+            startActivity(intent)
+        }
+
+        binding.menuHelp.setOnClickListener {
+            startActivity(Intent(requireContext(), HelpCenterActivity::class.java))
         }
 
         binding.btnDaftarPemilik.setOnClickListener {

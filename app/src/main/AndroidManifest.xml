@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.utama.findfutsall">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -89,6 +90,16 @@
             android:exported="false"
             android:windowSoftInputMode="adjustResize"/>
 
+        <activity
+            android:name=".ui.main.EditProfileActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize"/>
+
+        <activity
+            android:name=".ui.main.ChangePasswordActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize"/>
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"
@@ -98,6 +109,18 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths"/>
         </provider>
+
+        <activity
+            android:name=".ui.main.SecurityPrivacyActivity"
+            android:exported="false"/>
+
+        <activity
+            android:name=".ui.main.SecurityPrivacyActivity"
+            android:exported="false"
+            tools:ignore="DuplicateActivity" />
+
+        <activity android:name=".ui.main.StaticPageActivity" android:exported="false"/>
+        <activity android:name=".ui.main.HelpCenterActivity" android:exported="false"/>
 
     </application>
 
