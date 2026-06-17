@@ -11,6 +11,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.utama.findfutsall.R
 import com.utama.findfutsall.data.model.Field
+import com.utama.findfutsall.utils.PriceFormatter
 
 class OwnerFieldAdapter(
     private var fields: MutableList<Field>,
@@ -51,7 +52,7 @@ class OwnerFieldAdapter(
             tvName.text     = field.name
             tvCategory.text = field.category.ifEmpty { "Futsal" }
             tvAddress.text  = field.address
-            tvPrice.text    = "Rp ${formatPrice(field.price)}/jam"
+            tvPrice.text    = "${PriceFormatter.format(field.price)}/jam"
             tvRating.text   = if (field.rating > 0) String.format("%.1f", field.rating) else "0.0"
             tvHours.text    = if (!field.openTime.isNullOrEmpty() && !field.closeTime.isNullOrEmpty())
                 "${field.openTime} - ${field.closeTime}" else "06:00 - 23:00"
@@ -86,18 +87,6 @@ class OwnerFieldAdapter(
             itemView.findViewById<View>(R.id.btnEdit).setOnClickListener   { onEdit(field) }
             itemView.findViewById<View>(R.id.btnDelete).setOnClickListener { onDelete(field) }
             itemView.findViewById<View>(R.id.btnMore).setOnClickListener   { onMore(field) }
-        }
-
-        private fun formatPrice(price: Int): String {
-            val s      = price.toString()
-            val result = StringBuilder()
-            var count  = 0
-            for (i in s.length - 1 downTo 0) {
-                if (count > 0 && count % 3 == 0) result.insert(0, ".")
-                result.insert(0, s[i])
-                count++
-            }
-            return result.toString()
         }
     }
 }

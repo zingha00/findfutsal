@@ -10,6 +10,7 @@ import com.bumptech.glide.Glide
 import com.google.android.material.button.MaterialButton
 import com.utama.findfutsall.R
 import com.utama.findfutsall.data.model.OwnerBooking
+import com.utama.findfutsall.utils.PriceFormatter
 import de.hdodenhof.circleimageview.CircleImageView
 
 class OwnerBookingAdapter(
@@ -59,7 +60,7 @@ class OwnerBookingAdapter(
             tvCustomer.text   = booking.customerName
             tvFieldName.text  = booking.fieldName
             tvPlayDate.text   = "${formatDate(booking.playDate)} | ${booking.startTime} - ${booking.endTime}"
-            tvTotalPrice.text = "Rp ${formatPrice(booking.totalPrice.toLong())}"
+            tvTotalPrice.text = PriceFormatter.format(booking.totalPrice)
             tvStatus.text     = booking.status
 
             if (booking.userPhoto.isNotEmpty()) {
@@ -116,18 +117,6 @@ class OwnerBookingAdapter(
                 val out = java.text.SimpleDateFormat("EEE, dd MMM yyyy", java.util.Locale("id"))
                 out.format(sdf.parse(date)!!)
             } catch (e: Exception) { date }
-        }
-
-        private fun formatPrice(price: Long): String {
-            val s      = price.toString()
-            val result = StringBuilder()
-            var count  = 0
-            for (i in s.length - 1 downTo 0) {
-                if (count > 0 && count % 3 == 0) result.insert(0, ".")
-                result.insert(0, s[i])
-                count++
-            }
-            return result.toString()
         }
     }
 }

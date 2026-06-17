@@ -8,11 +8,18 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.gridlayout.widget.GridLayout
+import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.utama.findfutsall.R
+import com.utama.findfutsall.data.api.ApiClient
 import com.utama.findfutsall.databinding.ActivityDetailFieldBinding
+import com.utama.findfutsall.utils.PriceFormatter
 import com.utama.findfutsall.utils.SessionManager
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -27,6 +34,7 @@ class DetailFieldActivity : AppCompatActivity() {
     private var selectedDate  = ""
     private var selectedStart = ""
     private var selectedEnd   = ""
+    private var isFavorite    = false
 
     private val bookedSlots = mutableListOf<String>()
 
@@ -57,7 +65,7 @@ class DetailFieldActivity : AppCompatActivity() {
         binding.tvCategory.text  = fieldCategory.ifEmpty { "Futsal" }
         binding.tvJamBuka.text   = "Buka $openTime - $closeTime"
         binding.tvDescription.text = fieldDesc.ifEmpty { "Lapangan futsal berkualitas di Bandung." }
-        binding.tvTotalPrice.text = "Rp ${formatPrice(fieldPrice)}/jam"
+        binding.tvTotalPrice.text = "${PriceFormatter.format(fieldPrice)}/jam"
 
         // Load foto
         val photoName = fieldPhoto ?: ""
@@ -86,12 +94,72 @@ class DetailFieldActivity : AppCompatActivity() {
         // Date pills
         setupDatePills(openTime, closeTime)
 
+        // Cek status favorit awal
+        checkFavoriteStatus()
+
         // Bottom bar
         binding.btnBookNow.isEnabled = false
         binding.btnBookNow.alpha     = 0.5f
         binding.btnBack.setOnClickListener { finish() }
-        binding.btnFavorite.setOnClickListener { /* TODO */ }
+        binding.btnFavorite.setOnClickListener { toggleFavorite() }
         binding.btnBookNow.setOnClickListener { doBooking() }
+    }
+
+    private fun checkFavoriteStatus() {
+        lifecycleScope.launch {
+            try {
+                val response = ApiClient.instance.getFavorites(
+                    mapOf("user_id" to sessionManager.getUserId())
+                )
+                if (response.isSuccessful && response.body() != null) {
+                    val body = response.body()!!
+                    @Suppress("UNCHECKED_CAST")
+                    val list = body["data"] as? List<Map<String, Any>> ?: emptyList()
+                    val favIds = list.map { (it["id"] as? Double)?.toInt() ?: 0 }.toSet()
+                    isFavorite = favIds.contains(fieldId)
+                    updateFavoriteIcon()
+                }
+            } catch (e: Exception) {
+                // Diamkan, biarkan default false
+            }
+        }
+    }
+
+    private fun toggleFavorite() {
+        val willBeFav = !isFavorite
+        isFavorite = willBeFav
+        updateFavoriteIcon()
+
+        // Animasi bounce
+        binding.btnFavorite.animate()
+            .scaleX(1.3f).scaleY(1.3f)
+            .setDuration(120)
+            .withEndAction {
+                binding.btnFavorite.animate()
+                    .scaleX(1f).scaleY(1f)
+                    .setDuration(120)
+                    .start()
+            }.start()
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                ApiClient.instance.toggleFavorite(
+                    mapOf("user_id" to sessionManager.getUserId(), "field_id" to fieldId)
+                )
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    // Rollback kalau gagal
+                    isFavorite = !willBeFav
+                    updateFavoriteIcon()
+                }
+            }
+        }
+    }
+
+    private fun updateFavoriteIcon() {
+        binding.btnFavorite.setColorFilter(
+            ContextCompat.getColor(this, if (isFavorite) R.color.error_red else android.R.color.white)
+        )
     }
 
     private fun setupFasilitas(facilities: String) {
@@ -181,14 +249,12 @@ class DetailFieldActivity : AppCompatActivity() {
             pill.addView(tvNum)
 
             pill.setOnClickListener {
-                // Reset semua pill
                 for (j in 0 until binding.layoutDatePills.childCount) {
                     val p2 = binding.layoutDatePills.getChildAt(j) as LinearLayout
                     p2.setBackgroundResource(R.drawable.bg_chip_inactive)
                     (p2.getChildAt(0) as TextView).setTextColor(Color.parseColor("#999999"))
                     (p2.getChildAt(1) as TextView).setTextColor(Color.parseColor("#121212"))
                 }
-                // Aktifkan pill ini
                 pill.setBackgroundResource(R.drawable.bg_chip_active)
                 tvDay.setTextColor(Color.WHITE)
                 tvNum.setTextColor(Color.WHITE)
@@ -253,7 +319,7 @@ class DetailFieldActivity : AppCompatActivity() {
             }
 
             val tvPrice = TextView(this).apply {
-                text      = "Rp ${formatPrice(fieldPrice)}"
+                text      = PriceFormatter.format(fieldPrice)
                 textSize  = 10f
                 gravity   = Gravity.CENTER
                 setTextColor(
@@ -323,9 +389,9 @@ class DetailFieldActivity : AppCompatActivity() {
     private fun showRincian() {
         val serviceFee = 5000
         val total      = fieldPrice + serviceFee
-        binding.tvRincianSewa.text  = "Rp ${formatPrice(fieldPrice)}"
-        binding.tvTotalRincian.text = "Rp ${formatPrice(total)}"
-        binding.tvTotalPrice.text   = "Rp ${formatPrice(total)}"
+        binding.tvRincianSewa.text  = PriceFormatter.format(fieldPrice)
+        binding.tvTotalRincian.text = PriceFormatter.format(total)
+        binding.tvTotalPrice.text   = PriceFormatter.format(total)
         binding.cardRincian.visibility = View.VISIBLE
         binding.btnBookNow.isEnabled   = true
         binding.btnBookNow.alpha       = 1f
@@ -343,10 +409,6 @@ class DetailFieldActivity : AppCompatActivity() {
             putExtra("field_price",   fieldPrice)
         }
         startActivity(intent)
-    }
-
-    private fun formatPrice(price: Int): String {
-        return String.format("%,d", price).replace(",", ".")
     }
 
     private val Int.dp: Int get() = (this * resources.displayMetrics.density).toInt()

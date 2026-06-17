@@ -26,6 +26,8 @@ import com.utama.findfutsall.ui.detail.DetailFieldActivity
 import com.utama.findfutsall.utils.Constants
 import com.utama.findfutsall.utils.SessionManager
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
@@ -69,7 +71,6 @@ class HomeFragment : Fragment() {
         setupRecyclerViews()
         setupClickListeners()
         loadFieldsWithFavorites()
-        binding.rvCategory.visibility = View.GONE
     }
 
     private fun setupPromo() {
@@ -129,7 +130,8 @@ class HomeFragment : Fragment() {
         fieldAdapter = FieldAdapter(
             fields = emptyList(),
             onItemClick = { field -> openDetail(field) },
-            onFavoriteClick = { field -> toggleFavorite(field) }        )
+            onFavoriteClick = { field -> syncFavoriteToServer(field) }
+        )
         binding.rvFields.adapter = fieldAdapter
     }
 
@@ -157,9 +159,15 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun toggleFavorite(field: Field) {
+    /**
+     * Kirim perubahan status favorit ke server TANPA memicu re-render adapter.
+     * Adapter sudah mengubah state & warna + animasi secara lokal saat diklik;
+     * fungsi ini hanya menyinkronkan ke backend secara diam-diam di background.
+     * Memanggil fieldAdapter.toggleFavorite() lagi di sini akan memicu
+     * notifyDataSetChanged() yang memotong animasi klik yang sedang berjalan.
+     */
+    private fun syncFavoriteToServer(field: Field) {
         val userId = session.getUserId()
-        fieldAdapter.toggleFavorite(field.id)
         lifecycleScope.launch(Dispatchers.IO) {
             try {
                 ApiClient.instance.toggleFavorite(
@@ -168,6 +176,7 @@ class HomeFragment : Fragment() {
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
                     if (isAdded && _binding != null) {
+                        // Gagal sync ke server -> rollback state visual
                         fieldAdapter.toggleFavorite(field.id)
                     }
                 }
@@ -178,8 +187,15 @@ class HomeFragment : Fragment() {
     private fun loadFieldsWithFavorites() {
         viewLifecycleOwner.lifecycleScope.launch {
             try {
-                val fields = withContext(Dispatchers.IO) { fetchFields() }
-                val favIds = withContext(Dispatchers.IO) { fetchFavoriteIds() }
+                // Jalankan kedua request secara PARALEL (bukan berurutan) supaya lebih cepat
+                val fields: List<Field>
+                val favIds: Set<Int>
+                withContext(Dispatchers.IO) {
+                    val fieldsDeferred = async { fetchFields() }
+                    val favIdsDeferred = async { fetchFavoriteIds() }
+                    fields = fieldsDeferred.await()
+                    favIds = favIdsDeferred.await()
+                }
                 if (_binding == null) return@launch
                 fieldHorizontalAdapter.updateData(fields)
                 fieldAdapter.updateData(fields)

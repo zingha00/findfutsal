@@ -10,6 +10,7 @@ import com.utama.findfutsall.R
 import com.utama.findfutsall.data.model.Field
 import com.utama.findfutsall.databinding.ItemFieldBinding
 import com.utama.findfutsall.utils.Constants
+import com.utama.findfutsall.utils.PriceFormatter
 
 class FieldAdapter(
     private var fields: List<Field>,
@@ -46,8 +47,8 @@ class FieldAdapter(
         with(holder.binding) {
             tvFieldName.text     = field.name
             tvFieldAddress.text  = field.address
-            tvFieldPrice.text    = "Rp ${field.price}k/jam"
-            tvFieldRating.text   = field.rating.toString()
+            tvFieldPrice.text    = "${PriceFormatter.format(field.price)}/jam"
+            tvFieldRating.text   = if (field.rating > 0) String.format("%.1f", field.rating) else "0.0"
             tvFieldDistance.text = field.distance ?: ""
 
             val context   = root.context
@@ -80,12 +81,10 @@ class FieldAdapter(
             ivFavorite.setOnClickListener {
                 val willBeFav = !favoriteIds.contains(field.id)
 
-                // Update warna langsung
                 ivFavorite.setColorFilter(
                     ContextCompat.getColor(context, if (willBeFav) R.color.error_red else android.R.color.white)
                 )
 
-                // Animasi bounce
                 ivFavorite.animate()
                     .scaleX(1.3f).scaleY(1.3f)
                     .setDuration(120)
@@ -96,14 +95,13 @@ class FieldAdapter(
                             .start()
                     }.start()
 
-                // Update state
                 if (willBeFav) favoriteIds.add(field.id)
                 else favoriteIds.remove(field.id)
 
-                // Callback ke fragment
                 onFavoriteClick?.invoke(field)
             }
 
+            btnBooking.setOnClickListener { onItemClick(field) }
             root.setOnClickListener { onItemClick(field) }
         }
     }

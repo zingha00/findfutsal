@@ -32,7 +32,8 @@ class BookingAdapter(
             tvCourtName.text = booking.courtName
             tvDate.text = booking.date
             tvTime.text = booking.time
-            tvPrice.text = "Rp ${booking.price}"
+            // booking.price sudah berisi hasil PriceFormatter.format() lengkap (cth: "Rp90.000"), jadi tidak perlu tambah "Rp" lagi
+            tvPrice.text = booking.price
             tvStatus.text = booking.status.uppercase()
 
             // Warna badge status

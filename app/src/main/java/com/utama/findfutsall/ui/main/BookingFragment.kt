@@ -15,6 +15,7 @@ import com.utama.findfutsall.R
 import com.utama.findfutsall.adapter.BookingAdapter
 import com.utama.findfutsall.data.api.ApiClient
 import com.utama.findfutsall.data.model.Booking
+import com.utama.findfutsall.utils.PriceFormatter
 import com.utama.findfutsall.utils.SessionManager
 import kotlinx.coroutines.launch
 
@@ -56,7 +57,7 @@ class BookingFragment : Fragment() {
             putExtra(BookingDetailActivity.EXTRA_FIELD_PHOTO, booking.fieldPhoto ?: "")
             putExtra(BookingDetailActivity.EXTRA_DATE, booking.date)
             putExtra(BookingDetailActivity.EXTRA_TIME, booking.time)
-            putExtra(BookingDetailActivity.EXTRA_PRICE, "Rp ${booking.price}")
+            putExtra(BookingDetailActivity.EXTRA_PRICE, booking.price)
             putExtra(BookingDetailActivity.EXTRA_STATUS, booking.status)
             putExtra(BookingDetailActivity.EXTRA_CREATED_AT, booking.createdAt)
         }
@@ -108,18 +109,19 @@ class BookingFragment : Fragment() {
                         allBookings.addAll(list.map {
                             val start = it["start_time"]?.toString() ?: ""
                             val end   = it["end_time"]?.toString() ?: ""
+                            val totalPrice = (it["total_price"] as? Double) ?: 0.0
                             Booking(
                                 id          = (it["id"] as? Double)?.toInt() ?: 0,
                                 fieldName   = it["field_name"]?.toString() ?: "",
                                 courtName   = it["field_address"]?.toString() ?: "",
                                 date        = it["play_date"]?.toString() ?: "",
                                 time        = "$start - $end",
-                                price       = formatPrice((it["total_price"] as? Double) ?: 0.0),
+                                price       = PriceFormatter.format(totalPrice),
                                 status      = it["status"]?.toString() ?: "",
                                 fieldPhoto  = it["field_photo"]?.toString(),
                                 startTime   = start,
                                 endTime     = end,
-                                totalPrice  = (it["total_price"] as? Double) ?: 0.0,
+                                totalPrice  = totalPrice,
                                 createdAt   = it["created_at"]?.toString() ?: ""
                             )
                         })
@@ -135,10 +137,6 @@ class BookingFragment : Fragment() {
     private fun updateEmptyState(isEmpty: Boolean) {
         rvBooking.visibility   = if (isEmpty) View.GONE else View.VISIBLE
         layoutEmpty.visibility = if (isEmpty) View.VISIBLE else View.GONE
-    }
-
-    private fun formatPrice(price: Double): String {
-        return String.format("%,.0f", price).replace(",", ".")
     }
 
     override fun onResume() {

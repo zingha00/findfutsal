@@ -9,6 +9,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.utama.findfutsall.R
 import com.utama.findfutsall.databinding.ActivityOwnerBookingDetailBinding
+import com.utama.findfutsall.utils.PriceFormatter
 
 class OwnerBookingDetailActivity : AppCompatActivity() {
 
@@ -73,7 +74,7 @@ class OwnerBookingDetailActivity : AppCompatActivity() {
         binding.tvDate.text         = playDate
         binding.tvTime.text         = "$startTime - $endTime"
         binding.tvCreatedAt.text    = createdAt
-        binding.tvTotalPrice.text   = "Rp ${formatPrice(totalPrice)}"
+        binding.tvTotalPrice.text   = PriceFormatter.format(totalPrice)
         binding.tvStatus.text       = status.uppercase()
 
         setStatusColor(status)
@@ -141,17 +142,5 @@ class OwnerBookingDetailActivity : AppCompatActivity() {
         val waPhone = if (phone.startsWith("0")) "62${phone.substring(1)}" else phone
         val message = "Halo $userName, terkait booking lapangan $fieldName pada $playDate pukul $startTime-$endTime."
         startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://wa.me/$waPhone?text=${Uri.encode(message)}")))
-    }
-
-    private fun formatPrice(price: Double): String {
-        val s      = price.toLong().toString()
-        val result = StringBuilder()
-        var count  = 0
-        for (i in s.length - 1 downTo 0) {
-            if (count > 0 && count % 3 == 0) result.insert(0, ".")
-            result.insert(0, s[i])
-            count++
-        }
-        return result.toString()
     }
 }

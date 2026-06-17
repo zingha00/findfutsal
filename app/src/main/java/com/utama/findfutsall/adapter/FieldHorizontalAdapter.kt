@@ -7,6 +7,7 @@ import com.bumptech.glide.Glide
 import com.utama.findfutsall.R
 import com.utama.findfutsall.data.model.Field
 import com.utama.findfutsall.databinding.ItemFieldHorizontalBinding
+import com.utama.findfutsall.utils.PriceFormatter
 
 class FieldHorizontalAdapter(
     private var fields: List<Field>,
@@ -28,7 +29,7 @@ class FieldHorizontalAdapter(
         with(holder.binding) {
             tvFieldName.text    = field.name
             tvFieldAddress.text = field.address
-            tvFieldPrice.text   = "Rp ${formatPrice(field.price)}/jam"
+            tvFieldPrice.text   = "${PriceFormatter.format(field.price)}/jam"
             tvFieldRating.text  = if (field.rating > 0) String.format("%.1f", field.rating) else "0.0"
 
             val context   = root.context
@@ -61,17 +62,5 @@ class FieldHorizontalAdapter(
     fun updateData(newFields: List<Field>) {
         fields = newFields
         notifyDataSetChanged()
-    }
-
-    private fun formatPrice(price: Int): String {
-        val s      = price.toString()
-        val result = StringBuilder()
-        var count  = 0
-        for (i in s.length - 1 downTo 0) {
-            if (count > 0 && count % 3 == 0) result.insert(0, ".")
-            result.insert(0, s[i])
-            count++
-        }
-        return result.toString()
     }
 }
