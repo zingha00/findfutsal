@@ -33,7 +33,7 @@
             android:layout_margin="12dp"
             android:text="LIVE AVAILABILITY"
             android:textSize="9sp"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/white"
             android:background="@drawable/bg_chip_active"
             android:paddingStart="8dp"
             android:paddingEnd="8dp"
@@ -50,7 +50,7 @@
             android:src="@drawable/ic_favorite"
             android:background="@drawable/bg_favorite_btn"
             android:padding="6dp"
-            app:tint="#FFFFFF"/>
+            app:tint="@color/white"/>
 
         <!-- Harga -->
         <TextView
@@ -63,7 +63,7 @@
             android:text="Rp 150k/jam"
             android:textSize="13sp"
             android:textStyle="bold"
-            android:textColor="#FFFFFF"/>
+            android:textColor="@color/white"/>
 
         <!-- Info Bottom -->
         <LinearLayout
@@ -83,7 +83,7 @@
                 android:text="Siliwangi Soccer Center"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                android:textColor="#FFFFFF"/>
+                android:textColor="@color/white"/>
 
             <!-- Rating + Jarak -->
             <LinearLayout
@@ -105,14 +105,14 @@
                     android:layout_marginStart="4dp"
                     android:text="4.8"
                     android:textSize="12sp"
-                    android:textColor="#FFFFFF"/>
+                    android:textColor="@color/white"/>
 
                 <ImageView
                     android:layout_width="14dp"
                     android:layout_height="14dp"
                     android:layout_marginStart="12dp"
                     android:src="@android:drawable/ic_menu_mylocation"
-                    app:tint="#FFFFFF"/>
+                    app:tint="@color/white"/>
 
                 <TextView
                     android:id="@+id/tvDistance"
@@ -121,7 +121,7 @@
                     android:layout_marginStart="4dp"
                     android:text="1.2 km"
                     android:textSize="12sp"
-                    android:textColor="#FFFFFF"/>
+                    android:textColor="@color/white"/>
 
             </LinearLayout>
 

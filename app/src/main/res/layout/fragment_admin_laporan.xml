@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center"
-            android:background="#FFFFFF"
+            android:background="@color/white"
             android:padding="4dp"
             app:cardCornerRadius="12dp">
 
@@ -31,7 +31,7 @@
                 android:text="Harian"
                 android:textSize="13sp"
                 android:textStyle="bold"
-                android:textColor="#FFFFFF"
+                android:textColor="@color/white"
                 android:background="@drawable/bg_chip_active"/>
 
             <TextView
@@ -89,7 +89,7 @@
                     android:text="Rp0"
                     android:textSize="32sp"
                     android:textStyle="bold"
-                    android:textColor="#FFFFFF"/>
+                    android:textColor="@color/text_on_primary"/>
 
                 <TextView
                     android:id="@+id/tvPeriodePendapatan"
@@ -118,7 +118,7 @@
                 android:layout_marginEnd="6dp"
                 app:cardCornerRadius="12dp"
                 app:cardElevation="2dp"
-                app:cardBackgroundColor="#FFFFFF">
+                app:cardBackgroundColor="@color/bg_card">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -154,7 +154,7 @@
                 android:layout_marginStart="6dp"
                 app:cardCornerRadius="12dp"
                 app:cardElevation="2dp"
-                app:cardBackgroundColor="#FFFFFF">
+                app:cardBackgroundColor="@color/bg_card">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -193,7 +193,7 @@
             android:layout_marginBottom="16dp"
             app:cardCornerRadius="12dp"
             app:cardElevation="2dp"
-            app:cardBackgroundColor="#FFFFFF">
+            app:cardBackgroundColor="@color/bg_card">
 
             <LinearLayout
                 android:layout_width="match_parent"

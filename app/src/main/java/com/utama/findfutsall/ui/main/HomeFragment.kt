@@ -159,6 +159,7 @@ class HomeFragment : Fragment() {
 
     private fun toggleFavorite(field: Field) {
         val userId = session.getUserId()
+        fieldAdapter.toggleFavorite(field.id)
         lifecycleScope.launch(Dispatchers.IO) {
             try {
                 ApiClient.instance.toggleFavorite(
@@ -166,7 +167,9 @@ class HomeFragment : Fragment() {
                 )
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    if (isAdded) fieldAdapter.toggleFavorite(field.id)
+                    if (isAdded && _binding != null) {
+                        fieldAdapter.toggleFavorite(field.id)
+                    }
                 }
             }
         }

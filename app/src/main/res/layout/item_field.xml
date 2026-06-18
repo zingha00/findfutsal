@@ -7,7 +7,7 @@
     android:layout_marginBottom="16dp"
     app:cardCornerRadius="16dp"
     app:cardElevation="4dp"
-    app:cardBackgroundColor="#FFFFFF">
+    app:cardBackgroundColor="@color/bg_card">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -64,7 +64,7 @@
             android:src="@drawable/ic_favorite"
             android:background="@drawable/bg_favorite_btn"
             android:padding="6dp"
-            app:tint="#FFFFFF"/>
+            app:tint="@color/white"/>
 
         <!-- Info Section -->
         <LinearLayout
@@ -165,8 +165,8 @@
                     android:layout_height="40dp"
                     android:text="Booking"
                     android:textSize="13sp"
-                    android:textColor="#FFFFFF"
-                    android:backgroundTint="#00A86B"
+                    android:textColor="@color/text_on_primary"
+                    android:backgroundTint="@color/primary_green"
                     app:cornerRadius="10dp"/>
 
             </LinearLayout>

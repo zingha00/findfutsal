@@ -2,8 +2,7 @@ package com.utama.findfutsall.utils
 
 object Constants {
 
-    // 10.0.2.2 adalah IP khusus agar Emulator bisa memanggil localhost (XAMPP) di Laptop Anda
-    const val BASE_URL = "http://10.0.2.2/findfutsall/api/"
+    const val BASE_URL = "http://192.168.0.101/findfutsall/api/"
 
     const val PREF_NAME = "findfutsall_pref"
     const val KEY_TOKEN = "token"

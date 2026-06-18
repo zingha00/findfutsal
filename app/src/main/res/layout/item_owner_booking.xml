@@ -7,7 +7,7 @@
     android:layout_marginBottom="12dp"
     app:cardCornerRadius="16dp"
     app:cardElevation="2dp"
-    app:cardBackgroundColor="#FFFFFF">
+    app:cardBackgroundColor="@color/bg_card">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -30,7 +30,7 @@
                 android:layout_weight="1"
                 android:text="#BK-001"
                 android:textSize="12sp"
-                android:textColor="#00A86B"
+                android:textColor="@color/primary_green"
                 android:textStyle="bold"/>
 
             <TextView
@@ -66,6 +66,7 @@
             android:background="#F0F0F0"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"/>
+
 
         <!-- Detail Booking -->
         <LinearLayout

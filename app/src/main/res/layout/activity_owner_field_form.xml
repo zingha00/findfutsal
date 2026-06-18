@@ -13,7 +13,7 @@
         android:layout_height="?attr/actionBarSize"
         android:background="@color/primary_dark"
         app:title="Tambah Lapangan"
-        app:titleTextColor="#FFFFFF"
+        app:titleTextColor="@color/text_on_primary"
         app:navigationIcon="@drawable/ic_arrow_left"
         app:navigationContentDescription="Kembali"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
@@ -34,7 +34,7 @@
                 android:layout_height="wrap_content"
                 app:cardCornerRadius="12dp"
                 app:cardElevation="2dp"
-                app:cardBackgroundColor="#FFFFFF"
+                app:cardBackgroundColor="@color/bg_card"
                 app:contentPadding="16dp">
 
                 <LinearLayout
@@ -143,7 +143,7 @@
                 android:layout_marginTop="12dp"
                 app:cardCornerRadius="12dp"
                 app:cardElevation="2dp"
-                app:cardBackgroundColor="#FFFFFF"
+                app:cardBackgroundColor="@color/bg_card"
                 app:contentPadding="16dp">
 
                 <LinearLayout
@@ -228,7 +228,7 @@
                 android:layout_marginTop="12dp"
                 app:cardCornerRadius="12dp"
                 app:cardElevation="2dp"
-                app:cardBackgroundColor="#FFFFFF"
+                app:cardBackgroundColor="@color/bg_card"
                 app:contentPadding="16dp">
 
                 <LinearLayout
@@ -313,7 +313,7 @@
                 android:layout_marginTop="12dp"
                 app:cardCornerRadius="12dp"
                 app:cardElevation="2dp"
-                app:cardBackgroundColor="#FFFFFF"
+                app:cardBackgroundColor="@color/bg_card"
                 app:contentPadding="16dp">
 
                 <LinearLayout
@@ -423,7 +423,7 @@
                 android:layout_marginTop="12dp"
                 app:cardCornerRadius="12dp"
                 app:cardElevation="2dp"
-                app:cardBackgroundColor="#FFFFFF"
+                app:cardBackgroundColor="@color/bg_card"
                 app:contentPadding="16dp">
 
                 <LinearLayout
@@ -483,8 +483,8 @@
                 android:text="Simpan Lapangan"
                 android:textSize="15sp"
                 android:textStyle="bold"
-                android:textColor="#FFFFFF"
-                app:backgroundTint="#1A4D2E"
+                android:textColor="@color/text_on_primary"
+                app:backgroundTint="@color/primary_dark"
                 app:cornerRadius="12dp"/>
 
         </LinearLayout>
