@@ -1,219 +1,256 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
-    android:fillViewport="true">
+    android:background="#F5F5F5">
 
-    <LinearLayout
+    <!-- Hero Image -->
+    <ImageView
+        android:id="@+id/ivHero"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center_horizontal"
-        android:paddingHorizontal="28dp"
-        android:paddingTop="48dp"
-        android:paddingBottom="24dp">
+        android:layout_height="240dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/bg_futsal_hero"
+        android:contentDescription="Futsal Hero" />
 
-        <ImageView
-            android:id="@+id/ivLogo"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:src="@drawable/findfutsall"
-            android:background="@drawable/bg_logo"
-            android:padding="8dp"
-            android:contentDescription="@string/app_name"
-            android:layout_marginBottom="20dp"/>
+    <!-- Dark overlay on hero -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="240dp"
+        android:background="@drawable/bg_hero_overlay" />
 
-        <!-- Title -->
-        <TextView
-            android:id="@+id/tvTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/login_title"
-            android:textSize="26sp"
-            android:textStyle="bold"
-            android:textColor="@color/text_primary"
-            android:letterSpacing="-0.02"/>
+    <!-- Scrollable content card -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="180dp"
+        android:fillViewport="true"
+        android:overScrollMode="never">
 
-        <!-- Subtitle -->
-        <TextView
-            android:id="@+id/tvSubtitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:text="@string/login_subtitle"
-            android:textSize="14sp"
-            android:textColor="@color/text_muted"
-            android:gravity="center"
-            android:lineSpacingExtra="4sp"/>
-
-        <!-- Identifier -->
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/tilIdentifier"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:hint="@string/login_identifier_hint"
-            app:startIconDrawable="@drawable/ic_user"
-            app:startIconTint="@color/text_muted"
-            app:boxCornerRadiusTopStart="14dp"
-            app:boxCornerRadiusTopEnd="14dp"
-            app:boxCornerRadiusBottomStart="14dp"
-            app:boxCornerRadiusBottomEnd="14dp"
-            app:strokeColor="@color/divider"
-            app:hintTextColor="@color/text_muted">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etIdentifier"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="text"
-                android:textSize="15sp"
-                android:autofillHints="username"/>
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <!-- Password -->
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/tilPassword"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="14dp"
-            android:hint="@string/login_password_hint"
-            app:startIconDrawable="@drawable/ic_lock"
-            app:startIconTint="@color/text_muted"
-            app:endIconMode="password_toggle"
-            app:boxCornerRadiusTopStart="14dp"
-            app:boxCornerRadiusTopEnd="14dp"
-            app:boxCornerRadiusBottomStart="14dp"
-            app:boxCornerRadiusBottomEnd="14dp"
-            app:strokeColor="@color/divider"
-            app:hintTextColor="@color/text_muted">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etPassword"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textPassword"
-                android:textSize="15sp"
-                android:autofillHints="password"/>
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <!-- Forgot Password -->
-        <TextView
-            android:id="@+id/tvForgotPassword"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:layout_marginTop="10dp"
-            android:text="@string/login_forgot_password"
-            android:textColor="@color/primary_green"
-            android:textSize="13sp"
-            android:textStyle="bold"/>
-
-        <!-- Loading -->
-        <ProgressBar
-            android:id="@+id/progressBar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="12dp"
-            android:visibility="gone"/>
-
-        <!-- Login Button -->
-        <Button
-            android:id="@+id/btnLogin"
-            android:layout_width="match_parent"
-            android:layout_height="54dp"
-            android:layout_marginTop="16dp"
-            android:text="@string/login_button"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:textColor="@color/text_on_primary"
-            android:backgroundTint="@color/primary_green"
-            app:cornerRadius="16dp"
-            android:elevation="2dp"/>
-
-        <!-- Separator -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginTop="24dp">
+            android:orientation="vertical">
 
-            <View
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_weight="1"
-                android:background="@color/divider"/>
-
-            <TextView
-                android:layout_width="wrap_content"
+            <!-- White card -->
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingHorizontal="16dp"
-                android:text="@string/login_separator"
-                android:textSize="12sp"
-                android:textColor="@color/text_muted"/>
+                android:orientation="vertical"
+                android:gravity="center_horizontal"
+                android:background="@drawable/bg_card_top_rounded"
+                android:paddingHorizontal="28dp"
+                android:paddingTop="32dp"
+                android:paddingBottom="32dp">
 
-            <View
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_weight="1"
-                android:background="@color/divider"/>
+                <!-- Logo -->
+                <ImageView
+                    android:id="@+id/ivLogo"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:src="@drawable/findfutsall"
+                    android:background="@drawable/bg_logo"
+                    android:padding="8dp"
+                    android:contentDescription="@string/app_name"
+                    android:layout_marginBottom="16dp" />
+
+                <!-- Title -->
+                <TextView
+                    android:id="@+id/tvTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/login_title"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_primary"
+                    android:letterSpacing="-0.02" />
+
+                <!-- Subtitle -->
+                <TextView
+                    android:id="@+id/tvSubtitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:layout_marginBottom="28dp"
+                    android:text="@string/login_subtitle"
+                    android:textSize="13sp"
+                    android:textColor="@color/text_muted"
+                    android:gravity="center"
+                    android:lineSpacingExtra="4sp" />
+
+                <!-- Identifier Field -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilIdentifier"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/login_identifier_hint"
+                    app:startIconDrawable="@drawable/ic_user"
+                    app:startIconTint="@color/text_muted"
+                    app:boxCornerRadiusTopStart="14dp"
+                    app:boxCornerRadiusTopEnd="14dp"
+                    app:boxCornerRadiusBottomStart="14dp"
+                    app:boxCornerRadiusBottomEnd="14dp"
+                    app:boxBackgroundColor="#FFFFFF"
+                    app:strokeColor="@color/divider"
+                    app:strokeWidth="1.5dp"
+                    app:hintTextColor="@color/text_muted">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etIdentifier"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="text"
+                        android:textSize="14sp"
+                        android:autofillHints="username" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Password Field -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilPassword"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:hint="@string/login_password_hint"
+                    app:startIconDrawable="@drawable/ic_lock"
+                    app:startIconTint="@color/text_muted"
+                    app:endIconMode="password_toggle"
+                    app:boxCornerRadiusTopStart="14dp"
+                    app:boxCornerRadiusTopEnd="14dp"
+                    app:boxCornerRadiusBottomStart="14dp"
+                    app:boxCornerRadiusBottomEnd="14dp"
+                    app:boxBackgroundColor="#FFFFFF"
+                    app:strokeColor="@color/divider"
+                    app:strokeWidth="1.5dp"
+                    app:hintTextColor="@color/text_muted">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etPassword"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textPassword"
+                        android:textSize="14sp"
+                        android:autofillHints="password" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Forgot Password -->
+                <TextView
+                    android:id="@+id/tvForgotPassword"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/login_forgot_password"
+                    android:textColor="@color/primary_green"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+
+                <!-- Progress Bar -->
+                <ProgressBar
+                    android:id="@+id/progressBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="8dp"
+                    android:visibility="gone" />
+
+                <!-- Login Button -->
+                <Button
+                    android:id="@+id/btnLogin"
+                    android:layout_width="match_parent"
+                    android:layout_height="54dp"
+                    android:layout_marginTop="20dp"
+                    android:text="@string/login_button"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_on_primary"
+                    android:backgroundTint="@color/primary_green"
+                    android:letterSpacing="0.08"
+                    app:cornerRadius="16dp"
+                    android:elevation="2dp" />
+
+                <!-- Separator -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="22dp">
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:layout_weight="1"
+                        android:background="@color/divider" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingHorizontal="14dp"
+                        android:text="@string/login_separator"
+                        android:textSize="12sp"
+                        android:textColor="@color/text_muted" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:layout_weight="1"
+                        android:background="@color/divider" />
+                </LinearLayout>
+
+                <!-- Google Button -->
+                <Button
+                    android:id="@+id/btnGoogle"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="16dp"
+                    android:text="@string/login_google"
+                    android:textSize="14sp"
+                    android:textColor="@color/text_primary"
+                    android:backgroundTint="@color/surface"
+                    android:drawableStart="@drawable/ic_google"
+                    android:drawablePadding="10dp"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:insetLeft="0dp"
+                    android:insetTop="0dp"
+                    android:insetRight="0dp"
+                    android:insetBottom="0dp"
+                    app:cornerRadius="14dp"
+                    app:strokeColor="@color/divider"
+                    app:strokeWidth="1.5dp" />
+
+                <!-- Register Link -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="24dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/login_no_account"
+                        android:textColor="@color/text_primary"
+                        android:textSize="13sp" />
+
+                    <TextView
+                        android:id="@+id/tvDaftar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/login_register_link"
+                        android:textColor="@color/primary_green"
+                        android:textStyle="bold"
+                        android:textSize="13sp" />
+                </LinearLayout>
+
+            </LinearLayout>
         </LinearLayout>
+    </ScrollView>
 
-        <!-- Google Button -->
-        <Button
-            android:id="@+id/btnGoogle"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginTop="16dp"
-            android:text="@string/login_google"
-            android:textSize="14sp"
-            android:textColor="@color/text_primary"
-            android:backgroundTint="@color/surface"
-            android:drawableStart="@drawable/ic_google"
-            android:drawablePadding="10dp"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:insetLeft="0dp"
-            android:insetTop="0dp"
-            android:insetRight="0dp"
-            android:insetBottom="0dp"
-            app:cornerRadius="14dp"
-            app:strokeColor="@color/divider"
-            app:strokeWidth="1.5dp"/>
-
-        <!-- Register Link -->
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:orientation="horizontal"
-            android:layout_marginTop="28dp"
-            android:layout_marginBottom="12dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/login_no_account"
-                android:textColor="@color/text_primary"
-                android:textSize="14sp"/>
-
-            <TextView
-                android:id="@+id/tvDaftar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/login_register_link"
-                android:textColor="@color/primary_green"
-                android:textStyle="bold"
-                android:textSize="14sp"/>
-        </LinearLayout>
-
-    </LinearLayout>
-</ScrollView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
