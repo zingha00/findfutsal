@@ -16,12 +16,12 @@ class SessionManager(context: Context) {
 
     fun saveBaseUrl(ip: String) {
         val url = "http://$ip/findfutsall/api/"
-        pref.edit().putString(Constants.KEY_BASE_URL, url).apply()
+        pref.edit().putString(Constants.BASE_URL, url).apply()
         Constants.BASE_URL = url
     }
 
     fun getBaseUrl(): String {
-        return pref.getString(Constants.KEY_BASE_URL, "http://192.168.0.103/findfutsall/api/")
+        return pref.getString(Constants.BASE_URL, "http://192.168.0.103/findfutsall/api/")
             ?: "http://192.168.0.103/findfutsall/api/"
     }
 
@@ -190,7 +190,7 @@ class SessionManager(context: Context) {
     fun clearSession() {
         val baseUrl = getBaseUrl()
         pref.edit().clear().apply()
-        pref.edit().putString(Constants.KEY_BASE_URL, baseUrl).apply()
+        pref.edit().putString(Constants.BASE_URL, baseUrl).apply()
         Constants.BASE_URL = baseUrl
     }
 }
