@@ -12,7 +12,7 @@ class HelpCenterActivity : AppCompatActivity() {
     private lateinit var binding: ActivityHelpCenterBinding
 
     // TANDA: GANTI nomor WhatsApp di bawah ini sesuai kebutuhan (format: 62xxxxxxxxxx, tanpa + atau 0 di depan)
-    private val whatsappNumber = "082148856024" // <-- GANTI NOMOR DI SINI
+    private val whatsappNumber = "082191076642" // <-- GANTI NOMOR DI SINI
     private val supportEmail   = "acep.ega@widyatama.ac.id"
 
     override fun onCreate(savedInstanceState: Bundle?) {

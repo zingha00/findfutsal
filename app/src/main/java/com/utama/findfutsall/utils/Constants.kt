@@ -2,7 +2,7 @@ package com.utama.findfutsall.utils
 
 object Constants {
 
-    const val BASE_URL = "http://192.168.0.101/findfutsall/api/"
+    const val BASE_URL = "http://192.168.1.223/findfutsall/api/"
 
     const val PREF_NAME = "findfutsall_pref"
     const val KEY_TOKEN = "token"
