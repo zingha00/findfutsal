@@ -43,15 +43,15 @@
                 android:id="@+id/tvBookingStatus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Menunggu"
-                android:textSize="10sp"
-                android:textStyle="bold"
-                android:textColor="#856404"
                 android:background="@drawable/bg_tag"
                 android:paddingStart="10dp"
-                android:paddingEnd="10dp"
                 android:paddingTop="5dp"
-                android:paddingBottom="5dp"/>
+                android:paddingEnd="10dp"
+                android:paddingBottom="5dp"
+                android:text="Menunggu"
+                android:textColor="#FF9800"
+                android:textSize="10sp"
+                android:textStyle="bold" />
         </LinearLayout>
 
         <!-- Body -->
@@ -182,14 +182,14 @@
                     android:id="@+id/btnKonfirmasi"
                     android:layout_width="0dp"
                     android:layout_height="42dp"
-                    android:layout_weight="1"
                     android:layout_marginEnd="8dp"
+                    android:layout_weight="1"
                     android:text="Konfirmasi"
+                    android:textColor="#FFFFFF"
                     android:textSize="12sp"
                     android:textStyle="bold"
-                    android:textColor="#FFFFFF"
-                    app:backgroundTint="#1A4D2E"
-                    app:cornerRadius="10dp"/>
+                    app:backgroundTint="@color/success_green"
+                    app:cornerRadius="10dp" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnWhatsapp"
@@ -213,13 +213,11 @@
                     android:layout_height="42dp"
                     android:layout_weight="1"
                     android:text="Tolak"
+                    android:textColor="#FF3B30"
                     android:textSize="12sp"
                     android:textStyle="bold"
-                    android:textColor="#FF3B30"
                     app:backgroundTint="#FFEBEE"
-                    app:cornerRadius="10dp"
-                    app:strokeColor="#FF3B30"
-                    app:strokeWidth="1dp"/>
+                    app:cornerRadius="10dp" />
             </LinearLayout>
 
             <!-- Tombol Detail saja -->

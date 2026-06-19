@@ -72,14 +72,15 @@
                     android:textSize="10sp"
                     android:textColor="#FFD700"
                     android:layout_marginEnd="2dp"/>
+
                 <TextView
                     android:id="@+id/tvFieldRating"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="0.0"
+                    android:textColor="#FFC107"
                     android:textSize="11sp"
-                    android:textStyle="bold"
-                    android:textColor="#FFFFFF"/>
+                    android:textStyle="bold" />
             </LinearLayout>
 
             <!-- Badge kategori kiri bawah -->
@@ -89,15 +90,15 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom|start"
                 android:layout_margin="10dp"
-                android:text="Premium Vinyl"
-                android:textSize="10sp"
-                android:textStyle="bold"
-                android:textColor="#FFFFFF"
-                android:background="@drawable/bg_tag"
+                android:background="@color/text_secondary"
                 android:paddingStart="8dp"
-                android:paddingEnd="8dp"
                 android:paddingTop="4dp"
-                android:paddingBottom="4dp"/>
+                android:paddingEnd="8dp"
+                android:paddingBottom="4dp"
+                android:text="Premium Vinyl"
+                android:textColor="#FFFFFF"
+                android:textSize="10sp"
+                android:textStyle="bold" />
 
         </FrameLayout>
 
@@ -225,24 +226,27 @@
                     app:cardBackgroundColor="#F0F0F0"
                     android:clickable="true"
                     android:focusable="true">
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:gravity="center"
                         android:orientation="horizontal">
+
                         <ImageView
                             android:layout_width="14dp"
                             android:layout_height="14dp"
+                            android:layout_marginEnd="5dp"
                             android:src="@drawable/ic_edit"
-                            app:tint="#333333"
-                            android:layout_marginEnd="5dp"/>
+                            app:tint="#333333" />
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Edit"
+                            android:textColor="#333333"
                             android:textSize="12sp"
-                            android:textStyle="bold"
-                            android:textColor="#333333"/>
+                            android:textStyle="bold" />
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
 

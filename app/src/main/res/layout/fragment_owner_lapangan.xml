@@ -11,39 +11,39 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/primary_darker"
         android:orientation="vertical"
-        android:background="#1A4D2E"
         android:paddingStart="20dp"
-        android:paddingEnd="20dp"
         android:paddingTop="20dp"
+        android:paddingEnd="20dp"
         android:paddingBottom="20dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="VENUE ADMIN"
-            android:textSize="10sp"
-            android:textColor="#00A86B"
             android:letterSpacing="0.1"
-            android:textStyle="bold"/>
+            android:text="VENUE ADMIN"
+            android:textColor="#00A86B"
+            android:textSize="10sp"
+            android:textStyle="bold" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
             android:text="Daftar Lapangan"
-            android:textSize="22sp"
-            android:textStyle="bold"
             android:textColor="#FFFFFF"
-            android:layout_marginTop="2dp"/>
+            android:textSize="22sp"
+            android:textStyle="bold" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Manajemen status, informasi, dan ketersediaan lapangan Anda."
-            android:textSize="11sp"
-            android:textColor="#A8D5B5"
             android:layout_marginTop="4dp"
-            android:layout_marginBottom="16dp"/>
+            android:layout_marginBottom="16dp"
+            android:text="Manajemen status, informasi, dan ketersediaan lapangan Anda."
+            android:textColor="#A8D5B5"
+            android:textSize="11sp" />
 
         <!-- Stats -->
         <LinearLayout
@@ -54,30 +54,33 @@
             <androidx.cardview.widget.CardView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:layout_marginEnd="8dp"
+                android:layout_weight="1"
+                app:cardBackgroundColor="#E8FFF5"
                 app:cardCornerRadius="12dp"
-                app:cardElevation="0dp"
-                app:cardBackgroundColor="#E8FFF5">
+                app:cardElevation="0dp">
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:padding="14dp">
+
                     <TextView
                         android:id="@+id/tvStatTotalLapangan"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="0"
+                        android:textColor="#1A4D2E"
                         android:textSize="28sp"
-                        android:textStyle="bold"
-                        android:textColor="#1A4D2E"/>
+                        android:textStyle="bold" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Total Lapangan"
-                        android:textSize="10sp"
-                        android:textColor="#00A86B"/>
+                        android:textColor="#00A86B"
+                        android:textSize="10sp" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
@@ -85,28 +88,31 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                app:cardBackgroundColor="#1F6B3E"
                 app:cardCornerRadius="12dp"
-                app:cardElevation="0dp"
-                app:cardBackgroundColor="#1F6B3E">
+                app:cardElevation="0dp">
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:padding="14dp">
+
                     <TextView
                         android:id="@+id/tvStatTersedia"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="0"
+                        android:textColor="#FFFFFF"
                         android:textSize="28sp"
-                        android:textStyle="bold"
-                        android:textColor="#FFFFFF"/>
+                        android:textStyle="bold" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Tersedia"
-                        android:textSize="10sp"
-                        android:textColor="#A8D5B5"/>
+                        android:textColor="#A8D5B5"
+                        android:textSize="10sp" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
         </LinearLayout>
@@ -135,24 +141,28 @@
             app:cardBackgroundColor="#1A4D2E"
             android:clickable="true"
             android:focusable="true">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:gravity="center">
+                android:background="@color/primary_green"
+                android:gravity="center"
+                android:orientation="horizontal">
+
                 <ImageView
                     android:layout_width="18dp"
                     android:layout_height="18dp"
+                    android:layout_marginEnd="8dp"
                     android:src="@android:drawable/ic_input_add"
-                    app:tint="#FFFFFF"
-                    android:layout_marginEnd="8dp"/>
+                    app:tint="#FFFFFF" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="+ Tambah Lapangan"
+                    android:textColor="#FFFFFF"
                     android:textSize="14sp"
-                    android:textStyle="bold"
-                    android:textColor="#FFFFFF"/>
+                    android:textStyle="bold" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
