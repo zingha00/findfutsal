@@ -76,16 +76,18 @@ class DetailFieldActivity : AppCompatActivity() {
             else                         -> null
         }
 
+        // Placeholder & error pakai vector drawable ringan
+        // (sebelumnya findfutsall.png ~1.7MB -- berat untuk foto detail yang tampil besar/full width)
         if (fullUrl != null) {
             Glide.with(this)
                 .load(fullUrl)
                 .diskCacheStrategy(com.bumptech.glide.load.engine.DiskCacheStrategy.ALL)
-                .placeholder(R.color.divider)
-                .error(R.drawable.findfutsall)
+                .placeholder(R.drawable.placeholder_image)
+                .error(R.drawable.placeholder_image_error)
                 .centerCrop()
                 .into(binding.ivFieldPhoto)
         } else {
-            binding.ivFieldPhoto.setImageResource(R.drawable.findfutsall)
+            binding.ivFieldPhoto.setImageResource(R.drawable.placeholder_image)
         }
 
         // Fasilitas

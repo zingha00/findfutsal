@@ -60,16 +60,18 @@ class FieldAdapter(
                 else                         -> null
             }
 
+            // Placeholder & error sekarang pakai vector drawable ringan (bukan field_1.png ~1.6MB)
+            // supaya rendering instan dan tidak membebani memori saat scroll list
             if (fullUrl != null) {
                 Glide.with(context)
                     .load(fullUrl)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .placeholder(R.color.divider)
-                    .error(R.drawable.field_1)
+                    .placeholder(R.drawable.placeholder_image)
+                    .error(R.drawable.placeholder_image_error)
                     .centerCrop()
                     .into(ivFieldPhoto)
             } else {
-                ivFieldPhoto.setImageResource(R.drawable.field_1)
+                ivFieldPhoto.setImageResource(R.drawable.placeholder_image)
             }
 
             // Set warna icon favorit

@@ -11,7 +11,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.utama.findfutsall.R
-import com.utama.findfutsall.databinding.FragmentOwnerProfilBinding
+import com.utama.findfutsall.databinding.FragmentOwnerProfileBinding
 import com.utama.findfutsall.ui.auth.LoginActivity
 import com.utama.findfutsall.ui.main.ChangePasswordActivity
 import com.utama.findfutsall.ui.main.EditProfileActivity
@@ -22,7 +22,7 @@ import com.utama.findfutsall.utils.SessionManager
 
 class OwnerProfilFragment : Fragment() {
 
-    private var _binding: FragmentOwnerProfilBinding? = null
+    private var _binding: FragmentOwnerProfileBinding? = null
     private val binding get() = _binding!!
     private lateinit var sessionManager: SessionManager
 
@@ -30,7 +30,7 @@ class OwnerProfilFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentOwnerProfilBinding.inflate(inflater, container, false)
+        _binding = FragmentOwnerProfileBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -52,10 +52,7 @@ class OwnerProfilFragment : Fragment() {
 
     private fun refreshProfileDisplay() {
         val name = sessionManager.getUserName() ?: "Arena Manager"
-        binding.tvProfilName.text  = name
-        binding.tvProfilName2.text = name
-        binding.tvProfilEmail.text = sessionManager.getUserEmail() ?: "-"
-        binding.tvProfilPhone.text = sessionManager.getUserPhone() ?: "-"
+        binding.tvProfilName.text = name
 
         val photoUrl = sessionManager.getUserPhoto()
         if (!photoUrl.isNullOrEmpty()) {
@@ -72,8 +69,7 @@ class OwnerProfilFragment : Fragment() {
     private fun setupProfile() {
         refreshProfileDisplay()
 
-        // Seluruh card Informasi Pribadi sekarang SATU tombol -> EditProfileActivity
-        // (sama seperti pola yang dipakai di sisi user, sudah termasuk ganti foto, nama, telepon)
+        // Informasi Pribadi -> EditProfileActivity (sama seperti pola di sisi user)
         binding.btnEditProfile.setOnClickListener {
             startActivity(Intent(requireContext(), EditProfileActivity::class.java))
         }

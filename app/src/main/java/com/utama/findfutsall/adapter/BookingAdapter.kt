@@ -84,16 +84,18 @@ class BookingAdapter(
                 else                        -> baseUrl + photoPath
             }
 
+            // Placeholder & error pakai vector drawable ringan
+            // (sebelumnya bg_logo + findfutsall.png ~1.7MB, ganti supaya tidak membebani render)
             if (fullUrl != null) {
                 Glide.with(context)
                     .load(fullUrl)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .placeholder(com.utama.findfutsall.R.drawable.bg_logo)
-                    .error(com.utama.findfutsall.R.drawable.findfutsall)
+                    .placeholder(com.utama.findfutsall.R.drawable.placeholder_image)
+                    .error(com.utama.findfutsall.R.drawable.placeholder_image_error)
                     .centerCrop()
                     .into(ivFieldPhoto)
             } else {
-                ivFieldPhoto.setImageResource(com.utama.findfutsall.R.drawable.findfutsall)
+                ivFieldPhoto.setImageResource(com.utama.findfutsall.R.drawable.placeholder_image)
             }
 
             btnAction.setOnClickListener { onActionClick(booking) }

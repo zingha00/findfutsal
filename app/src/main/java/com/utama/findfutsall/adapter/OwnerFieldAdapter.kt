@@ -70,7 +70,6 @@ class OwnerFieldAdapter(
             }
 
             // Foto -- gabungkan dengan BASE_URL kalau masih path relatif dari server
-            // (sebelumnya bug: field.photo dipakai mentah tanpa BASE_URL, jadi gagal load)
             val context   = itemView.context
             val photoName = field.photo ?: ""
             val baseUrl   = Constants.BASE_URL.replace("/api/", "/")
@@ -80,16 +79,17 @@ class OwnerFieldAdapter(
                 else                         -> null
             }
 
+            // Placeholder & error pakai vector drawable ringan (bukan field_1.png ~1.6MB)
             if (fullUrl != null) {
                 Glide.with(context)
                     .load(fullUrl)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .placeholder(R.color.divider)
-                    .error(R.drawable.field_1)
+                    .placeholder(R.drawable.placeholder_image)
+                    .error(R.drawable.placeholder_image_error)
                     .centerCrop()
                     .into(ivPhoto)
             } else {
-                ivPhoto.setImageResource(R.drawable.field_1)
+                ivPhoto.setImageResource(R.drawable.placeholder_image)
             }
 
             itemView.findViewById<View>(R.id.btnEdit).setOnClickListener   { onEdit(field) }

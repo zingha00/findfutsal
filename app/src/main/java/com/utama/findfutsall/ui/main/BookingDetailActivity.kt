@@ -144,16 +144,18 @@ class BookingDetailActivity : AppCompatActivity() {
             else                         -> baseUrl + photoPath
         }
 
+        // Placeholder & error pakai vector drawable ringan
+        // (sebelumnya bg_logo + findfutsall.png ~1.7MB)
         if (fullUrl != null) {
             Glide.with(this)
                 .load(fullUrl)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .placeholder(R.drawable.bg_logo)
-                .error(R.drawable.findfutsall)
+                .placeholder(R.drawable.placeholder_image)
+                .error(R.drawable.placeholder_image_error)
                 .centerCrop()
                 .into(binding.ivFieldPhoto)
         } else {
-            binding.ivFieldPhoto.setImageResource(R.drawable.findfutsall)
+            binding.ivFieldPhoto.setImageResource(R.drawable.placeholder_image)
         }
     }
 }

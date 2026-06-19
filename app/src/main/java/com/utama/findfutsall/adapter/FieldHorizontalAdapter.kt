@@ -41,16 +41,17 @@ class FieldHorizontalAdapter(
                 else                         -> null
             }
 
+            // Placeholder & error pakai vector drawable ringan (bukan field_1.png ~1.6MB)
             if (fullUrl != null) {
                 Glide.with(context)
                     .load(fullUrl)
                     .diskCacheStrategy(com.bumptech.glide.load.engine.DiskCacheStrategy.ALL)
-                    .placeholder(R.color.divider)
-                    .error(R.drawable.field_1)
+                    .placeholder(R.drawable.placeholder_image)
+                    .error(R.drawable.placeholder_image_error)
                     .centerCrop()
                     .into(ivFieldPhoto)
             } else {
-                ivFieldPhoto.setImageResource(R.drawable.field_1)
+                ivFieldPhoto.setImageResource(R.drawable.placeholder_image)
             }
 
             root.setOnClickListener { onItemClick(field) }

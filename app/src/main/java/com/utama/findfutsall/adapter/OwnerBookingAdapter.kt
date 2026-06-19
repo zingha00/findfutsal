@@ -7,9 +7,11 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.android.material.button.MaterialButton
 import com.utama.findfutsall.R
 import com.utama.findfutsall.data.model.OwnerBooking
+import com.utama.findfutsall.utils.Constants
 import com.utama.findfutsall.utils.PriceFormatter
 import de.hdodenhof.circleimageview.CircleImageView
 
@@ -63,10 +65,23 @@ class OwnerBookingAdapter(
             tvTotalPrice.text = PriceFormatter.format(booking.totalPrice)
             tvStatus.text     = booking.status
 
-            if (booking.userPhoto.isNotEmpty()) {
-                Glide.with(itemView.context)
-                    .load(booking.userPhoto)
-                    .placeholder(R.drawable.ic_profile)
+            // Foto user -- gabungkan dengan BASE_URL kalau masih path relatif dari server
+            // (sebelumnya: booking.userPhoto dipakai mentah tanpa fallback BASE_URL,
+            // jadi kalau API kirim path relatif, foto gagal render)
+            val context     = itemView.context
+            val photoName   = booking.userPhoto
+            val baseUrl     = Constants.BASE_URL.replace("/api/", "/")
+            val userPhotoUrl = when {
+                photoName.isEmpty()          -> null
+                photoName.startsWith("http") -> photoName
+                else                         -> "$baseUrl$photoName"
+            }
+
+            if (userPhotoUrl != null) {
+                Glide.with(context)
+                    .load(userPhotoUrl)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .placeholder(R.drawable.placeholder_image)
                     .error(R.drawable.ic_profile)
                     .into(ivUserPhoto)
             } else {
