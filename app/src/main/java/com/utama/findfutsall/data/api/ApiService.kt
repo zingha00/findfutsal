@@ -27,6 +27,16 @@ interface ApiService {
         @Body request: Map<String, String>
     ): Response<Map<String, Any>>
 
+    @POST("verify_otp.php")
+    suspend fun verifyOtp(
+        @Body request: Map<String, String>
+    ): Response<Map<String, Any>>
+
+    @POST("reset_password.php")
+    suspend fun resetPassword(
+        @Body request: Map<String, String>
+    ): Response<Map<String, Any>>
+
     @POST("google_auth.php")
     suspend fun googleAuth(
         @Body request: Map<String, String>

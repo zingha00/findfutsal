@@ -9,7 +9,7 @@ import com.utama.findfutsall.data.model.RegisterRequest
 import com.utama.findfutsall.data.model.RegisterResponse
 import retrofit2.Response
 
-class AuthRepository {
+class AuthRepository{
 
     // Gunakan get() supaya selalu baca BASE_URL terbaru
     private val api get() = ApiClient.instance
@@ -40,6 +40,20 @@ class AuthRepository {
 
     suspend fun forgotPassword(email: String): Response<Map<String, Any>> {
         return api.forgotPassword(mapOf("email" to email))
+    }
+
+    suspend fun verifyOtp(email: String, otp: String): Response<Map<String, Any>> {
+        return api.verifyOtp(mapOf("email" to email, "otp" to otp))
+    }
+
+    suspend fun resetPassword(email: String, otp: String, newPassword: String): Response<Map<String, Any>> {
+        return api.resetPassword(
+            mapOf(
+                "email" to email,
+                "otp" to otp,
+                "new_password" to newPassword
+            )
+        )
     }
 
     suspend fun googleAuth(request: Map<String, String>): Response<LoginResponse> {

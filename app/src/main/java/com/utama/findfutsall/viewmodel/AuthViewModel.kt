@@ -23,6 +23,12 @@ class AuthViewModel : ViewModel() {
     private val _forgotPasswordResult = MutableLiveData<Result<String>?>()
     val forgotPasswordResult: LiveData<Result<String>?> = _forgotPasswordResult
 
+    private val _verifyOtpResult = MutableLiveData<Result<String>?>()
+    val verifyOtpResult: LiveData<Result<String>?> = _verifyOtpResult
+
+    private val _resetPasswordResult = MutableLiveData<Result<String>?>()
+    val resetPasswordResult: LiveData<Result<String>?> = _resetPasswordResult
+
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
 
@@ -122,7 +128,18 @@ class AuthViewModel : ViewModel() {
             try {
                 val response = repository.forgotPassword(email)
                 if (response.isSuccessful) {
-                    _forgotPasswordResult.value = Result.success("Email reset password telah dikirim")
+                    val body = response.body()
+                    // PENTING: cek field "success" dari JSON body (Map), bukan hanya HTTP status code.
+                    // Sebelumnya: response.isSuccessful (HTTP 200) langsung dianggap sukses,
+                    // padahal body bisa berisi {"success": false, "message": "..."} dengan HTTP 200 tetap.
+                    val isSuccess = body?.get("success") as? Boolean ?: false
+                    if (isSuccess) {
+                        val msg = body?.get("message") as? String ?: "Kode OTP telah dikirim"
+                        _forgotPasswordResult.value = Result.success(msg)
+                    } else {
+                        val msg = body?.get("message") as? String ?: "Gagal mengirim kode OTP"
+                        _forgotPasswordResult.value = Result.failure(Exception(msg))
+                    }
                 } else {
                     val errorMsg = parseError(response.errorBody()?.string())
                     _forgotPasswordResult.value = Result.failure(Exception(errorMsg ?: "Email tidak ditemukan"))
@@ -135,9 +152,65 @@ class AuthViewModel : ViewModel() {
         }
     }
 
+    fun verifyOtp(email: String, otp: String) {
+        _isLoading.value = true
+        viewModelScope.launch {
+            try {
+                val response = repository.verifyOtp(email, otp)
+                if (response.isSuccessful) {
+                    val body = response.body()
+                    val isSuccess = body?.get("success") as? Boolean ?: false
+                    if (isSuccess) {
+                        val msg = body?.get("message") as? String ?: "Kode OTP valid"
+                        _verifyOtpResult.value = Result.success(msg)
+                    } else {
+                        val msg = body?.get("message") as? String ?: "Kode OTP tidak valid"
+                        _verifyOtpResult.value = Result.failure(Exception(msg))
+                    }
+                } else {
+                    val errorMsg = parseError(response.errorBody()?.string())
+                    _verifyOtpResult.value = Result.failure(Exception(errorMsg ?: "Verifikasi OTP gagal"))
+                }
+            } catch (e: Exception) {
+                _verifyOtpResult.value = Result.failure(e)
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+
+    fun resetPassword(email: String, otp: String, newPassword: String) {
+        _isLoading.value = true
+        viewModelScope.launch {
+            try {
+                val response = repository.resetPassword(email, otp, newPassword)
+                if (response.isSuccessful) {
+                    val body = response.body()
+                    val isSuccess = body?.get("success") as? Boolean ?: false
+                    if (isSuccess) {
+                        val msg = body?.get("message") as? String ?: "Password berhasil diubah"
+                        _resetPasswordResult.value = Result.success(msg)
+                    } else {
+                        val msg = body?.get("message") as? String ?: "Gagal mengubah password"
+                        _resetPasswordResult.value = Result.failure(Exception(msg))
+                    }
+                } else {
+                    val errorMsg = parseError(response.errorBody()?.string())
+                    _resetPasswordResult.value = Result.failure(Exception(errorMsg ?: "Reset password gagal"))
+                }
+            } catch (e: Exception) {
+                _resetPasswordResult.value = Result.failure(e)
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+
     fun resetLoginResult() { _loginResult.value = null }
     fun resetRegisterResult() { _registerResult.value = null }
     fun resetForgotPasswordResult() { _forgotPasswordResult.value = null }
+    fun resetVerifyOtpResult() { _verifyOtpResult.value = null }
+    fun resetResetPasswordResult() { _resetPasswordResult.value = null }
     fun clearRegisterMessage() { _registerMessage.value = null }
 
     private fun parseError(errorBody: String?): String? {
