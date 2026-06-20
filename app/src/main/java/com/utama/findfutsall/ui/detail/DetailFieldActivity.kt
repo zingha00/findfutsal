@@ -35,6 +35,7 @@ class DetailFieldActivity : AppCompatActivity() {
     private var selectedStart = ""
     private var selectedEnd   = ""
     private var isFavorite    = false
+    private var currentPhotoUrl = ""
 
     private val bookedSlots = mutableListOf<String>()
 
@@ -78,6 +79,7 @@ class DetailFieldActivity : AppCompatActivity() {
 
         // Placeholder & error pakai vector drawable ringan
         // (sebelumnya findfutsall.png ~1.7MB -- berat untuk foto detail yang tampil besar/full width)
+        currentPhotoUrl = fullUrl ?: ""
         if (fullUrl != null) {
             Glide.with(this)
                 .load(fullUrl)
@@ -263,11 +265,40 @@ class DetailFieldActivity : AppCompatActivity() {
 
                 selectedDate = fullDate
                 binding.tvSelectedMonth.text = sdfMonth.format(cal.time)
-                setupTimeSlots(openTime, closeTime)
                 binding.cardPilihJam.visibility = View.VISIBLE
+                fetchBookedSlotsAndRender(openTime, closeTime)
             }
 
             binding.layoutDatePills.addView(pill)
+        }
+    }
+
+    /**
+     * Ambil slot yang sudah dibooking SUNGGUHAN dari server untuk tanggal yang dipilih,
+     * baru render grid jam setelah data didapat. Sebelumnya bookedSlots selalu kosong
+     * (hardcoded), jadi semua slot selalu terlihat "tersedia" walau sebenarnya sudah
+     * dibooking orang lain.
+     */
+    private fun fetchBookedSlotsAndRender(openTime: String, closeTime: String) {
+        bookedSlots.clear()
+        lifecycleScope.launch {
+            try {
+                val response = ApiClient.instance.getBookedSlots(
+                    mapOf("field_id" to fieldId, "date" to selectedDate)
+                )
+                if (response.isSuccessful && response.body() != null) {
+                    val body = response.body()!!
+                    if (body["success"] == true) {
+                        @Suppress("UNCHECKED_CAST")
+                        val slots = body["booked_slots"] as? List<String> ?: emptyList()
+                        bookedSlots.addAll(slots)
+                    }
+                }
+            } catch (e: Exception) {
+                // Kalau gagal fetch, biarkan bookedSlots kosong (anggap semua slot tersedia)
+                // daripada memblokir seluruh alur booking karena masalah jaringan sesaat
+            }
+            setupTimeSlots(openTime, closeTime)
         }
     }
 
@@ -405,6 +436,7 @@ class DetailFieldActivity : AppCompatActivity() {
             putExtra("field_id",      fieldId)
             putExtra("field_name",    binding.tvFieldName.text.toString())
             putExtra("field_address", binding.tvAddress.text.toString())
+            putExtra("field_photo",   currentPhotoUrl)
             putExtra("field_date",    selectedDate)
             putExtra("field_start",   selectedStart)
             putExtra("field_end",     selectedEnd)

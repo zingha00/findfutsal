@@ -120,6 +120,41 @@
                 <View android:layout_width="match_parent" android:layout_height="0.5dp"
                     android:background="@color/divider_color" android:layout_marginStart="48dp"/>
 
+                <!-- Metode Pembayaran -->
+                <LinearLayout
+                    android:id="@+id/btnPaymentMethods"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackground">
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:src="@drawable/ic_wallet"
+                        app:tint="@color/text_secondary"
+                        android:layout_marginEnd="14dp"/>
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Metode Pembayaran"
+                        android:textSize="15sp"
+                        android:textColor="@color/text_primary"/>
+                    <ImageView
+                        android:layout_width="14dp"
+                        android:layout_height="14dp"
+                        android:src="@drawable/ic_arrow_right"
+                        app:tint="@color/text_muted"/>
+                </LinearLayout>
+
+                <View android:layout_width="match_parent" android:layout_height="0.5dp"
+                    android:background="@color/divider_color" android:layout_marginStart="48dp"/>
+
                 <!-- Keamanan (langsung Ubah Kata Sandi, tanpa 2FA) -->
                 <LinearLayout
                     android:id="@+id/btnUbahPassword"

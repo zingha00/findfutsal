@@ -60,8 +60,6 @@ class FieldAdapter(
                 else                         -> null
             }
 
-            // Placeholder & error sekarang pakai vector drawable ringan (bukan field_1.png ~1.6MB)
-            // supaya rendering instan dan tidak membebani memori saat scroll list
             if (fullUrl != null) {
                 Glide.with(context)
                     .load(fullUrl)

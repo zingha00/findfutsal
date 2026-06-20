@@ -129,9 +129,6 @@ class AuthViewModel : ViewModel() {
                 val response = repository.forgotPassword(email)
                 if (response.isSuccessful) {
                     val body = response.body()
-                    // PENTING: cek field "success" dari JSON body (Map), bukan hanya HTTP status code.
-                    // Sebelumnya: response.isSuccessful (HTTP 200) langsung dianggap sukses,
-                    // padahal body bisa berisi {"success": false, "message": "..."} dengan HTTP 200 tetap.
                     val isSuccess = body?.get("success") as? Boolean ?: false
                     if (isSuccess) {
                         val msg = body?.get("message") as? String ?: "Kode OTP telah dikirim"

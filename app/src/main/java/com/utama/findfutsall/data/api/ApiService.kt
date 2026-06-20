@@ -96,4 +96,29 @@ interface ApiService {
     suspend fun cancelBooking(
         @Body request: Map<String, @JvmSuppressWildcards Any>
     ): Response<Map<String, @JvmSuppressWildcards Any>>
+
+    @POST("get_booked_slots.php")
+    suspend fun getBookedSlots(
+        @Body request: Map<String, @JvmSuppressWildcards Any>
+    ): Response<Map<String, @JvmSuppressWildcards Any>>
+
+    @POST("add_payment_method.php")
+    suspend fun addPaymentMethod(
+        @Body request: Map<String, @JvmSuppressWildcards Any>
+    ): Response<Map<String, @JvmSuppressWildcards Any>>
+
+    @POST("get_payment_methods.php")
+    suspend fun getPaymentMethods(
+        @Body request: Map<String, @JvmSuppressWildcards Any>
+    ): Response<Map<String, @JvmSuppressWildcards Any>>
+
+    @POST("delete_payment_method.php")
+    suspend fun deletePaymentMethod(
+        @Body request: Map<String, @JvmSuppressWildcards Any>
+    ): Response<Map<String, @JvmSuppressWildcards Any>>
+
+    @POST("get_owner_payment_methods.php")
+    suspend fun getOwnerPaymentMethods(
+        @Body request: Map<String, @JvmSuppressWildcards Any>
+    ): Response<Map<String, @JvmSuppressWildcards Any>>
 }

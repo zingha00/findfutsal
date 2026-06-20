@@ -64,11 +64,11 @@ class ExploreAdapter(
                     .load(fullUrl)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .placeholder(R.color.divider)
-                    .error(R.drawable.field_1)
+                    .error(R.drawable.placeholder_image)
                     .centerCrop()
                     .into(ivFieldPhoto)
             } else {
-                ivFieldPhoto.setImageResource(R.drawable.field_1)
+                ivFieldPhoto.setImageResource(R.drawable.placeholder_image)
             }
 
             // Icon favorit

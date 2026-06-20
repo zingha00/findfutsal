@@ -146,7 +146,7 @@ class FieldFormActivity : AppCompatActivity() {
         if (photoUrl.isNotEmpty()) {
             Glide.with(this)
                 .load(photoUrl)
-                .placeholder(com.utama.findfutsall.R.drawable.field_1)
+                .placeholder(com.utama.findfutsall.R.drawable.placeholder_image)
                 .centerCrop()
                 .into(binding.ivPhoto)
             binding.layoutUploadHint.visibility = View.GONE

@@ -124,6 +124,11 @@
         <activity android:name=".ui.main.BookingDetailActivity" android:exported="false"/>
         <activity android:name=".ui.owner.OwnerBookingDetailActivity" android:exported="false"/>
         <activity android:name=".ui.owner.AboutAppActivity" android:exported="false"/>
+        <activity android:name=".ui.auth.VerifyOtpActivity" android:exported="false"/>
+        <activity android:name=".ui.auth.ResetPasswordActivity" android:exported="false"/>
+        <activity android:name=".ui.owner.PaymentMethodsActivity" android:exported="false"/>
+        <activity android:name=".ui.owner.AddPaymentMethodActivity" android:exported="false"/>
+        <activity android:name=".ui.detail.PaymentInstructionActivity" android:exported="false"/>
 
     </application>
 

@@ -6,8 +6,14 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
+import com.utama.findfutsall.R
+import com.utama.findfutsall.adapter.PaymentMethodSelectAdapter
 import com.utama.findfutsall.data.api.ApiClient
+import com.utama.findfutsall.data.model.PaymentMethod
 import com.utama.findfutsall.databinding.ActivityPaymentBinding
+import com.utama.findfutsall.utils.PriceFormatter
 import com.utama.findfutsall.utils.SessionManager
 import kotlinx.coroutines.launch
 
@@ -15,7 +21,15 @@ class PaymentActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityPaymentBinding
     private lateinit var session: SessionManager
-    private var selectedPayment = "transfer"
+    private lateinit var paymentAdapter: PaymentMethodSelectAdapter
+
+    private var fieldId      = 0
+    private var fieldName    = ""
+    private var fieldAddress = ""
+    private var fieldDate    = ""
+    private var fieldStart   = ""
+    private var fieldEnd     = ""
+    private var total        = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,131 +38,102 @@ class PaymentActivity : AppCompatActivity() {
 
         session = SessionManager(this)
 
-        val fieldId      = intent.getIntExtra("field_id", 0)
-        val fieldName    = intent.getStringExtra("field_name") ?: ""
-        val fieldAddress = intent.getStringExtra("field_address") ?: ""
-        val fieldDate    = intent.getStringExtra("field_date") ?: ""
-        val fieldStart   = intent.getStringExtra("field_start") ?: ""
-        val fieldEnd     = intent.getStringExtra("field_end") ?: ""
-        val fieldPrice   = intent.getIntExtra("field_price", 0)
-        val serviceFee   = 5000
-        val total        = fieldPrice + serviceFee
+        fieldId      = intent.getIntExtra("field_id", 0)
+        fieldName    = intent.getStringExtra("field_name") ?: ""
+        fieldAddress = intent.getStringExtra("field_address") ?: ""
+        fieldDate    = intent.getStringExtra("field_date") ?: ""
+        fieldStart   = intent.getStringExtra("field_start") ?: ""
+        fieldEnd     = intent.getStringExtra("field_end") ?: ""
+        val fieldPrice = intent.getIntExtra("field_price", 0)
+        val fieldPhoto = intent.getStringExtra("field_photo") ?: ""
+        val serviceFee = 5000
+        total = fieldPrice + serviceFee
 
-        setupUI(fieldName, fieldAddress, fieldDate, fieldStart, fieldEnd, fieldPrice, total)
-        setupPaymentSelection()
+        setupUI(fieldPhoto, fieldPrice)
+        setupPaymentMethods()
+        loadPaymentMethods()
 
         binding.btnBack.setOnClickListener { finish() }
 
-        binding.btnCopy.setOnClickListener {
-            val clipboard = getSystemService(CLIPBOARD_SERVICE) as android.content.ClipboardManager
-            val clip = android.content.ClipData.newPlainText("VA", binding.tvVirtualAccount.text)
-            clipboard.setPrimaryClip(clip)
-            Toast.makeText(this, "Nomor VA disalin!", Toast.LENGTH_SHORT).show()
-        }
-
         binding.btnConfirm.setOnClickListener {
-            doBooking(fieldId, fieldName, fieldDate, fieldStart, fieldEnd, total)
+            goToPaymentInstruction()
         }
     }
 
-    private fun setupUI(
-        name: String, address: String, date: String,
-        start: String, end: String, price: Int, total: Int
-    ) {
-        binding.tvFieldName.text    = name
-        binding.tvFieldAddress.text = address
-        binding.tvFieldDate.text    = date
-        binding.tvFieldTime.text    = "$start - $end (1 Jam)"
-        binding.tvRincianSewa.text  = "Rp ${formatPrice(price)}"
-        binding.tvTotalBayar.text   = "Rp ${formatPrice(total)}"
-        binding.tvVirtualAccount.text = "8077 0812 3456 7890"
-    }
+    private fun setupUI(photoUrl: String, price: Int) {
+        binding.tvFieldName.text    = fieldName
+        binding.tvFieldAddress.text = fieldAddress
+        binding.tvFieldDate.text    = fieldDate
+        binding.tvFieldTime.text    = "$fieldStart - $fieldEnd"
+        binding.tvRincianSewa.text  = PriceFormatter.format(price)
+        binding.tvTotalBayar.text   = PriceFormatter.format(total)
 
-    private fun setupPaymentSelection() {
-        binding.cardBca.setOnClickListener {
-            selectedPayment = "transfer"
-            binding.rbBca.isChecked  = true
-            binding.rbOvo.isChecked  = false
-            binding.rbDana.isChecked = false
-        }
-        binding.cardOvo.setOnClickListener {
-            selectedPayment = "ovo"
-            binding.rbBca.isChecked  = false
-            binding.rbOvo.isChecked  = true
-            binding.rbDana.isChecked = false
-        }
-        binding.cardDana.setOnClickListener {
-            selectedPayment = "dana"
-            binding.rbBca.isChecked  = false
-            binding.rbOvo.isChecked  = false
-            binding.rbDana.isChecked = true
+        if (photoUrl.isNotEmpty()) {
+            Glide.with(this)
+                .load(photoUrl)
+                .placeholder(R.drawable.placeholder_image)
+                .error(R.drawable.placeholder_image_error)
+                .centerCrop()
+                .into(binding.ivFieldPhoto)
         }
     }
 
-    private fun doBooking(
-        fieldId: Int, fieldName: String, fieldDate: String,
-        fieldStart: String, fieldEnd: String, total: Int
-    ) {
-        val userId       = session.getUserId()
-        val customerName = session.getUserName() ?: "Customer"
+    private fun setupPaymentMethods() {
+        paymentAdapter = PaymentMethodSelectAdapter(emptyList()) { /* tidak perlu aksi tambahan saat pilih */ }
+        binding.rvPaymentMethods.layoutManager = LinearLayoutManager(this)
+        binding.rvPaymentMethods.adapter = paymentAdapter
+    }
 
-        if (fieldId == 0 || fieldDate.isEmpty() || fieldStart.isEmpty()) {
-            Toast.makeText(this, "Data booking tidak lengkap", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        binding.btnConfirm.isEnabled = false
-        binding.btnConfirm.text      = "Memproses..."
-
+    private fun loadPaymentMethods() {
+        binding.progressPaymentMethods.visibility = View.VISIBLE
         lifecycleScope.launch {
             try {
-                val response = ApiClient.instance.createBooking(
-                    mapOf(
-                        "user_id"       to userId,
-                        "field_id"      to fieldId,
-                        "customer_name" to customerName,
-                        "play_date"     to fieldDate,
-                        "start_time"    to "$fieldStart:00",
-                        "end_time"      to "$fieldEnd:00",
-                        "total_price"   to total,
-                        "payment_method" to selectedPayment
-                    )
+                val response = ApiClient.instance.getOwnerPaymentMethods(
+                    mapOf("field_id" to fieldId)
                 )
+                binding.progressPaymentMethods.visibility = View.GONE
 
                 if (response.isSuccessful && response.body() != null) {
                     val body = response.body()!!
                     if (body["success"] == true) {
-                        val bookingId = (body["booking_id"] as? Double)?.toInt() ?: 0
-                        val intent = Intent(this@PaymentActivity, BookingSuccessActivity::class.java).apply {
-                            putExtra("field_name",  fieldName)
-                            putExtra("field_date",  fieldDate)
-                            putExtra("field_start", fieldStart)
-                            putExtra("field_end",   fieldEnd)
-                            putExtra("total",       total)
-                            putExtra("booking_id",  bookingId)
+                        @Suppress("UNCHECKED_CAST")
+                        val list = body["data"] as? List<Map<String, Any>> ?: emptyList()
+                        val methods = list.map {
+                            PaymentMethod(
+                                id            = (it["id"] as? Double)?.toInt() ?: 0,
+                                type          = it["type"]?.toString() ?: "",
+                                accountNumber = it["account_number"]?.toString() ?: "",
+                                accountName   = it["account_name"]?.toString() ?: ""
+                            )
                         }
-                        startActivity(intent)
-                        finish()
-                    } else {
-                        val msg = body["message"]?.toString() ?: "Booking gagal"
-                        Toast.makeText(this@PaymentActivity, msg, Toast.LENGTH_LONG).show()
-                        binding.btnConfirm.isEnabled = true
-                        binding.btnConfirm.text = "Konfirmasi Pembayaran"
+                        paymentAdapter.updateData(methods)
                     }
-                } else {
-                    Toast.makeText(this@PaymentActivity, "Gagal terhubung ke server", Toast.LENGTH_SHORT).show()
-                    binding.btnConfirm.isEnabled = true
-                    binding.btnConfirm.text = "Konfirmasi Pembayaran"
                 }
             } catch (e: Exception) {
-                Toast.makeText(this@PaymentActivity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
-                binding.btnConfirm.isEnabled = true
-                binding.btnConfirm.text = "Konfirmasi Pembayaran"
+                binding.progressPaymentMethods.visibility = View.GONE
+                Toast.makeText(this@PaymentActivity, "Gagal memuat metode pembayaran", Toast.LENGTH_SHORT).show()
             }
         }
     }
 
-    private fun formatPrice(price: Int): String {
-        return String.format("%,d", price).replace(",", ".")
+    private fun goToPaymentInstruction() {
+        val selected = paymentAdapter.getSelected()
+        if (selected == null) {
+            Toast.makeText(this, "Pilih metode pembayaran dulu", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val intent = Intent(this, PaymentInstructionActivity::class.java).apply {
+            putExtra("field_id",       fieldId)
+            putExtra("field_name",     fieldName)
+            putExtra("field_date",     fieldDate)
+            putExtra("field_start",    fieldStart)
+            putExtra("field_end",      fieldEnd)
+            putExtra("total",          total)
+            putExtra("payment_type",          selected.type)
+            putExtra("payment_account_number", selected.accountNumber)
+            putExtra("payment_account_name",   selected.accountName)
+        }
+        startActivity(intent)
     }
 }

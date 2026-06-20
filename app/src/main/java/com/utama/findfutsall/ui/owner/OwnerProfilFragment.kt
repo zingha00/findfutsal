@@ -79,6 +79,9 @@ class OwnerProfilFragment : Fragment() {
     }
 
     private fun setupMenus() {
+        binding.btnPaymentMethods.setOnClickListener {
+            startActivity(Intent(requireContext(), PaymentMethodsActivity::class.java))
+        }
         binding.btnUbahPassword.setOnClickListener {
             startActivity(Intent(requireContext(), ChangePasswordActivity::class.java))
         }
