@@ -57,6 +57,8 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation("com.google.android.gms:play-services-auth:21.2.0")
 
+    implementation("androidx.coordinatorlayout:coordinatorlayout:1.2.0")
+
     // GridLayout
     implementation("androidx.gridlayout:gridlayout:1.0.0")
 
