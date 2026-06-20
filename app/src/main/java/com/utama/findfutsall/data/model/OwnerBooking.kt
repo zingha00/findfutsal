@@ -15,5 +15,7 @@ data class OwnerBooking(
     val endTime: String,
     val totalPrice: Double,
     val status: String,
-    val createdAt: String
+    val createdAt: String,
+    val paymentMethod: String = "",
+    val proofImage: String = ""
 )

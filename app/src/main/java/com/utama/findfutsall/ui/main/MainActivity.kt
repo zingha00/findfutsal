@@ -16,7 +16,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         if (savedInstanceState == null) {
-            loadFragment(HomeFragment())
+            handleNavigateToExtra()
         }
 
         binding.bottomNavigationView.setOnItemSelectedListener { item ->
@@ -28,6 +28,24 @@ class MainActivity : AppCompatActivity() {
                 R.id.nav_profile -> loadFragment(ProfileFragment())
             }
             true
+        }
+    }
+
+    /**
+     * Baca extra "navigate_to" yang dikirim dari activity lain (misal
+     * BookingSuccessActivity) supaya bisa langsung pindah ke tab tertentu,
+     * bukan selalu default ke Home.
+     */
+    private fun handleNavigateToExtra() {
+        val navigateTo = intent.getStringExtra("navigate_to")
+        when (navigateTo) {
+            "pesanan" -> {
+                binding.bottomNavigationView.selectedItemId = R.id.nav_booking
+                loadFragment(BookingFragment())
+            }
+            else -> {
+                loadFragment(HomeFragment())
+            }
         }
     }
 

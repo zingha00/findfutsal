@@ -171,67 +171,19 @@
                     android:textColor="#00A86B"/>
             </LinearLayout>
 
-            <!-- Tombol Aksi: Menunggu -->
-            <LinearLayout
-                android:id="@+id/layoutAksi"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnKonfirmasi"
-                    android:layout_width="0dp"
-                    android:layout_height="42dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_weight="1"
-                    android:text="Konfirmasi"
-                    android:textColor="#FFFFFF"
-                    android:textSize="12sp"
-                    android:textStyle="bold"
-                    app:backgroundTint="@color/success_green"
-                    app:cornerRadius="10dp" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnWhatsapp"
-                    android:layout_width="42dp"
-                    android:layout_height="42dp"
-                    android:layout_marginEnd="8dp"
-                    android:text=""
-                    android:insetTop="0dp"
-                    android:insetBottom="0dp"
-                    app:backgroundTint="#25D366"
-                    app:cornerRadius="10dp"
-                    app:icon="@drawable/ic_phone"
-                    app:iconGravity="textStart"
-                    app:iconPadding="0dp"
-                    app:iconSize="20dp"
-                    app:iconTint="#FFFFFF"/>
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnBatal"
-                    android:layout_width="0dp"
-                    android:layout_height="42dp"
-                    android:layout_weight="1"
-                    android:text="Tolak"
-                    android:textColor="#FF3B30"
-                    android:textSize="12sp"
-                    android:textStyle="bold"
-                    app:backgroundTint="#FFEBEE"
-                    app:cornerRadius="10dp" />
-            </LinearLayout>
-
-            <!-- Tombol Detail saja -->
+            <!-- SATU tombol untuk SEMUA status. Konfirmasi/Tolak dipindah
+                 ke halaman OwnerBookingDetailActivity, hanya muncul di sana
+                 kalau status masih Menunggu. -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnDetail"
                 android:layout_width="match_parent"
                 android:layout_height="42dp"
                 android:text="Lihat Detail"
+                android:textColor="@color/divider"
                 android:textSize="12sp"
                 android:textStyle="bold"
-                android:textColor="#1A4D2E"
-                app:backgroundTint="#E8FFF5"
-                app:cornerRadius="10dp"
-                android:visibility="gone"/>
+                app:backgroundTint="@color/primary_green"
+                app:cornerRadius="10dp" />
 
         </LinearLayout>
     </LinearLayout>

@@ -81,21 +81,57 @@
                     android:background="@drawable/bg_chip_inactive"/>
             </LinearLayout>
 
-            <!-- Dropdown pilih Bank/E-Wallet -->
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/tilProviderName"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pilih Provider"
+                android:textSize="13sp"
+                android:textColor="#666666"
+                android:layout_marginBottom="10dp"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvProviders"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Pilih Bank"
-                android:layout_marginBottom="14dp">
+                android:nestedScrollingEnabled="false"
+                android:layout_marginBottom="20dp"/>
 
-                <AutoCompleteTextView
-                    android:id="@+id/dropdownProvider"
-                    android:layout_width="match_parent"
+            <!-- Provider terpilih (read-only, hanya konfirmasi visual) -->
+            <LinearLayout
+                android:id="@+id/layoutSelectedProvider"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:background="#E8FFF5"
+                android:padding="12dp"
+                android:layout_marginBottom="20dp"
+                android:visibility="gone">
+
+                <ImageView
+                    android:id="@+id/ivSelectedLogo"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:scaleType="centerInside"
+                    android:layout_marginEnd="10dp"/>
+
+                <TextView
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:inputType="none"/>
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:layout_weight="1"
+                    android:text="Terpilih: "
+                    android:textSize="13sp"
+                    android:textColor="#1A4D2E"/>
+
+                <TextView
+                    android:id="@+id/tvSelectedProviderName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="#1A4D2E"/>
+            </LinearLayout>
 
             <!-- Nama Pemilik -->
             <com.google.android.material.textfield.TextInputLayout

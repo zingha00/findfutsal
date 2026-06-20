@@ -17,9 +17,6 @@ import de.hdodenhof.circleimageview.CircleImageView
 
 class OwnerBookingAdapter(
     bookings: List<OwnerBooking>,
-    private val onKonfirmasi: (OwnerBooking) -> Unit,
-    private val onBatal: (OwnerBooking) -> Unit,
-    private val onWhatsapp: (OwnerBooking) -> Unit,
     private val onDetail: (OwnerBooking) -> Unit
 ) : RecyclerView.Adapter<OwnerBookingAdapter.ViewHolder>() {
 
@@ -51,10 +48,6 @@ class OwnerBookingAdapter(
         private val tvFieldName: TextView         = itemView.findViewById(R.id.tvFieldName)
         private val tvPlayDate: TextView          = itemView.findViewById(R.id.tvPlayDate)
         private val tvTotalPrice: TextView        = itemView.findViewById(R.id.tvTotalPrice)
-        private val layoutAksi: View              = itemView.findViewById(R.id.layoutAksi)
-        private val btnKonfirmasi: MaterialButton = itemView.findViewById(R.id.btnKonfirmasi)
-        private val btnBatal: MaterialButton      = itemView.findViewById(R.id.btnBatal)
-        private val btnWhatsapp: MaterialButton   = itemView.findViewById(R.id.btnWhatsapp)
         private val btnDetail: MaterialButton     = itemView.findViewById(R.id.btnDetail)
 
         fun bind(booking: OwnerBooking) {
@@ -66,8 +59,6 @@ class OwnerBookingAdapter(
             tvStatus.text     = booking.status
 
             // Foto user -- gabungkan dengan BASE_URL kalau masih path relatif dari server
-            // (sebelumnya: booking.userPhoto dipakai mentah tanpa fallback BASE_URL,
-            // jadi kalau API kirim path relatif, foto gagal render)
             val context     = itemView.context
             val photoName   = booking.userPhoto
             val baseUrl     = Constants.BASE_URL.replace("/api/", "/")
@@ -88,40 +79,28 @@ class OwnerBookingAdapter(
                 ivUserPhoto.setImageResource(R.drawable.ic_profile)
             }
 
+            // Warna badge status saja -- aksi Konfirmasi/Tolak SEKARANG hanya ada
+            // di halaman OwnerBookingDetailActivity, bukan di card list ini lagi.
+            // Tombol "Lihat Detail" SELALU terlihat untuk semua status.
             when (booking.status) {
                 "Menunggu" -> {
                     tvStatus.setTextColor(Color.parseColor("#856404"))
                     tvStatus.setBackgroundResource(R.drawable.bg_tag)
-                    layoutAksi.visibility = View.VISIBLE
-                    btnDetail.visibility  = View.GONE
                 }
                 "Terkonfirmasi" -> {
                     tvStatus.setTextColor(Color.parseColor("#065F46"))
                     tvStatus.setBackgroundResource(R.drawable.bg_slot_available)
-                    layoutAksi.visibility = View.GONE
-                    btnDetail.visibility  = View.VISIBLE
                 }
                 "Batal" -> {
                     tvStatus.setTextColor(Color.parseColor("#991B1B"))
                     tvStatus.setBackgroundResource(R.drawable.bg_status_batal)
-                    layoutAksi.visibility = View.GONE
-                    btnDetail.visibility  = View.VISIBLE
                 }
                 "Selesai" -> {
                     tvStatus.setTextColor(Color.parseColor("#1D4ED8"))
                     tvStatus.setBackgroundResource(R.drawable.bg_status_selesai)
-                    layoutAksi.visibility = View.GONE
-                    btnDetail.visibility  = View.VISIBLE
-                }
-                else -> {
-                    layoutAksi.visibility = View.VISIBLE
-                    btnDetail.visibility  = View.GONE
                 }
             }
 
-            btnKonfirmasi.setOnClickListener { onKonfirmasi(booking) }
-            btnBatal.setOnClickListener { onBatal(booking) }
-            btnWhatsapp.setOnClickListener { onWhatsapp(booking) }
             btnDetail.setOnClickListener { onDetail(booking) }
             itemView.setOnClickListener { onDetail(booking) }
         }

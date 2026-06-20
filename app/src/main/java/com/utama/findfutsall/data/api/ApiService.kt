@@ -121,4 +121,9 @@ interface ApiService {
     suspend fun getOwnerPaymentMethods(
         @Body request: Map<String, @JvmSuppressWildcards Any>
     ): Response<Map<String, @JvmSuppressWildcards Any>>
+
+    @POST("update_booking_status.php")
+    suspend fun updateBookingStatus(
+        @Body request: Map<String, @JvmSuppressWildcards Any>
+    ): Response<Map<String, @JvmSuppressWildcards Any>>
 }

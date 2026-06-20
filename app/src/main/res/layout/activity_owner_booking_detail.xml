@@ -351,13 +351,63 @@
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
+        <!-- Bukti Pembayaran -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardProof"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:visibility="gone"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="2dp"
+            app:cardBackgroundColor="#FFFFFF">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="BUKTI PEMBAYARAN"
+                    android:textSize="10sp"
+                    android:textColor="#00A86B"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.1"
+                    android:layout_marginBottom="12dp"/>
+
+                <TextView
+                    android:id="@+id/tvPaymentMethod"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Metode: -"
+                    android:textSize="13sp"
+                    android:textColor="#666666"
+                    android:layout_marginBottom="10dp"/>
+
+                <ImageView
+                    android:id="@+id/ivPaymentProof"
+                    android:layout_width="match_parent"
+                    android:layout_height="220dp"
+                    android:scaleType="centerCrop"
+                    android:background="@drawable/placeholder_image"
+                    android:clickable="true"
+                    android:focusable="true"/>
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
         <!-- Pembayaran -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
-            android:layout_marginBottom="24dp"
+            android:layout_marginBottom="16dp"
             app:cardCornerRadius="16dp"
             app:cardElevation="2dp"
             app:cardBackgroundColor="#1A4D2E">
@@ -388,6 +438,44 @@
 
             </LinearLayout>
         </androidx.cardview.widget.CardView>
+
+        <!-- Tombol Aksi: HANYA muncul kalau status masih Menunggu -->
+        <LinearLayout
+            android:id="@+id/layoutAksi"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="24dp"
+            android:visibility="gone">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnTolak"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:layout_marginEnd="8dp"
+                android:text="Tolak"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:textColor="#FF3B30"
+                app:backgroundTint="#FFEBEE"
+                app:cornerRadius="10dp"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnKonfirmasi"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="2"
+                android:text="Konfirmasi Booking"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF"
+                app:backgroundTint="@color/success_green"
+                app:cornerRadius="10dp"/>
+
+        </LinearLayout>
 
     </LinearLayout>
 

@@ -2,14 +2,12 @@ package com.utama.findfutsall.ui.owner
 
 import android.content.Intent
 import android.graphics.Color
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -61,20 +59,18 @@ class OwnerBookingFragment : Fragment() {
         loadBookings()
     }
 
+    override fun onResume() {
+        super.onResume()
+        // Refresh setiap kembali dari halaman Detail (kalau status sudah diubah di sana)
+        if (_binding != null) loadBookings()
+    }
+
     private fun setupRecyclerView() {
+        // Sekarang adapter HANYA punya satu aksi: buka Detail.
+        // Konfirmasi/Tolak/WhatsApp dipindah ke OwnerBookingDetailActivity.
         adapter = OwnerBookingAdapter(
-            bookings     = allBookings,
-            onKonfirmasi = { booking -> updateStatus(booking, "Terkonfirmasi") },
-            onBatal      = { booking ->
-                AlertDialog.Builder(requireContext())
-                    .setTitle("Tolak Booking")
-                    .setMessage("Tolak booking dari ${booking.customerName}?")
-                    .setPositiveButton("Tolak") { _, _ -> updateStatus(booking, "Batal") }
-                    .setNegativeButton("Tidak", null)
-                    .show()
-            },
-            onWhatsapp = { booking -> openWhatsapp(booking) },
-            onDetail   = { booking -> openDetail(booking) }
+            bookings = allBookings,
+            onDetail = { booking -> openDetail(booking) }
         )
         binding.rvBooking.layoutManager = LinearLayoutManager(requireContext())
         binding.rvBooking.adapter = adapter
@@ -96,6 +92,8 @@ class OwnerBookingFragment : Fragment() {
             putExtra(OwnerBookingDetailActivity.EXTRA_TOTAL_PRICE, booking.totalPrice)
             putExtra(OwnerBookingDetailActivity.EXTRA_STATUS, booking.status)
             putExtra(OwnerBookingDetailActivity.EXTRA_CREATED_AT, booking.createdAt)
+            putExtra(OwnerBookingDetailActivity.EXTRA_PAYMENT_METHOD, booking.paymentMethod)
+            putExtra(OwnerBookingDetailActivity.EXTRA_PROOF_IMAGE, booking.proofImage)
         }
         startActivity(intent)
     }
@@ -179,7 +177,9 @@ class OwnerBookingFragment : Fragment() {
                                     endTime      = obj.optString("end_time"),
                                     totalPrice   = obj.optDouble("total_price"),
                                     status       = obj.optString("status"),
-                                    createdAt    = obj.optString("created_at")
+                                    createdAt    = obj.optString("created_at"),
+                                    paymentMethod = obj.optString("payment_method"),
+                                    proofImage   = obj.optString("proof_image")
                                 )
                             )
                         }
@@ -205,57 +205,6 @@ class OwnerBookingFragment : Fragment() {
                 }
             }
         }
-    }
-
-    private fun updateStatus(booking: OwnerBooking, newStatus: String) {
-        lifecycleScope.launch(Dispatchers.IO) {
-            try {
-                val json = JSONObject().apply {
-                    put("booking_id", booking.id)
-                    put("status", newStatus)
-                    put("user_id", sessionManager.getUserId())
-                }
-                val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
-                val request = Request.Builder()
-                    .url(Constants.BASE_URL + "update_booking_status.php")
-                    .post(body)
-                    .build()
-                val response = httpClient.newCall(request).execute()
-                val resJson  = JSONObject(response.body?.string() ?: "{}")
-
-                withContext(Dispatchers.Main) {
-                    if (_binding == null) return@withContext
-                    if (resJson.optBoolean("success")) {
-                        Toast.makeText(requireContext(), "Booking $newStatus", Toast.LENGTH_SHORT).show()
-                        isLoading = false
-                        loadBookings()
-                    } else {
-                        Toast.makeText(requireContext(), resJson.optString("message", "Gagal"), Toast.LENGTH_SHORT).show()
-                    }
-                }
-            } catch (e: Exception) {
-                withContext(Dispatchers.Main) {
-                    if (_binding == null) return@withContext
-                    Toast.makeText(requireContext(), "Error: ${e.message}", Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
-    }
-
-    private fun openWhatsapp(booking: OwnerBooking) {
-        val phone = booking.userPhone.replace(Regex("[^0-9]"), "")
-        if (phone.isEmpty()) {
-            Toast.makeText(requireContext(), "Nomor telepon tidak tersedia", Toast.LENGTH_SHORT).show()
-            return
-        }
-        val waPhone = if (phone.startsWith("0")) "62${phone.substring(1)}" else phone
-        val message = "Halo ${booking.customerName}, konfirmasi booking lapangan ${booking.fieldName} " +
-                "pada ${booking.playDate} pukul ${booking.startTime}-${booking.endTime}."
-        val intent = Intent(
-            Intent.ACTION_VIEW,
-            Uri.parse("https://wa.me/$waPhone?text=${Uri.encode(message)}")
-        )
-        startActivity(intent)
     }
 
     override fun onDestroyView() {
