@@ -53,11 +53,11 @@
                         android:layout_marginStart="8dp"/>
                 </LinearLayout>
 
-                <!-- Nama Lapangan -->
+                <!-- Nama Venue -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Nama Lapangan *"
+                    android:text="Nama Venue *"
                     android:textSize="13sp"
                     android:textColor="#121212"
                     android:textStyle="bold"
@@ -72,7 +72,8 @@
                     app:boxCornerRadiusTopEnd="8dp"
                     app:boxCornerRadiusBottomStart="8dp"
                     app:boxCornerRadiusBottomEnd="8dp"
-                    app:boxStrokeColor="@color/divider">
+                    app:boxStrokeColor="@color/divider"
+                    app:startIconDrawable="@drawable/ic_home">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etNamaLapangan"
@@ -115,6 +116,47 @@
                         android:textSize="14sp"
                         android:inputType="textMultiLine"
                         android:minLines="2"
+                        android:paddingTop="14dp"
+                        android:paddingBottom="14dp"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Link Google Maps (BARU) -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Link Google Maps"
+                    android:textSize="13sp"
+                    android:textColor="#121212"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="6dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Buka Google Maps, cari lokasi venue, tekan Bagikan, lalu salin tautannya di sini"
+                    android:textSize="11sp"
+                    android:textColor="#999999"
+                    android:layout_marginBottom="8dp"/>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="14dp"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    app:boxCornerRadiusTopStart="8dp"
+                    app:boxCornerRadiusTopEnd="8dp"
+                    app:boxCornerRadiusBottomStart="8dp"
+                    app:boxCornerRadiusBottomEnd="8dp"
+                    app:boxStrokeColor="@color/divider"
+                    app:startIconDrawable="@drawable/ic_location">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etMapsLink"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="https://maps.app.goo.gl/xxxxx"
+                        android:textSize="14sp"
+                        android:inputType="textUri"
                         android:paddingTop="14dp"
                         android:paddingBottom="14dp"/>
                 </com.google.android.material.textfield.TextInputLayout>
@@ -189,7 +231,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Deskripsi Lapangan"
+                    android:text="Deskripsi Venue"
                     android:textSize="13sp"
                     android:textColor="#121212"
                     android:textStyle="bold"
@@ -210,7 +252,7 @@
                         android:id="@+id/etDeskripsi"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Deskripsikan lapangan Anda, keunggulan, dan fasilitas utama..."
+                        android:hint="Deskripsikan venue Anda, keunggulan, dan fasilitas utama..."
                         android:textSize="14sp"
                         android:inputType="textMultiLine"
                         android:minLines="3"

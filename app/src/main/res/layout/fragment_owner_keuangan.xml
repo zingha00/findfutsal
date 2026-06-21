@@ -13,7 +13,6 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!-- ─── HEADER ─────────────────────────────────────────── -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -74,20 +73,17 @@
                 android:textStyle="bold"/>
         </LinearLayout>
 
-        <!-- divider bawah header -->
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="#E0E0E0"/>
 
-        <!-- ─── CONTENT AREA ───────────────────────────────────── -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="16dp">
 
-            <!-- ─── CARD RINGKASAN LABA BERSIH ──────────────────── -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -217,7 +213,6 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <!-- ─── ROW: BOOKING & DENDA ─────────────────────────── -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -327,7 +322,6 @@
                 </androidx.cardview.widget.CardView>
             </LinearLayout>
 
-            <!-- ─── ROW: TOTAL BOOKING & OCCUPANCY ──────────────── -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -423,7 +417,6 @@
                 </androidx.cardview.widget.CardView>
             </LinearLayout>
 
-            <!-- ─── CARD TARGET BULAN INI ────────────────────────── -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -444,6 +437,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
+                        android:gravity="center_vertical"
                         android:layout_marginBottom="12dp">
 
                         <TextView
@@ -456,12 +450,25 @@
                             android:textStyle="bold"/>
 
                         <TextView
+                            android:id="@+id/tvTargetPercent"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="0%"
                             android:textColor="#1A4D2E"
                             android:textSize="13sp"
-                            android:textStyle="bold"/>
+                            android:textStyle="bold"
+                            android:layout_marginEnd="10dp"/>
+
+                        <ImageView
+                            android:id="@+id/btnEditTarget"
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
+                            android:src="@drawable/ic_edit"
+                            app:tint="#1A4D2E"
+                            android:padding="2dp"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:background="?attr/selectableItemBackgroundBorderless"/>
                     </LinearLayout>
 
                     <ProgressBar
@@ -532,7 +539,6 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <!-- ─── CARD PERFORMA KEUANGAN (CHART) ──────────────── -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -571,7 +577,6 @@
                             android:layout_gravity="center_vertical"/>
                     </LinearLayout>
 
-                    <!-- Filter Tabs -->
                     <HorizontalScrollView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -641,7 +646,6 @@
                         </LinearLayout>
                     </HorizontalScrollView>
 
-                    <!-- Checkbox Pendapatan / Pengeluaran -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -669,21 +673,18 @@
                             android:buttonTint="#D85A30"/>
                     </LinearLayout>
 
-                    <!-- Line Chart -->
                     <com.github.mikephil.charting.charts.LineChart
                         android:id="@+id/chartRevenue"
                         android:layout_width="match_parent"
                         android:layout_height="160dp"
                         android:layout_marginBottom="12dp"/>
 
-                    <!-- Divider -->
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="0.5dp"
                         android:background="#E0E0E0"
                         android:layout_marginBottom="12dp"/>
 
-                    <!-- Summary row -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -762,7 +763,6 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <!-- ─── CARD TRANSAKSI TERBARU ───────────────────────── -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -816,13 +816,18 @@
                         android:layout_marginBottom="12dp"/>
 
                     <TextView
+                        android:id="@+id/btnLihatSemuaTransaksi"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Lihat Semua Transaksi"
                         android:textColor="#1A4D2E"
                         android:textSize="13sp"
                         android:textStyle="bold"
-                        android:gravity="center"/>
+                        android:gravity="center"
+                        android:padding="8dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:background="?attr/selectableItemBackground"/>
 
                     <ProgressBar
                         android:id="@+id/progressKeuangan"

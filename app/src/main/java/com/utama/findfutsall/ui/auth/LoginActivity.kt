@@ -41,10 +41,6 @@ class LoginActivity : AppCompatActivity() {
                 token = account.idToken ?: ""
             )
         } catch (e: ApiException) {
-            // Kalau user menekan back/batal di halaman pilih akun Google,
-            // ini SELALU melempar ApiException dengan kode SIGN_IN_CANCELLED.
-            // Itu BUKAN error sungguhan -- jangan tampilkan toast untuk kasus ini,
-            // supaya user tidak bingung melihat "gagal" padahal dia cuma berubah pikiran.
             if (e.statusCode != GoogleSignInStatusCodes.SIGN_IN_CANCELLED) {
                 Toast.makeText(this, "Google Sign-In gagal: ${e.message}", Toast.LENGTH_SHORT).show()
             }

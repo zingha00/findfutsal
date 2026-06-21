@@ -20,7 +20,6 @@ class OwnerBookingAdapter(
     private val onDetail: (OwnerBooking) -> Unit
 ) : RecyclerView.Adapter<OwnerBookingAdapter.ViewHolder>() {
 
-    // Selalu buat list BARU (independent copy), jangan pegang referensi list asli dari luar
     private var bookings: MutableList<OwnerBooking> = bookings.toMutableList()
 
     fun updateData(newBookings: List<OwnerBooking>) {
@@ -79,9 +78,6 @@ class OwnerBookingAdapter(
                 ivUserPhoto.setImageResource(R.drawable.ic_profile)
             }
 
-            // Warna badge status saja -- aksi Konfirmasi/Tolak SEKARANG hanya ada
-            // di halaman OwnerBookingDetailActivity, bukan di card list ini lagi.
-            // Tombol "Lihat Detail" SELALU terlihat untuk semua status.
             when (booking.status) {
                 "Menunggu" -> {
                     tvStatus.setTextColor(Color.parseColor("#856404"))

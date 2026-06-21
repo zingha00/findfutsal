@@ -149,6 +149,7 @@ class HomeFragment : Fragment() {
             putExtra("field_open_time", field.openTime)
             putExtra("field_close_time", field.closeTime)
             putExtra("field_phone", field.phone)
+            putExtra("field_maps_link", field.mapsLink)
         }
         startActivity(intent)
     }
@@ -159,13 +160,6 @@ class HomeFragment : Fragment() {
         }
     }
 
-    /**
-     * Kirim perubahan status favorit ke server TANPA memicu re-render adapter.
-     * Adapter sudah mengubah state & warna + animasi secara lokal saat diklik;
-     * fungsi ini hanya menyinkronkan ke backend secara diam-diam di background.
-     * Memanggil fieldAdapter.toggleFavorite() lagi di sini akan memicu
-     * notifyDataSetChanged() yang memotong animasi klik yang sedang berjalan.
-     */
     private fun syncFavoriteToServer(field: Field) {
         val userId = session.getUserId()
         lifecycleScope.launch(Dispatchers.IO) {
@@ -176,7 +170,6 @@ class HomeFragment : Fragment() {
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
                     if (isAdded && _binding != null) {
-                        // Gagal sync ke server -> rollback state visual
                         fieldAdapter.toggleFavorite(field.id)
                     }
                 }
@@ -187,7 +180,6 @@ class HomeFragment : Fragment() {
     private fun loadFieldsWithFavorites() {
         viewLifecycleOwner.lifecycleScope.launch {
             try {
-                // Jalankan kedua request secara PARALEL (bukan berurutan) supaya lebih cepat
                 val fields: List<Field>
                 val favIds: Set<Int>
                 withContext(Dispatchers.IO) {
@@ -245,7 +237,8 @@ class HomeFragment : Fragment() {
                 description = obj.optString("description").ifEmpty { null },
                 facilities  = obj.optString("facilities").ifEmpty { null },
                 openTime    = obj.optString("openTime").ifEmpty { "06:00" },
-                closeTime   = obj.optString("closeTime").ifEmpty { "23:00" }
+                closeTime   = obj.optString("closeTime").ifEmpty { "23:00" },
+                mapsLink    = obj.optString("maps_link").ifEmpty { null }
             )
         }
     }

@@ -15,6 +15,16 @@ import com.utama.findfutsall.ui.auth.LoginActivity
 import com.utama.findfutsall.utils.SessionManager
 import kotlinx.coroutines.launch
 
+/**
+ * Pendaftaran owner sekarang HANYA 2 langkah (sebelumnya 3):
+ * 1. Info Venue (nama, alamat, kota, telepon, deskripsi)
+ * 2. Jam Operasional + Fasilitas Umum
+ *
+ * Step lama "Foto Lapangan" DIHAPUS dari sini -- detail per-lapangan
+ * (harga, jenis permukaan, foto) sekarang diisi lewat alur "Tambah Lapangan"
+ * terpisah di Dashboard, karena owner bisa punya banyak lapangan dengan
+ * data berbeda-beda, tidak masuk akal dipaksa isi 1 set data di pendaftaran.
+ */
 class RegisterOwnerActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityRegisterOwnerBinding
@@ -24,9 +34,8 @@ class RegisterOwnerActivity : AppCompatActivity() {
     val step2Data = mutableMapOf<String, Any>()
 
     private val stepLabels = listOf(
-        "Langkah 1 dari 3 — Info Lapangan",
-        "Langkah 2 dari 3 — Detail & Harga",
-        "Langkah 3 dari 3 — Foto Lapangan"
+        "Langkah 1 dari 2 — Info Venue",
+        "Langkah 2 dari 2 — Operasional & Fasilitas"
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,8 +53,7 @@ class RegisterOwnerActivity : AppCompatActivity() {
     private fun setupViewPager() {
         val fragments = listOf(
             RegisterOwnerStep1Fragment(),
-            RegisterOwnerStep2Fragment(),
-            RegisterOwnerStep3Fragment()
+            RegisterOwnerStep2Fragment()
         )
 
         binding.viewPager.adapter = object : FragmentStateAdapter(this) {
@@ -62,13 +70,13 @@ class RegisterOwnerActivity : AppCompatActivity() {
             override fun onPageSelected(position: Int) {
                 updateStepper(position)
                 binding.tvStepLabel.text = stepLabels[position]
-                binding.btnNext.text = if (position == 2) "✓  Daftar Sekarang" else "Lanjutkan  ›"
+                binding.btnNext.text = if (position == 1) "✓  Daftar Sekarang" else "Lanjutkan  ›"
             }
         })
     }
 
     private fun updateStepper(currentPage: Int) {
-        val stepViews = listOf(binding.tvStep1, binding.tvStep2, binding.tvStep3)
+        val stepViews = listOf(binding.tvStep1, binding.tvStep2)
         val doneDrawable = resources.getDrawable(com.utama.findfutsall.R.drawable.bg_step_done, theme)
         val activeDrawable = resources.getDrawable(com.utama.findfutsall.R.drawable.bg_step_active, theme)
         val inactiveDrawable = resources.getDrawable(com.utama.findfutsall.R.drawable.bg_step_inactive, theme)
@@ -106,7 +114,7 @@ class RegisterOwnerActivity : AppCompatActivity() {
             val currentFragment = getCurrentFragment(current)
 
             if (currentFragment?.validate() == true) {
-                if (current < 2) {
+                if (current < 1) {
                     binding.viewPager.currentItem = current + 1
                 } else {
                     submitRegistration()
@@ -126,17 +134,17 @@ class RegisterOwnerActivity : AppCompatActivity() {
         val phone       = step1Data["no_telepon"] ?: ""
         val description = step1Data["deskripsi"] ?: ""
 
+        val openTime  = step2Data["jam_buka"] as? String ?: "06:00"
+        val closeTime = step2Data["jam_tutup"] as? String ?: "23:00"
         @Suppress("UNCHECKED_CAST")
-        val surfaceTypes = step2Data["jenis_permukaan"] as? List<String> ?: emptyList()
-        val totalFields  = step2Data["jumlah_lapangan"] as? Int ?: 1
-        val pricePerHour = step2Data["harga_per_jam"] as? Long ?: 0L
-        val openTime     = step2Data["jam_buka"] as? String ?: "06:00"
-        val closeTime    = step2Data["jam_tutup"] as? String ?: "23:00"
-        @Suppress("UNCHECKED_CAST")
-        val facilities   = step2Data["fasilitas"] as? List<String> ?: emptyList()
+        val facilities = step2Data["fasilitas"] as? List<String> ?: emptyList()
 
         val userId = sessionManager.getUserId()
 
+        // Field level-lapangan (jenis_permukaan, jumlah_lapangan, harga_per_jam)
+        // tidak lagi dikirim di sini -- nilai default/placeholder dikirim
+        // supaya backend tetap kompatibel, lapangan sungguhan ditambahkan
+        // nanti lewat fitur "Tambah Lapangan".
         val request = OwnerRegisterRequest(
             user_id         = userId,
             nama_lapangan   = venueName,
@@ -144,9 +152,9 @@ class RegisterOwnerActivity : AppCompatActivity() {
             kota            = city,
             no_telepon      = phone,
             deskripsi       = description,
-            jenis_permukaan = surfaceTypes,
-            jumlah_lapangan = totalFields,
-            harga_per_jam   = pricePerHour,
+            jenis_permukaan = emptyList(),
+            jumlah_lapangan = 0,
+            harga_per_jam   = 0L,
             jam_buka        = openTime,
             jam_tutup       = closeTime,
             fasilitas       = facilities
@@ -159,7 +167,6 @@ class RegisterOwnerActivity : AppCompatActivity() {
             try {
                 val response = ApiClient.instance.registerOwner(request)
                 if (response.isSuccessful && response.body()?.success == true) {
-                    // Update role lokal jadi owner langsung
                     sessionManager.updateRole("owner")
                     sessionManager.setOwnerStatus("approved")
                     showSuccessDialog()
@@ -185,12 +192,13 @@ class RegisterOwnerActivity : AppCompatActivity() {
         AlertDialog.Builder(this)
             .setTitle("🎉 Pendaftaran Berhasil!")
             .setMessage(
-                "Selamat! Anda telah terdaftar sebagai pemilik lapangan.\n\n" +
-                        "Silakan login ulang untuk masuk ke dashboard pemilik lapangan."
+                "Selamat! Anda telah terdaftar sebagai pemilik venue.\n\n" +
+                        "Selanjutnya, tambahkan lapangan kamu lewat menu \"Tambah Lapangan\" " +
+                        "di Dashboard untuk mulai menerima booking.\n\n" +
+                        "Silakan login ulang untuk masuk ke dashboard pemilik."
             )
             .setCancelable(false)
             .setPositiveButton("Login Ulang") { _, _ ->
-                // Logout otomatis lalu ke halaman login
                 sessionManager.clearSession()
                 val intent = Intent(this, LoginActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK

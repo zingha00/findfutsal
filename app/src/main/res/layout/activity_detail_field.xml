@@ -122,6 +122,20 @@
                                     android:textSize="12sp"
                                     android:textColor="#999999"/>
                             </LinearLayout>
+
+                            <TextView
+                                android:id="@+id/tvLihatMaps"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Lihat di Maps ↗"
+                                android:textSize="12sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/primary_green"
+                                android:layout_marginTop="6dp"
+                                android:padding="2dp"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:visibility="gone"/>
                         </LinearLayout>
 
                         <!-- Rating -->

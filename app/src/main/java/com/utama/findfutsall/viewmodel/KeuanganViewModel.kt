@@ -19,13 +19,28 @@ class KeuanganViewModel : ViewModel() {
     private val _error = MutableLiveData<String?>()
     val error: LiveData<String?> = _error
 
-    fun loadKeuangan(userId: Int) {
+    /**
+     * filter, dateFrom, dateTo dipakai supaya owner bisa pilih rentang waktu
+     * chart (7 hari/30 hari/2 bulan/6 bulan) dan summary card ikut berubah
+     * sesuai rentang itu -- bukan cuma chart-nya saja yang berubah secara lokal.
+     */
+    fun loadKeuangan(
+        userId: Int,
+        filter: String = "bulan",
+        dateFrom: String = "",
+        dateTo: String = ""
+    ) {
         _isLoading.value = true
         viewModelScope.launch {
             try {
-                val response = ApiClient.instance.getKeuangan(
-                    mapOf("owner_id" to userId)
+                val request = mutableMapOf<String, Any>(
+                    "owner_id" to userId,
+                    "filter"   to filter
                 )
+                if (dateFrom.isNotEmpty()) request["date_from"] = dateFrom
+                if (dateTo.isNotEmpty())   request["date_to"]   = dateTo
+
+                val response = ApiClient.instance.getKeuangan(request)
                 if (response.isSuccessful) {
                     _keuangan.value = response.body()
                 } else {

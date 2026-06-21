@@ -36,10 +36,13 @@ data class Field(
     val openTime: String? = null,
     val closeTime: String? = null,
 
-    // BARU
     @SerializedName("isActive")
     val isActive: Boolean = true,
 
     @SerializedName("status")
-    val status: String = "active"
+    val status: String = "active",
+
+    // BARU: link Google Maps milik venue, diteruskan dari level owner
+    @SerializedName("maps_link")
+    val mapsLink: String? = null
 ) : Parcelable

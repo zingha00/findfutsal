@@ -58,10 +58,16 @@ class TransaksiAdapter : ListAdapter<TransaksiItem, TransaksiAdapter.VH>(DIFF) {
         holder.tvNominal.text     = formatRupiah(item.totalPrice ?: 0.0)
         holder.tvBersih.text      = formatRupiah(item.pendapatanBersih ?: 0.0)
 
+        // FIX: sebelumnya status "Selesai" TIDAK punya case sendiri, jadi jatuh ke
+        // `else` yang warnanya merah (bg_status_batal) -- terlihat seperti dibatalkan
+        // padahal sebenarnya sukses/selesai. Sekarang setiap status punya warna sendiri:
+        // Terkonfirmasi = hijau solid, Selesai = hijau muda, Menunggu = kuning, Batal = merah.
         val statusInfo = when (item.bookingStatus) {
-            "Terkonfirmasi" -> Pair(R.drawable.bg_status_selesai, R.color.status_selesai_text)
-            "Menunggu"      -> Pair(R.drawable.bg_slot_booked,    R.color.status_menunggu_text)
-            else            -> Pair(R.drawable.bg_status_batal,   R.color.status_batal_text)
+            "Terkonfirmasi" -> Pair(R.drawable.bg_chip_active,   R.color.white)
+            "Selesai"       -> Pair(R.drawable.bg_status_selesai, R.color.status_selesai_text)
+            "Menunggu"      -> Pair(R.drawable.bg_slot_booked,   R.color.status_menunggu_text)
+            "Batal"         -> Pair(R.drawable.bg_status_batal,  R.color.status_batal_text)
+            else            -> Pair(R.drawable.bg_status_batal,  R.color.status_batal_text)
         }
 
         holder.tvStatus.text = item.bookingStatus ?: "-"

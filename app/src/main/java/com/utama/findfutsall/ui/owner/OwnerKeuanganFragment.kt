@@ -7,9 +7,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.mikephil.charting.charts.LineChart
@@ -18,9 +20,12 @@ import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.utama.findfutsall.R
+import com.utama.findfutsall.data.api.ApiClient
 import com.utama.findfutsall.data.model.*
 import com.utama.findfutsall.utils.SessionManager
 import com.utama.findfutsall.viewmodel.KeuanganViewModel
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
@@ -48,6 +53,8 @@ class OwnerKeuanganFragment : Fragment() {
     private lateinit var progressTarget: ProgressBar
     private lateinit var tvKeuanganPencapaian: TextView
     private lateinit var tvKeuanganTarget: TextView
+    private lateinit var tvTargetPercent: TextView
+    private lateinit var btnEditTarget: View
 
     // Chart
     private lateinit var chartRevenue: LineChart
@@ -64,6 +71,7 @@ class OwnerKeuanganFragment : Fragment() {
     private lateinit var rvTransaksi: RecyclerView
     private lateinit var tvEmpty: TextView
     private lateinit var progressBar: ProgressBar
+    private lateinit var btnLihatSemua: View
 
     private var allTransaksi = mutableListOf<TransaksiItem>()
     private var lastResponse: KeuanganResponse? = null
@@ -73,8 +81,9 @@ class OwnerKeuanganFragment : Fragment() {
     private val colorDivider   get() = ContextCompat.getColor(requireContext(), R.color.divider)
     private val colorMuted     get() = ContextCompat.getColor(requireContext(), R.color.text_muted)
 
-    // Target bulan ini (bisa diambil dari API kalau ada)
-    private val TARGET_BULAN = 20_000_000.0
+    // Target bulan ini -- diambil dari API (owner_targets), bukan hardcoded lagi.
+    // Default 20jt dipakai SEMENTARA sebelum data dari API masuk pertama kali.
+    private var targetBulanan = 20_000_000.0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -90,6 +99,8 @@ class OwnerKeuanganFragment : Fragment() {
         setupChartFilterTabs()
         setupCheckbox()
         setupExport()
+        setupTargetEdit()
+        setupLihatSemua()
         observeViewModel()
         loadData()
     }
@@ -106,6 +117,8 @@ class OwnerKeuanganFragment : Fragment() {
         progressTarget           = v.findViewById(R.id.progressTarget)
         tvKeuanganPencapaian     = v.findViewById(R.id.tvKeuanganPencapaian)
         tvKeuanganTarget         = v.findViewById(R.id.tvKeuanganTarget)
+        tvTargetPercent          = v.findViewById(R.id.tvTargetPercent)
+        btnEditTarget            = v.findViewById(R.id.btnEditTarget)
         chartRevenue             = v.findViewById(R.id.chartRevenue)
         tabChart7Hari            = v.findViewById(R.id.tabChart7Hari)
         tabChart30Hari           = v.findViewById(R.id.tabChart30Hari)
@@ -117,6 +130,7 @@ class OwnerKeuanganFragment : Fragment() {
         rvTransaksi              = v.findViewById(R.id.rvTransaksiKeuangan)
         tvEmpty                  = v.findViewById(R.id.tvTransaksiEmpty)
         progressBar              = v.findViewById(R.id.progressKeuangan)
+        btnLihatSemua            = v.findViewById(R.id.btnLihatSemuaTransaksi)
     }
 
     private fun setupRecyclerView() {
@@ -137,7 +151,10 @@ class OwnerKeuanganFragment : Fragment() {
                 }
                 tab.setBackgroundResource(R.drawable.bg_tab_active)
                 tab.setTextColor(Color.WHITE)
-                updateChartByTab()
+                // Filter sekarang request ULANG ke server dengan rentang yang sesuai,
+                // supaya summary card (Pendapatan, Total Booking, dll) ikut berubah,
+                // bukan cuma chart-nya saja yang dipotong dari data lama.
+                loadData()
             }
         }
     }
@@ -147,16 +164,202 @@ class OwnerKeuanganFragment : Fragment() {
         cbPengeluaran.setOnCheckedChangeListener { _, _ -> updateChartByTab() }
     }
 
+    /**
+     * Dialog custom untuk ubah target bulanan -- chip rekomendasi nominal
+     * (1jt/5jt/10jt/20jt/50jt) untuk pilih cepat, plus input manual dengan
+     * format otomatis titik pemisah ribuan saat mengetik.
+     */
+    private fun setupTargetEdit() {
+        btnEditTarget.setOnClickListener { showTargetDialog() }
+    }
+
+    private fun showTargetDialog() {
+        val dialogView = LayoutInflater.from(requireContext())
+            .inflate(R.layout.dialog_edit_target, null)
+
+        val layoutChips    = dialogView.findViewById<LinearLayout>(R.id.layoutChipsTarget)
+        val etAmount        = dialogView.findViewById<EditText>(R.id.etTargetAmount)
+        val btnBatal        = dialogView.findViewById<Button>(R.id.btnBatalTarget)
+        val btnSimpan        = dialogView.findViewById<Button>(R.id.btnSimpanTarget)
+
+        etAmount.setText(formatNumberOnly(targetBulanan.toLong()))
+
+        val dialog = AlertDialog.Builder(requireContext())
+            .setView(dialogView)
+            .create()
+        dialog.window?.setBackgroundDrawableResource(R.drawable.bg_dialog_rounded)
+
+        // Chip rekomendasi nominal cepat
+        val recommendations = listOf(
+            1_000_000L  to "1 Jt",
+            5_000_000L  to "5 Jt",
+            10_000_000L to "10 Jt",
+            20_000_000L to "20 Jt",
+            50_000_000L to "50 Jt"
+        )
+        recommendations.forEach { (amount, label) ->
+            val chip = LayoutInflater.from(requireContext())
+                .inflate(R.layout.item_chip_target, layoutChips, false) as TextView
+            chip.text = label
+            chip.setOnClickListener {
+                etAmount.setText(formatNumberOnly(amount))
+                etAmount.setSelection(etAmount.text.length)
+            }
+            layoutChips.addView(chip)
+        }
+
+        // Format otomatis titik pemisah ribuan saat user mengetik manual
+        etAmount.addTextChangedListener(object : android.text.TextWatcher {
+            private var isEditing = false
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: android.text.Editable?) {
+                if (isEditing) return
+                isEditing = true
+                val raw = s.toString().replace(".", "")
+                if (raw.isNotEmpty()) {
+                    val number = raw.toLongOrNull() ?: 0L
+                    val formatted = formatNumberOnly(number)
+                    etAmount.setText(formatted)
+                    etAmount.setSelection(formatted.length)
+                }
+                isEditing = false
+            }
+        })
+
+        btnBatal.setOnClickListener { dialog.dismiss() }
+        btnSimpan.setOnClickListener {
+            val raw = etAmount.text.toString().replace(".", "")
+            val newTarget = raw.toDoubleOrNull()
+            if (newTarget != null && newTarget > 0) {
+                updateTarget(newTarget)
+                dialog.dismiss()
+            } else {
+                Toast.makeText(requireContext(), "Masukkan nominal yang valid", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        dialog.show()
+    }
+
+    private fun formatNumberOnly(number: Long): String {
+        val fmt = NumberFormat.getNumberInstance(Locale("id", "ID"))
+        return fmt.format(number)
+    }
+
+    private fun updateTarget(newTarget: Double) {
+        lifecycleScope.launch {
+            try {
+                val response = ApiClient.instance.updateOwnerTarget(
+                    mapOf("user_id" to session.getUserId(), "target_amount" to newTarget)
+                )
+                if (response.isSuccessful && response.body()?.get("success") == true) {
+                    Toast.makeText(requireContext(), "Target berhasil diperbarui", Toast.LENGTH_SHORT).show()
+                    targetBulanan = newTarget
+                    lastResponse?.summary?.let { bindTargetSection(it.bulan, targetBulanan) }
+                } else {
+                    Toast.makeText(requireContext(), "Gagal memperbarui target", Toast.LENGTH_SHORT).show()
+                }
+            } catch (e: Exception) {
+                Toast.makeText(requireContext(), "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    /**
+     * "Lihat Semua Transaksi" -- buka dialog terpisah berisi RecyclerView
+     * semua transaksi (tidak dibatasi 3 seperti di halaman utama), bisa di-scroll.
+     */
+    private fun setupLihatSemua() {
+        btnLihatSemua.setOnClickListener { showAllTransaksiDialog() }
+    }
+
+    private fun showAllTransaksiDialog() {
+        if (allTransaksi.isEmpty()) {
+            Toast.makeText(requireContext(), "Belum ada transaksi", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val dialogView = LayoutInflater.from(requireContext())
+            .inflate(R.layout.dialog_semua_transaksi, null)
+
+        val rv          = dialogView.findViewById<RecyclerView>(R.id.rvSemuaTransaksi)
+        val btnClose    = dialogView.findViewById<View>(R.id.btnCloseDialog)
+
+        val dialogAdapter = TransaksiAdapter()
+        rv.layoutManager = LinearLayoutManager(requireContext())
+        rv.adapter = dialogAdapter
+        dialogAdapter.submitList(allTransaksi)
+
+        val dialog = AlertDialog.Builder(requireContext())
+            .setView(dialogView)
+            .create()
+        dialog.window?.setBackgroundDrawableResource(R.drawable.bg_dialog_rounded)
+        // Tinggi dialog dibuat hampir penuh layar supaya RecyclerView punya
+        // ruang cukup untuk scroll, bukan cuma tinggi sependek isi pertama
+        dialog.window?.setLayout(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            (resources.displayMetrics.heightPixels * 0.8).toInt()
+        )
+
+        btnClose.setOnClickListener { dialog.dismiss() }
+        dialog.show()
+    }
+
     private fun updateChartByTab() {
         val charts = lastResponse?.charts ?: return
         val points = when (activeChartTab) {
-            "7_hari"  -> charts.daily.takeLast(7)
-            "30_hari" -> charts.daily.takeLast(30)
-            "2_bulan" -> charts.monthly.takeLast(2)
-            "6_bulan" -> charts.monthly.takeLast(12)
-            else      -> charts.daily.takeLast(7)
+            "7_hari"  -> fillMissingDays(charts.daily, 7)
+            "30_hari" -> fillMissingDays(charts.daily, 30)
+            "2_bulan" -> fillMissingMonths(charts.monthly, 3)
+            "6_bulan" -> fillMissingMonths(charts.monthly, 12)
+            else      -> fillMissingDays(charts.daily, 7)
         }
         setupRevenueChart(points)
+    }
+
+    /**
+     * Sama seperti fillMissingDays, tapi untuk rentang bulanan (3 Bulan/1 Tahun).
+     * Kalau owner baru punya transaksi di 1 bulan saja, charts.monthly cuma
+     * berisi 1 entry sehingga chart tidak bisa menggambar garis (butuh >=2 titik).
+     * Fungsi ini mengisi bulan-bulan kosong dengan nilai 0 supaya garis tetap
+     * tergambar penuh sepanjang rentang yang dipilih.
+     */
+    private fun fillMissingMonths(monthly: List<ChartPoint>, totalMonths: Int): List<ChartPoint> {
+        val sdf = SimpleDateFormat("yyyy-MM", Locale("id"))
+        val existingMap = monthly.associateBy { it.label }
+        val result = mutableListOf<ChartPoint>()
+        val cal = Calendar.getInstance()
+        cal.add(Calendar.MONTH, -(totalMonths - 1))
+
+        for (i in 0 until totalMonths) {
+            val monthStr = sdf.format(cal.time)
+            result.add(existingMap[monthStr] ?: ChartPoint(monthStr, 0.0))
+            cal.add(Calendar.MONTH, 1)
+        }
+        return result
+    }
+
+    /**
+     * LineChart butuh minimal 2 titik untuk menggambar garis. Kalau booking
+     * baru ada di 1-2 hari saja, data dari API jadi cuma 1-2 entry dan chart
+     * terlihat kosong/titik doang. Fungsi ini mengisi hari-hari yang TIDAK
+     * ada transaksi dengan nilai 0, supaya selalu ada rentang penuh (7/30 hari)
+     * dan garis chart tetap tergambar dengan baik.
+     */
+    private fun fillMissingDays(daily: List<ChartPoint>, totalDays: Int): List<ChartPoint> {
+        val sdf = SimpleDateFormat("yyyy-MM-dd", Locale("id"))
+        val existingMap = daily.associateBy { it.label }
+        val result = mutableListOf<ChartPoint>()
+        val cal = Calendar.getInstance()
+        cal.add(Calendar.DAY_OF_MONTH, -(totalDays - 1))
+
+        for (i in 0 until totalDays) {
+            val dateStr = sdf.format(cal.time)
+            result.add(existingMap[dateStr] ?: ChartPoint(dateStr, 0.0))
+            cal.add(Calendar.DAY_OF_MONTH, 1)
+        }
+        return result
     }
 
     private fun setupRevenueChart(points: List<ChartPoint>) {
@@ -249,7 +452,48 @@ class OwnerKeuanganFragment : Fragment() {
     }
 
     private fun loadData() {
-        viewModel.loadKeuangan(userId = session.getUserId())
+        // Map tab chart ke parameter filter PHP yang sesuai rentang waktunya:
+        // 7 hari/30 hari -> filter custom dengan range tanggal pas
+        // 2 bulan/6 bulan -> filter custom dengan range bulan
+        val today = Calendar.getInstance()
+        val (dateFrom, dateTo, filterParam) = when (activeChartTab) {
+            "7_hari" -> Triple(
+                formatDateForApi(addDays(today, -6)), formatDateForApi(today), "custom"
+            )
+            "30_hari" -> Triple(
+                formatDateForApi(addDays(today, -29)), formatDateForApi(today), "custom"
+            )
+            "2_bulan" -> Triple(
+                formatDateForApi(addMonths(today, -2)), formatDateForApi(today), "custom"
+            )
+            "6_bulan" -> Triple(
+                formatDateForApi(addMonths(today, -12)), formatDateForApi(today), "custom"
+            )
+            else -> Triple("", "", "bulan")
+        }
+
+        viewModel.loadKeuangan(
+            userId   = session.getUserId(),
+            filter   = filterParam,
+            dateFrom = dateFrom,
+            dateTo   = dateTo
+        )
+    }
+
+    private fun addDays(base: Calendar, days: Int): Calendar {
+        val cal = base.clone() as Calendar
+        cal.add(Calendar.DAY_OF_MONTH, days)
+        return cal
+    }
+
+    private fun addMonths(base: Calendar, months: Int): Calendar {
+        val cal = base.clone() as Calendar
+        cal.add(Calendar.MONTH, months)
+        return cal
+    }
+
+    private fun formatDateForApi(cal: Calendar): String {
+        return SimpleDateFormat("yyyy-MM-dd", Locale("id")).format(cal.time)
     }
 
     private fun observeViewModel() {
@@ -293,21 +537,29 @@ class OwnerKeuanganFragment : Fragment() {
         else 0
         tvKeuanganOccupancy.text = "$occupancy%"
 
-        // Target
-        val pencapaian = s.bulan
-        val targetPct = if (TARGET_BULAN > 0)
-            ((pencapaian / TARGET_BULAN) * 100).toInt().coerceIn(0, 100)
+        // Target -- sekarang pakai target_bulanan dari API (bisa diubah owner),
+        // bukan hardcoded lagi
+        targetBulanan = s.targetBulanan.takeIf { it > 0 } ?: targetBulanan
+        bindTargetSection(s.bulan, targetBulanan)
+    }
+
+    private fun bindTargetSection(pencapaian: Double, target: Double) {
+        val targetPct = if (target > 0)
+            ((pencapaian / target) * 100).toInt().coerceIn(0, 100)
         else 0
         progressTarget.progress    = targetPct
+        tvTargetPercent.text       = "$targetPct%"
         tvKeuanganPencapaian.text  = formatRp(pencapaian)
-        tvKeuanganTarget.text      = formatRp(TARGET_BULAN)
+        tvKeuanganTarget.text      = formatRp(target)
     }
 
     private fun bindTable(data: KeuanganResponse) {
         val page = data.transaksi ?: return
         allTransaksi = page.data.toMutableList()
-        adapter.submitList(page.data)
-        tvEmpty.visibility = if (page.data.isEmpty()) View.VISIBLE else View.GONE
+        // Tampilkan MAKSIMAL 3 transaksi di card "Transaksi Terbaru".
+        // Sisanya bisa dilihat lewat dialog "Lihat Semua Transaksi".
+        adapter.submitList(allTransaksi.take(3))
+        tvEmpty.visibility = if (allTransaksi.isEmpty()) View.VISIBLE else View.GONE
     }
 
     // ─── Export ──────────────────────────────────────────────────────────────
@@ -340,11 +592,12 @@ class OwnerKeuanganFragment : Fragment() {
         requireActivity().window.attributes =
             requireActivity().window.attributes.also { it.alpha = 0.6f }
 
-        val tvFrom   = popupView.findViewById<TextView>(R.id.popupDateFrom)
-        val tvTo     = popupView.findViewById<TextView>(R.id.popupDateTo)
-        val spinner  = popupView.findViewById<Spinner>(R.id.spinnerJenisLaporan)
-        val btnPdf   = popupView.findViewById<Button>(R.id.popupBtnPdf)
-        val btnExcel = popupView.findViewById<Button>(R.id.popupBtnExcel)
+        val tvFrom            = popupView.findViewById<TextView>(R.id.popupDateFrom)
+        val tvTo              = popupView.findViewById<TextView>(R.id.popupDateTo)
+        val layoutJenis       = popupView.findViewById<LinearLayout>(R.id.layoutJenisLaporan)
+        val btnPdf            = popupView.findViewById<Button>(R.id.popupBtnPdf)
+        val btnClose          = popupView.findViewById<View>(R.id.popupBtnClose)
+        btnClose.setOnClickListener { popup.dismiss() }
 
         val sdfDisplay = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
         tvFrom.text = sdfDisplay.format(Date())
@@ -363,14 +616,29 @@ class OwnerKeuanganFragment : Fragment() {
             }
         }
 
-        spinner.adapter = ArrayAdapter(
-            requireContext(),
-            android.R.layout.simple_spinner_dropdown_item,
-            arrayOf("Laporan Booking", "Laporan Pendapatan", "Rekap Bulanan")
-        )
+        // Chip pilihan jenis laporan -- ganti Spinner default yang terlihat kaku
+        val jenisLaporanList = listOf("Laporan Booking", "Laporan Pendapatan", "Rekap Bulanan")
+        var selectedIndex = 0
+        val chipViews = mutableListOf<View>()
+        jenisLaporanList.forEachIndexed { index, label ->
+            val chip = LayoutInflater.from(requireContext())
+                .inflate(R.layout.item_jenis_laporan, layoutJenis, false)
+            val tvName  = chip.findViewById<TextView>(R.id.tvJenisLaporanName)
+            val ivCheck = chip.findViewById<View>(R.id.ivJenisLaporanCheck)
+            tvName.text = label
+            ivCheck.visibility = if (index == 0) View.VISIBLE else View.INVISIBLE
+            chip.setOnClickListener {
+                selectedIndex = index
+                chipViews.forEachIndexed { i, v ->
+                    v.findViewById<View>(R.id.ivJenisLaporanCheck).visibility =
+                        if (i == index) View.VISIBLE else View.INVISIBLE
+                }
+            }
+            chipViews.add(chip)
+            layoutJenis.addView(chip)
+        }
 
-        btnPdf.setOnClickListener   { popup.dismiss(); exportPdf() }
-        btnExcel.setOnClickListener { popup.dismiss(); exportExcel() }
+        btnPdf.setOnClickListener { popup.dismiss(); exportPdf() }
 
         requireView().post {
             val btnLoc = IntArray(2)
@@ -450,7 +718,6 @@ class OwnerKeuanganFragment : Fragment() {
             doc.add(tbl)
             doc.close()
 
-            // Buka share dialog
             val uri = androidx.core.content.FileProvider.getUriForFile(
                 requireContext(),
                 "${requireContext().packageName}.provider",
@@ -464,86 +731,6 @@ class OwnerKeuanganFragment : Fragment() {
 
         } catch (e: Exception) {
             Toast.makeText(requireContext(), "Gagal export PDF: ${e.message}", Toast.LENGTH_LONG).show()
-        }
-    }
-
-    private fun exportExcel() {
-        val data = lastResponse ?: run {
-            Toast.makeText(requireContext(), "Data belum tersedia", Toast.LENGTH_SHORT).show()
-            return
-        }
-        try {
-            val wb     = org.apache.poi.xssf.usermodel.XSSFWorkbook()
-            val hStyle = wb.createCellStyle().apply {
-                fillForegroundColor = org.apache.poi.ss.usermodel.IndexedColors.GREEN.index
-                fillPattern = org.apache.poi.ss.usermodel.FillPatternType.SOLID_FOREGROUND
-                setFont(wb.createFont().apply { bold = true; color = org.apache.poi.ss.usermodel.IndexedColors.WHITE.index })
-            }
-
-            val ws1 = wb.createSheet("Ringkasan")
-            ws1.createRow(0).createCell(0).apply { setCellValue("Laporan Keuangan FindFutsall"); cellStyle = hStyle }
-            ws1.createRow(1).createCell(0).setCellValue("Periode: ${data.period?.from} s/d ${data.period?.to}")
-            ws1.createRow(3).also { r ->
-                r.createCell(0).apply { setCellValue("Keterangan"); cellStyle = hStyle }
-                r.createCell(1).apply { setCellValue("Nilai"); cellStyle = hStyle }
-            }
-            val s = data.summary
-            if (s != null) {
-                listOf(
-                    "Pendapatan Hari Ini"   to s.hari,
-                    "Pendapatan Minggu Ini" to s.minggu,
-                    "Pendapatan Bulan Ini"  to s.bulan,
-                    "Pendapatan Tahun Ini"  to s.tahun,
-                    "Total Transaksi"       to s.totalTransaksi.toDouble(),
-                    "Rata-rata per Booking" to s.rataRata
-                ).forEachIndexed { i, (k, v) ->
-                    ws1.createRow(4 + i).also { r ->
-                        r.createCell(0).setCellValue(k)
-                        r.createCell(1).setCellValue(v)
-                    }
-                }
-            }
-            ws1.autoSizeColumn(0); ws1.autoSizeColumn(1)
-
-            val ws2 = wb.createSheet("Riwayat Booking")
-            ws2.createRow(0).also { r ->
-                listOf("ID","Penyewa","Lapangan","Tanggal","Waktu","Status","Nominal").forEachIndexed { i, h ->
-                    r.createCell(i).apply { setCellValue(h); cellStyle = hStyle }
-                }
-            }
-            allTransaksi.forEachIndexed { idx, t ->
-                ws2.createRow(idx + 1).also { r ->
-                    r.createCell(0).setCellValue(t.id.toDouble())
-                    r.createCell(1).setCellValue(t.customerName ?: "-")
-                    r.createCell(2).setCellValue(t.fieldName ?: "-")
-                    r.createCell(3).setCellValue(t.playDate ?: "-")
-                    r.createCell(4).setCellValue("${t.startTime ?: "-"}-${t.endTime ?: "-"}")
-                    r.createCell(5).setCellValue(t.bookingStatus ?: "-")
-                    r.createCell(6).setCellValue(t.totalPrice ?: 0.0)
-                }
-            }
-            for (i in 0..6) ws2.autoSizeColumn(i)
-
-            val ws3 = wb.createSheet("Rekap Bulanan")
-            ws3.createRow(0).also { r ->
-                r.createCell(0).apply { setCellValue("Bulan"); cellStyle = hStyle }
-                r.createCell(1).apply { setCellValue("Total Pendapatan"); cellStyle = hStyle }
-            }
-            data.charts?.monthly?.forEachIndexed { i, p ->
-                ws3.createRow(i + 1).also { r ->
-                    r.createCell(0).setCellValue(p.label)
-                    r.createCell(1).setCellValue(p.value)
-                }
-            }
-            ws3.autoSizeColumn(0); ws3.autoSizeColumn(1)
-
-            val dir  = requireContext().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)
-            val name = "laporan_keuangan_${System.currentTimeMillis()}.xlsx"
-            File(dir, name).outputStream().use { wb.write(it) }
-            wb.close()
-            Toast.makeText(requireContext(), "Excel tersimpan: $name", Toast.LENGTH_LONG).show()
-        } catch (e: Exception) {
-            Toast.makeText(requireContext(), "Gagal export Excel: ${e.message}", Toast.LENGTH_LONG).show()
         }
     }
 

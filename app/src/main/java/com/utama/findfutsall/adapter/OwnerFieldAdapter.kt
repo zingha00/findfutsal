@@ -69,7 +69,6 @@ class OwnerFieldAdapter(
                 tvStatus.setTextColor(ContextCompat.getColor(itemView.context, R.color.error_red))
             }
 
-            // Foto -- gabungkan dengan BASE_URL kalau masih path relatif dari server
             val context   = itemView.context
             val photoName = field.photo ?: ""
             val baseUrl   = Constants.BASE_URL.replace("/api/", "/")

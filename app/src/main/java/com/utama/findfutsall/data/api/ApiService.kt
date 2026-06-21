@@ -62,11 +62,6 @@ interface ApiService {
         @Body request: Map<String, @JvmSuppressWildcards Any>
     ): Response<Map<String, @JvmSuppressWildcards Any>>
 
-    @POST("get_owner_keuangan.php")
-    suspend fun getKeuangan(
-        @Body request: Map<String, @JvmSuppressWildcards Any>
-    ): Response<com.utama.findfutsall.data.model.KeuanganResponse>
-
     @POST("booking.php")
     suspend fun createBooking(
         @Body request: Map<String, @JvmSuppressWildcards Any>
@@ -124,6 +119,21 @@ interface ApiService {
 
     @POST("update_booking_status.php")
     suspend fun updateBookingStatus(
+        @Body request: Map<String, @JvmSuppressWildcards Any>
+    ): Response<Map<String, @JvmSuppressWildcards Any>>
+
+    @POST("get_owner_keuangan.php")
+    suspend fun getKeuangan(
+        @Body request: Map<String, @JvmSuppressWildcards Any>
+    ): Response<com.utama.findfutsall.data.model.KeuanganResponse>
+
+    @POST("update_owner_target.php")
+    suspend fun updateOwnerTarget(
+        @Body request: Map<String, @JvmSuppressWildcards Any>
+    ): Response<Map<String, @JvmSuppressWildcards Any>>
+
+    @POST("update_owner_data.php")
+    suspend fun updateOwnerData(
         @Body request: Map<String, @JvmSuppressWildcards Any>
     ): Response<Map<String, @JvmSuppressWildcards Any>>
 }

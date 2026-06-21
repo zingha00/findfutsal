@@ -58,6 +58,7 @@ class DetailFieldActivity : AppCompatActivity() {
         val fieldFac      = intent.getStringExtra("field_facilities") ?: ""
         val openTime      = intent.getStringExtra("field_open_time") ?: "06:00"
         val closeTime     = intent.getStringExtra("field_close_time") ?: "23:00"
+        val mapsLink      = intent.getStringExtra("field_maps_link") ?: ""
 
         // Bind data
         binding.tvFieldName.text = fieldName
@@ -68,6 +69,24 @@ class DetailFieldActivity : AppCompatActivity() {
         binding.tvDescription.text = fieldDesc.ifEmpty { "Lapangan futsal berkualitas di Bandung." }
         binding.tvTotalPrice.text = "${PriceFormatter.format(fieldPrice)}/jam"
 
+        // Tombol "Lihat di Maps" -- hanya muncul kalau owner sudah isi link Maps.
+        // Klik akan membuka aplikasi Google Maps (atau browser kalau Maps tidak
+        // terpasang) langsung ke lokasi venue tersebut.
+        if (mapsLink.isNotEmpty()) {
+            binding.tvLihatMaps.visibility = View.VISIBLE
+            binding.tvLihatMaps.setOnClickListener {
+                try {
+                    val uri = android.net.Uri.parse(mapsLink)
+                    val mapIntent = Intent(Intent.ACTION_VIEW, uri)
+                    startActivity(mapIntent)
+                } catch (e: Exception) {
+                    android.widget.Toast.makeText(this, "Link Maps tidak valid", android.widget.Toast.LENGTH_SHORT).show()
+                }
+            }
+        } else {
+            binding.tvLihatMaps.visibility = View.GONE
+        }
+
         // Load foto
         val photoName = fieldPhoto ?: ""
         val baseUrl   = com.utama.findfutsall.utils.Constants.BASE_URL.replace("/api/", "/")
@@ -77,8 +96,6 @@ class DetailFieldActivity : AppCompatActivity() {
             else                         -> null
         }
 
-        // Placeholder & error pakai vector drawable ringan
-        // (sebelumnya findfutsall.png ~1.7MB -- berat untuk foto detail yang tampil besar/full width)
         currentPhotoUrl = fullUrl ?: ""
         if (fullUrl != null) {
             Glide.with(this)
@@ -134,7 +151,6 @@ class DetailFieldActivity : AppCompatActivity() {
         isFavorite = willBeFav
         updateFavoriteIcon()
 
-        // Animasi bounce
         binding.btnFavorite.animate()
             .scaleX(1.3f).scaleY(1.3f)
             .setDuration(120)
@@ -152,7 +168,6 @@ class DetailFieldActivity : AppCompatActivity() {
                 )
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    // Rollback kalau gagal
                     isFavorite = !willBeFav
                     updateFavoriteIcon()
                 }
@@ -273,12 +288,6 @@ class DetailFieldActivity : AppCompatActivity() {
         }
     }
 
-    /**
-     * Ambil slot yang sudah dibooking SUNGGUHAN dari server untuk tanggal yang dipilih,
-     * baru render grid jam setelah data didapat. Sebelumnya bookedSlots selalu kosong
-     * (hardcoded), jadi semua slot selalu terlihat "tersedia" walau sebenarnya sudah
-     * dibooking orang lain.
-     */
     private fun fetchBookedSlotsAndRender(openTime: String, closeTime: String) {
         bookedSlots.clear()
         lifecycleScope.launch {
@@ -295,8 +304,7 @@ class DetailFieldActivity : AppCompatActivity() {
                     }
                 }
             } catch (e: Exception) {
-                // Kalau gagal fetch, biarkan bookedSlots kosong (anggap semua slot tersedia)
-                // daripada memblokir seluruh alur booking karena masalah jaringan sesaat
+                // Kalau gagal fetch, biarkan bookedSlots kosong
             }
             setupTimeSlots(openTime, closeTime)
         }
@@ -376,7 +384,7 @@ class DetailFieldActivity : AppCompatActivity() {
                 card.setOnClickListener {
                     selectedStart = startHour
                     selectedEnd   = endHour
-                    updateSlotSelection(slot, slots)
+                    updateSlotSelection(slot)
                     showRincian()
                 }
             }
@@ -396,7 +404,16 @@ class DetailFieldActivity : AppCompatActivity() {
         return slots
     }
 
-    private fun updateSlotSelection(selected: String, allSlots: List<String>) {
+    /**
+     * FIX BUG PENTING: sebelumnya pakai `return` di dalam loop ketika menemukan
+     * slot yang sudah "Penuh" (bookedSlots.contains(startH)). Itu menghentikan
+     * SELURUH fungsi, bukan cuma melewati slot itu -- akibatnya kalau ada slot
+     * penuh yang posisinya lebih dulu diproses dalam urutan loop dibanding slot
+     * yang baru diklik, proses mewarnai jadi hijau tidak pernah sampai dieksekusi.
+     * Sekarang pakai `continue` supaya cuma skip slot yang penuh itu saja,
+     * lanjut proses slot lainnya termasuk yang baru dipilih.
+     */
+    private fun updateSlotSelection(selected: String) {
         for (i in 0 until binding.gridTimeSlots.childCount) {
             val card = binding.gridTimeSlots.getChildAt(i) as? androidx.cardview.widget.CardView
                 ?: continue
@@ -405,7 +422,7 @@ class DetailFieldActivity : AppCompatActivity() {
             val slot   = tvSlot.text.toString()
             val startH = slot.split(" - ")[0]
 
-            if (bookedSlots.contains(startH)) return
+            if (bookedSlots.contains(startH)) continue
 
             if (slot == selected) {
                 card.setCardBackgroundColor(Color.parseColor("#1A4D2E"))

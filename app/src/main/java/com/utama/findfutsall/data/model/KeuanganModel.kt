@@ -18,9 +18,14 @@ data class KeuanganSummary(
     val tahun: Double,
     val biaya: Double = 0.0,
     val denda: Double = 0.0,
+    @SerializedName("total_transaksi")
     val totalTransaksi: Int,
+    @SerializedName("rata_rata")
     val rataRata: Double,
-    val pctChange: Double
+    @SerializedName("pct_change")
+    val pctChange: Double,
+    @SerializedName("target_bulanan")
+    val targetBulanan: Double = 0.0
 )
 
 data class KeuanganCharts(

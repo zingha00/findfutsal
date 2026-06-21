@@ -59,7 +59,6 @@ class VerifyOtpActivity : AppCompatActivity() {
                 }
             })
 
-            // Tekan backspace di kotak kosong -> pindah fokus ke kotak sebelumnya
             editText.setOnKeyListener { _, keyCode, event ->
                 if (keyCode == KeyEvent.KEYCODE_DEL && event.action == KeyEvent.ACTION_DOWN
                     && editText.text.isEmpty() && index > 0) {

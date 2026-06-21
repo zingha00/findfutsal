@@ -18,7 +18,6 @@ class SplashActivity : AppCompatActivity() {
     private lateinit var sessionManager: SessionManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        // Load dark mode sebelum setContentView
         val isDark = getSharedPreferences("app_pref", Context.MODE_PRIVATE)
             .getBoolean("dark_mode", false)
         AppCompatDelegate.setDefaultNightMode(

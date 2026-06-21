@@ -46,20 +46,38 @@ class ExploreFragment : Fragment() {
     private fun setupRecyclerView() {
         exploreAdapter = ExploreAdapter(
             emptyList(),
-            onItemClick = { field ->
-                val intent = Intent(requireContext(), DetailFieldActivity::class.java)
-                intent.putExtra("field_id", field.id)
-                intent.putExtra("field_name", field.name)
-                intent.putExtra("field_address", field.address)
-                intent.putExtra("field_price", field.price)
-                intent.putExtra("field_rating", field.rating)
-                intent.putExtra("field_photo", field.photo)
-                intent.putExtra("field_category", field.category)
-                startActivity(intent)
-            },
+            onItemClick = { field -> openDetail(field) },
             onFavoriteClick = { _ -> }
         )
         binding.rvSearchResult.adapter = exploreAdapter
+    }
+
+    /**
+     * FIX PENTING: sebelumnya hanya 6 extra dikirim (id, name, address, price,
+     * rating, photo, category) -- field_description, field_facilities,
+     * field_open_time, field_close_time, field_phone, dan field_maps_link
+     * TIDAK pernah diteruskan. Akibatnya Detail Lapangan yang dibuka dari
+     * Pencarian kehilangan fitur-fitur yang sudah berfungsi normal kalau
+     * dibuka dari Home (termasuk tombol "Lihat di Maps").
+     * Sekarang konsisten dengan HomeFragment.openDetail().
+     */
+    private fun openDetail(field: Field) {
+        val intent = Intent(requireContext(), DetailFieldActivity::class.java).apply {
+            putExtra("field_id", field.id)
+            putExtra("field_name", field.name)
+            putExtra("field_address", field.address)
+            putExtra("field_price", field.price)
+            putExtra("field_rating", field.rating)
+            putExtra("field_photo", field.photo)
+            putExtra("field_category", field.category)
+            putExtra("field_description", field.description)
+            putExtra("field_facilities", field.facilities)
+            putExtra("field_open_time", field.openTime)
+            putExtra("field_close_time", field.closeTime)
+            putExtra("field_phone", field.phone)
+            putExtra("field_maps_link", field.mapsLink)
+        }
+        startActivity(intent)
     }
 
     private fun setupSearch() {
@@ -123,7 +141,8 @@ class ExploreFragment : Fragment() {
                 description = obj.optString("description").ifEmpty { null },
                 facilities  = obj.optString("facilities").ifEmpty { null },
                 openTime    = obj.optString("openTime").ifEmpty { "06:00" },
-                closeTime   = obj.optString("closeTime").ifEmpty { "23:00" }
+                closeTime   = obj.optString("closeTime").ifEmpty { "23:00" },
+                mapsLink    = obj.optString("maps_link").ifEmpty { null }
             )
         }
     }

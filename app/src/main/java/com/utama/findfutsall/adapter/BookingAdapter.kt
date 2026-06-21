@@ -32,7 +32,6 @@ class BookingAdapter(
             tvCourtName.text = booking.courtName
             tvDate.text = booking.date
             tvTime.text = booking.time
-            // booking.price sudah berisi hasil PriceFormatter.format() lengkap (cth: "Rp90.000"), jadi tidak perlu tambah "Rp" lagi
             tvPrice.text = booking.price
             tvStatus.text = booking.status.uppercase()
 
@@ -72,8 +71,6 @@ class BookingAdapter(
                         .valueOf(Color.parseColor("#00A86B"))
                 }
             }
-
-            // Load foto dari URL server pakai Glide (bukan resource lokal)
             val context   = root.context
             val baseUrl   = Constants.BASE_URL.replace("/api/", "/")
             val photoPath = booking.fieldPhoto ?: ""
@@ -84,8 +81,6 @@ class BookingAdapter(
                 else                        -> baseUrl + photoPath
             }
 
-            // Placeholder & error pakai vector drawable ringan
-            // (sebelumnya bg_logo + findfutsall.png ~1.7MB, ganti supaya tidak membebani render)
             if (fullUrl != null) {
                 Glide.with(context)
                     .load(fullUrl)

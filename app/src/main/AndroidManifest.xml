@@ -43,7 +43,8 @@
 
         <activity
             android:name=".ui.main.MainActivity"
-            android:exported="false"/>
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan"/>
 
         <activity
             android:name=".ui.detail.DetailFieldActivity"
@@ -71,9 +72,10 @@
             android:exported="false"/>
 
         <activity
-            android:name=".ui.owner.OwnerDashboardActivity"
-            android:exported="false"
-            android:configChanges="uiMode"/>
+        android:name=".ui.owner.OwnerDashboardActivity"
+        android:exported="false"
+        android:configChanges="uiMode"
+        android:windowSoftInputMode="adjustPan"/>
 
         <activity
             android:name=".ui.owner.OwnerFieldFormActivity"
@@ -85,10 +87,6 @@
             android:exported="false"
             android:windowSoftInputMode="adjustResize"/>
 
-        <activity
-            android:name=".ui.admin.AdminDashboardActivity"
-            android:exported="false"
-            android:windowSoftInputMode="adjustResize"/>
 
         <activity
             android:name=".ui.main.EditProfileActivity"
@@ -129,6 +127,9 @@
         <activity android:name=".ui.owner.PaymentMethodsActivity" android:exported="false"/>
         <activity android:name=".ui.owner.AddPaymentMethodActivity" android:exported="false"/>
         <activity android:name=".ui.detail.PaymentInstructionActivity" android:exported="false"/>
+        <activity android:name=".ui.owner.EditVenueActivity" android:exported="false" android:windowSoftInputMode="adjustPan"/>
+
+
 
     </application>
 

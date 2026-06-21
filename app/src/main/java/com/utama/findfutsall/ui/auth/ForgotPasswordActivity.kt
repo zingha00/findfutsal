@@ -56,7 +56,6 @@ class ForgotPasswordActivity : AppCompatActivity() {
                 Toast.makeText(this, message, Toast.LENGTH_LONG).show()
                 viewModel.resetForgotPasswordResult()
 
-                // Lanjut otomatis ke halaman input OTP, sambil bawa email-nya
                 val intent = Intent(this, VerifyOtpActivity::class.java)
                 intent.putExtra(VerifyOtpActivity.EXTRA_EMAIL, currentEmail)
                 startActivity(intent)
