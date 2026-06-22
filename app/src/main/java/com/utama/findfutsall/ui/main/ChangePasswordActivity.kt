@@ -1,7 +1,6 @@
 package com.utama.findfutsall.ui.main
 
 import android.os.Bundle
-import android.text.InputType
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -17,14 +16,16 @@ import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
 
+/**
+ * Toggle show/hide password sekarang pakai app:endIconMode="password_toggle"
+ * bawaan Material Design TextInputLayout -- SAMA seperti di halaman Login.
+ * Tidak perlu lagi ImageView manual + logic toggle Kotlin, karena
+ * sebelumnya ikon yang dipakai salah (ic_favorite, bukan ikon mata).
+ */
 class ChangePasswordActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityChangePasswordBinding
     private lateinit var sessionManager: SessionManager
-
-    private var isOldVisible     = false
-    private var isNewVisible     = false
-    private var isConfirmVisible = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,32 +39,7 @@ class ChangePasswordActivity : AppCompatActivity() {
 
     private fun setupClickListeners() {
         binding.btnBack.setOnClickListener { finish() }
-
-        binding.ivToggleOld.setOnClickListener {
-            isOldVisible = !isOldVisible
-            togglePasswordVisibility(binding.etOldPassword, isOldVisible)
-        }
-
-        binding.ivToggleNew.setOnClickListener {
-            isNewVisible = !isNewVisible
-            togglePasswordVisibility(binding.etNewPassword, isNewVisible)
-        }
-
-        binding.ivToggleConfirm.setOnClickListener {
-            isConfirmVisible = !isConfirmVisible
-            togglePasswordVisibility(binding.etConfirmPassword, isConfirmVisible)
-        }
-
         binding.btnSubmit.setOnClickListener { submitChangePassword() }
-    }
-
-    private fun togglePasswordVisibility(editText: android.widget.EditText, visible: Boolean) {
-        editText.inputType = if (visible) {
-            InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
-        } else {
-            InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
-        }
-        editText.setSelection(editText.text.length)
     }
 
     private fun submitChangePassword() {
@@ -72,17 +48,22 @@ class ChangePasswordActivity : AppCompatActivity() {
         val confirm = binding.etConfirmPassword.text.toString().trim()
 
         if (oldPass.isEmpty()) {
-            binding.etOldPassword.error = "Password lama wajib diisi"
+            binding.tilOldPassword.error = "Password lama wajib diisi"
             return
         }
+        binding.tilOldPassword.error = null
+
         if (newPass.length < 6) {
-            binding.etNewPassword.error = "Minimal 6 karakter"
+            binding.tilNewPassword.error = "Minimal 6 karakter"
             return
         }
+        binding.tilNewPassword.error = null
+
         if (newPass != confirm) {
-            binding.etConfirmPassword.error = "Konfirmasi tidak cocok"
+            binding.tilConfirmPassword.error = "Konfirmasi tidak cocok"
             return
         }
+        binding.tilConfirmPassword.error = null
 
         binding.tvSubmitText.text = "Menyimpan..."
         binding.btnSubmit.isEnabled = false

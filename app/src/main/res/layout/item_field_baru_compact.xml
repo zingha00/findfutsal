@@ -2,9 +2,9 @@
 <androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginBottom="14dp"
+    android:layout_width="200dp"
+    android:layout_height="match_parent"
+    android:layout_marginEnd="12dp"
     app:cardCornerRadius="16dp"
     app:cardElevation="0dp"
     app:cardBackgroundColor="@color/bg_card"
@@ -18,7 +18,7 @@
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="140dp">
+            android:layout_height="120dp">
 
             <ImageView
                 android:id="@+id/ivFieldPhoto"
@@ -35,30 +35,31 @@
 
             <!-- Badge Tersedia kiri atas -->
             <TextView
+                android:id="@+id/tvFieldStatus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="top|start"
-                android:layout_margin="10dp"
+                android:layout_margin="8dp"
                 android:text="✓ Tersedia"
-                android:textSize="10sp"
+                android:textSize="9sp"
                 android:textStyle="bold"
                 android:textColor="#FFFFFF"
                 android:background="@drawable/bg_chip_active"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                android:paddingTop="5dp"
-                android:paddingBottom="5dp"/>
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"/>
 
             <!-- Tombol Favorite kanan atas -->
             <ImageView
                 android:id="@+id/ivFavorite"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
+                android:layout_width="26dp"
+                android:layout_height="26dp"
                 android:layout_gravity="top|end"
-                android:layout_margin="8dp"
+                android:layout_margin="6dp"
                 android:src="@drawable/ic_favorite"
                 android:background="@drawable/bg_favorite_btn"
-                android:padding="7dp"
+                android:padding="6dp"
                 app:tint="@color/white"/>
 
         </FrameLayout>
@@ -67,7 +68,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="14dp">
+            android:padding="12dp">
 
             <!-- Nama + Rating sejajar -->
             <LinearLayout
@@ -75,7 +76,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:layout_marginBottom="6dp">
+                android:layout_marginBottom="4dp">
 
                 <TextView
                     android:id="@+id/tvFieldName"
@@ -83,26 +84,27 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Nama Lapangan"
-                    android:textSize="15sp"
+                    android:textSize="13sp"
                     android:textStyle="bold"
                     android:textColor="#121212"
                     android:maxLines="1"
                     android:ellipsize="end"/>
 
                 <ImageView
-                    android:layout_width="13dp"
-                    android:layout_height="13dp"
+                    android:layout_width="11dp"
+                    android:layout_height="11dp"
                     android:src="@android:drawable/btn_star_big_on"
-                    android:layout_marginEnd="4dp"/>
+                    android:layout_marginEnd="2dp"/>
 
                 <TextView
                     android:id="@+id/tvRating"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="0.0"
-                    android:textSize="13sp"
+                    android:textSize="11sp"
                     android:textStyle="bold"
                     android:textColor="#333333"/>
+
             </LinearLayout>
 
             <LinearLayout
@@ -110,20 +112,20 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:layout_marginBottom="10dp">
+                android:layout_marginBottom="8dp">
                 <ImageView
-                    android:layout_width="12dp"
-                    android:layout_height="12dp"
+                    android:layout_width="10dp"
+                    android:layout_height="10dp"
                     android:src="@drawable/ic_location"
                     app:tint="#999999"
-                    android:layout_marginEnd="4dp"/>
+                    android:layout_marginEnd="3dp"/>
                 <TextView
                     android:id="@+id/tvDistance"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Alamat"
-                    android:textSize="12sp"
+                    android:textSize="11sp"
                     android:textColor="#999999"
                     android:maxLines="1"
                     android:ellipsize="end"/>
@@ -149,7 +151,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Rp0/jam"
-                    android:textSize="15sp"
+                    android:textSize="13sp"
                     android:textStyle="bold"
                     android:textColor="@color/primary_dark"/>
                 <TextView
@@ -157,14 +159,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="BOOKING"
-                    android:textSize="11sp"
+                    android:textSize="9sp"
                     android:textStyle="bold"
                     android:textColor="@color/white"
                     android:background="@drawable/bg_chip_active"
-                    android:paddingStart="14dp"
-                    android:paddingEnd="14dp"
-                    android:paddingTop="8dp"
-                    android:paddingBottom="8dp"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
                     android:clickable="true"
                     android:focusable="true"/>
             </LinearLayout>

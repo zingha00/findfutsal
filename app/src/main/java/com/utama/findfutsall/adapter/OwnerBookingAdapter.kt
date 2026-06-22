@@ -97,6 +97,16 @@ class OwnerBookingAdapter(
                 }
             }
 
+            if (booking.status == "Selesai") {
+                btnDetail.backgroundTintList =
+                    android.content.res.ColorStateList.valueOf(Color.parseColor("#4A4A4A"))
+            } else {
+                btnDetail.backgroundTintList =
+                    android.content.res.ColorStateList.valueOf(
+                        androidx.core.content.ContextCompat.getColor(context, R.color.primary_green)
+                    )
+            }
+
             btnDetail.setOnClickListener { onDetail(booking) }
             itemView.setOnClickListener { onDetail(booking) }
         }

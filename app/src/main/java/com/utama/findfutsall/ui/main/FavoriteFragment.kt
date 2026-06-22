@@ -1,7 +1,6 @@
 package com.utama.findfutsall.ui.main
 
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,7 +8,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import com.utama.findfutsall.R
 import com.utama.findfutsall.adapter.ExploreAdapter
 import com.utama.findfutsall.data.api.ApiClient
 import com.utama.findfutsall.data.model.Field
@@ -20,6 +18,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+/**
+ * Filter chip (Semua/Futsal/Badminton/Basket) sudah DIHAPUS dari layout
+ * dan dari fragment ini -- sekarang halaman Favorit hanya menampilkan
+ * seluruh lapangan favorit tanpa kategori filter.
+ */
 class FavoriteFragment : Fragment() {
 
     private var _binding: FragmentFavoriteBinding? = null
@@ -40,7 +43,6 @@ class FavoriteFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         session = SessionManager(requireContext())
         setupRecyclerView()
-        setupChips()
         loadFavorites()
     }
 
@@ -61,6 +63,7 @@ class FavoriteFragment : Fragment() {
                     putExtra("field_open_time", field.openTime)
                     putExtra("field_close_time", field.closeTime)
                     putExtra("field_phone", field.phone)
+                    putExtra("field_maps_link", field.mapsLink)
                 }
                 startActivity(intent)
             },
@@ -68,54 +71,6 @@ class FavoriteFragment : Fragment() {
             alwaysFavorite = true
         )
         binding.rvFavorite.adapter = favoriteAdapter
-    }
-
-    private fun setupChips() {
-        binding.chipSemua.setOnClickListener {
-            setActiveChip("semua")
-            favoriteAdapter.updateData(allFavorites)
-        }
-        binding.chipFutsal.setOnClickListener {
-            setActiveChip("futsal")
-            favoriteAdapter.updateData(
-                allFavorites.filter {
-                    it.category.contains("Sintetis", ignoreCase = true) ||
-                            it.category.contains("Vinyl", ignoreCase = true) ||
-                            it.category.contains("Indoor", ignoreCase = true) ||
-                            it.category.contains("Rumput", ignoreCase = true)
-                }
-            )
-        }
-        binding.chipBadminton.setOnClickListener {
-            setActiveChip("badminton")
-            favoriteAdapter.updateData(
-                allFavorites.filter { it.category.contains("Badminton", ignoreCase = true) }
-            )
-        }
-        binding.chipBasket.setOnClickListener {
-            setActiveChip("basket")
-            favoriteAdapter.updateData(
-                allFavorites.filter { it.category.contains("Basket", ignoreCase = true) }
-            )
-        }
-    }
-
-    private fun setActiveChip(active: String) {
-        val chips = mapOf(
-            "semua"     to binding.chipSemua,
-            "futsal"    to binding.chipFutsal,
-            "badminton" to binding.chipBadminton,
-            "basket"    to binding.chipBasket
-        )
-        chips.forEach { (key, chip) ->
-            if (key == active) {
-                chip.setBackgroundResource(R.drawable.bg_chip_active)
-                chip.setTextColor(Color.WHITE)
-            } else {
-                chip.setBackgroundResource(R.drawable.bg_chip_inactive)
-                chip.setTextColor(Color.parseColor("#121212"))
-            }
-        }
     }
 
     private fun loadFavorites() {
@@ -145,7 +100,8 @@ class FavoriteFragment : Fragment() {
                             description = it["description"]?.toString(),
                             facilities  = it["facilities"]?.toString(),
                             openTime    = it["openTime"]?.toString() ?: "06:00",
-                            closeTime   = it["closeTime"]?.toString() ?: "23:00"
+                            closeTime   = it["closeTime"]?.toString() ?: "23:00",
+                            mapsLink    = it["maps_link"]?.toString()
                         )
                     })
                     favoriteAdapter.updateData(allFavorites)

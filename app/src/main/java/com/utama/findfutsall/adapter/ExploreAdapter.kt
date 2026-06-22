@@ -9,6 +9,7 @@ import com.utama.findfutsall.R
 import com.utama.findfutsall.data.model.Field
 import com.utama.findfutsall.databinding.ItemFieldExploreBinding
 import com.utama.findfutsall.utils.Constants
+import com.utama.findfutsall.utils.PriceFormatter
 
 class ExploreAdapter(
     private var fields: List<Field>,
@@ -46,9 +47,9 @@ class ExploreAdapter(
         val field = fields[position]
         with(holder.binding) {
             tvFieldName.text = field.name
-            tvRating.text    = field.rating.toString()
+            tvRating.text    = if (field.rating > 0) String.format("%.1f", field.rating) else "0.0"
             tvDistance.text  = field.distance ?: ""
-            tvPrice.text     = "Rp ${field.price}k/jam"
+            tvPrice.text = "${PriceFormatter.format(field.price)}/jam"
 
             val context   = root.context
             val photoName = field.photo ?: ""
@@ -63,15 +64,14 @@ class ExploreAdapter(
                 Glide.with(context)
                     .load(fullUrl)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .placeholder(R.color.divider)
-                    .error(R.drawable.placeholder_image)
+                    .placeholder(R.drawable.placeholder_image)
+                    .error(R.drawable.placeholder_image_error)
                     .centerCrop()
                     .into(ivFieldPhoto)
             } else {
                 ivFieldPhoto.setImageResource(R.drawable.placeholder_image)
             }
 
-            // Icon favorit
             val isFav = alwaysFavorite || favoriteIds.contains(field.id)
             ivFavorite.setColorFilter(
                 androidx.core.content.ContextCompat.getColor(
@@ -81,7 +81,20 @@ class ExploreAdapter(
             )
 
             root.setOnClickListener { onItemClick(field) }
-            ivFavorite.setOnClickListener { onFavoriteClick(field) }
+            btnBooking.setOnClickListener { onItemClick(field) }
+            ivFavorite.setOnClickListener {
+                toggleFavorite(field.id)
+                ivFavorite.animate()
+                    .scaleX(1.3f).scaleY(1.3f)
+                    .setDuration(120)
+                    .withEndAction {
+                        ivFavorite.animate()
+                            .scaleX(1f).scaleY(1f)
+                            .setDuration(120)
+                            .start()
+                    }.start()
+                onFavoriteClick(field)
+            }
         }
     }
 

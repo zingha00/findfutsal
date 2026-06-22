@@ -15,16 +15,7 @@ import com.utama.findfutsall.ui.auth.LoginActivity
 import com.utama.findfutsall.utils.SessionManager
 import kotlinx.coroutines.launch
 
-/**
- * Pendaftaran owner sekarang HANYA 2 langkah (sebelumnya 3):
- * 1. Info Venue (nama, alamat, kota, telepon, deskripsi)
- * 2. Jam Operasional + Fasilitas Umum
- *
- * Step lama "Foto Lapangan" DIHAPUS dari sini -- detail per-lapangan
- * (harga, jenis permukaan, foto) sekarang diisi lewat alur "Tambah Lapangan"
- * terpisah di Dashboard, karena owner bisa punya banyak lapangan dengan
- * data berbeda-beda, tidak masuk akal dipaksa isi 1 set data di pendaftaran.
- */
+
 class RegisterOwnerActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityRegisterOwnerBinding
@@ -130,6 +121,7 @@ class RegisterOwnerActivity : AppCompatActivity() {
     private fun submitRegistration() {
         val venueName   = step1Data["nama_lapangan"] ?: ""
         val address     = step1Data["alamat"] ?: ""
+        val mapsLink    = step1Data["maps_link"] ?: ""
         val city        = step1Data["kota"] ?: "Bandung"
         val phone       = step1Data["no_telepon"] ?: ""
         val description = step1Data["deskripsi"] ?: ""
@@ -141,14 +133,11 @@ class RegisterOwnerActivity : AppCompatActivity() {
 
         val userId = sessionManager.getUserId()
 
-        // Field level-lapangan (jenis_permukaan, jumlah_lapangan, harga_per_jam)
-        // tidak lagi dikirim di sini -- nilai default/placeholder dikirim
-        // supaya backend tetap kompatibel, lapangan sungguhan ditambahkan
-        // nanti lewat fitur "Tambah Lapangan".
         val request = OwnerRegisterRequest(
             user_id         = userId,
             nama_lapangan   = venueName,
             alamat          = address,
+            maps_link       = mapsLink,
             kota            = city,
             no_telepon      = phone,
             deskripsi       = description,

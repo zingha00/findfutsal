@@ -69,9 +69,6 @@ class DetailFieldActivity : AppCompatActivity() {
         binding.tvDescription.text = fieldDesc.ifEmpty { "Lapangan futsal berkualitas di Bandung." }
         binding.tvTotalPrice.text = "${PriceFormatter.format(fieldPrice)}/jam"
 
-        // Tombol "Lihat di Maps" -- hanya muncul kalau owner sudah isi link Maps.
-        // Klik akan membuka aplikasi Google Maps (atau browser kalau Maps tidak
-        // terpasang) langsung ke lokasi venue tersebut.
         if (mapsLink.isNotEmpty()) {
             binding.tvLihatMaps.visibility = View.VISIBLE
             binding.tvLihatMaps.setOnClickListener {
@@ -198,7 +195,7 @@ class DetailFieldActivity : AppCompatActivity() {
             val icon = android.widget.ImageView(this).apply {
                 val p = LinearLayout.LayoutParams(32.dp, 32.dp)
                 layoutParams = p
-                setImageResource(R.drawable.ic_search)
+                setImageResource(getFacilityIcon(fac))
                 setBackgroundResource(R.drawable.bg_facility)
                 setPadding(6.dp, 6.dp, 6.dp, 6.dp)
                 setColorFilter(Color.parseColor("#00A86B"))
@@ -404,15 +401,6 @@ class DetailFieldActivity : AppCompatActivity() {
         return slots
     }
 
-    /**
-     * FIX BUG PENTING: sebelumnya pakai `return` di dalam loop ketika menemukan
-     * slot yang sudah "Penuh" (bookedSlots.contains(startH)). Itu menghentikan
-     * SELURUH fungsi, bukan cuma melewati slot itu -- akibatnya kalau ada slot
-     * penuh yang posisinya lebih dulu diproses dalam urutan loop dibanding slot
-     * yang baru diklik, proses mewarnai jadi hijau tidak pernah sampai dieksekusi.
-     * Sekarang pakai `continue` supaya cuma skip slot yang penuh itu saja,
-     * lanjut proses slot lainnya termasuk yang baru dipilih.
-     */
     private fun updateSlotSelection(selected: String) {
         for (i in 0 until binding.gridTimeSlots.childCount) {
             val card = binding.gridTimeSlots.getChildAt(i) as? androidx.cardview.widget.CardView
@@ -460,6 +448,18 @@ class DetailFieldActivity : AppCompatActivity() {
             putExtra("field_price",   fieldPrice)
         }
         startActivity(intent)
+    }
+
+    private fun getFacilityIcon(facilityName: String): Int {
+        return when {
+            facilityName.contains("Parkir", ignoreCase = true)     -> R.drawable.ic_parking
+            facilityName.contains("Toilet", ignoreCase = true)     -> R.drawable.ic_toilet
+            facilityName.contains("Ruang Ganti", ignoreCase = true) -> R.drawable.ic_changing_room
+            facilityName.contains("Kantin", ignoreCase = true)     -> R.drawable.ic_canteen
+            facilityName.contains("WiFi", ignoreCase = true)       -> R.drawable.ic_wifi
+            facilityName.contains("CCTV", ignoreCase = true)       -> R.drawable.ic_cctv
+            else -> R.drawable.ic_search
+        }
     }
 
     private val Int.dp: Int get() = (this * resources.displayMetrics.density).toInt()

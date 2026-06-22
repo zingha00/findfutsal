@@ -35,13 +35,6 @@
             android:textStyle="bold"
             android:textColor="#121212"/>
 
-        <ImageView
-            android:id="@+id/ivNotification"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@drawable/ic_notification"
-            app:tint="#121212"/>
-
     </LinearLayout>
 
     <!-- Header -->
@@ -74,74 +67,6 @@
     </LinearLayout>
 
     <!-- Filter Chips -->
-    <HorizontalScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:scrollbars="none"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:paddingTop="12dp"
-        android:paddingBottom="12dp"
-        android:background="#FFFFFF">
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/chipSemua"
-                android:layout_width="wrap_content"
-                android:layout_height="36dp"
-                android:text="Semua"
-                android:textSize="13sp"
-                android:textColor="#FFFFFF"
-                android:gravity="center"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"
-                android:background="@drawable/bg_chip_active"
-                android:layout_marginEnd="8dp"/>
-
-            <TextView
-                android:id="@+id/chipFutsal"
-                android:layout_width="wrap_content"
-                android:layout_height="36dp"
-                android:text="Futsal"
-                android:textSize="13sp"
-                android:textColor="#121212"
-                android:gravity="center"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"
-                android:background="@drawable/bg_chip_inactive"
-                android:layout_marginEnd="8dp"/>
-
-            <TextView
-                android:id="@+id/chipBadminton"
-                android:layout_width="wrap_content"
-                android:layout_height="36dp"
-                android:text="Badminton"
-                android:textSize="13sp"
-                android:textColor="#121212"
-                android:gravity="center"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"
-                android:background="@drawable/bg_chip_inactive"
-                android:layout_marginEnd="8dp"/>
-
-            <TextView
-                android:id="@+id/chipBasket"
-                android:layout_width="wrap_content"
-                android:layout_height="36dp"
-                android:text="Basket"
-                android:textSize="13sp"
-                android:textColor="#121212"
-                android:gravity="center"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"
-                android:background="@drawable/bg_chip_inactive"/>
-
-        </LinearLayout>
-    </HorizontalScrollView>
 
     <!-- Empty State -->
     <LinearLayout

@@ -22,8 +22,8 @@
         <ImageView
             android:layout_width="18dp"
             android:layout_height="18dp"
-            android:src="@android:drawable/ic_menu_mylocation"
-            app:tint="#00A86B"/>
+            android:src="@drawable/ic_location"
+            app:tint="@color/primary_green"/>
 
         <TextView
             android:layout_width="0dp"
@@ -34,17 +34,9 @@
             android:textSize="14sp"
             android:textStyle="bold"
             android:textColor="#121212"/>
-
-        <ImageView
-            android:id="@+id/ivNotification"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@drawable/ic_notification"
-            app:tint="#121212"/>
-
     </LinearLayout>
 
-    <!-- Search Bar + Filter -->
+    <!-- Search Bar -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -56,62 +48,33 @@
         android:paddingBottom="12dp"
         android:background="#FFFFFF">
 
-        <androidx.cardview.widget.CardView
-            android:layout_width="0dp"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:layout_weight="1"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="2dp"
-            app:cardBackgroundColor="#F5F5F5">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:paddingStart="12dp"
-                android:paddingEnd="12dp">
-
-                <ImageView
-                    android:layout_width="18dp"
-                    android:layout_height="18dp"
-                    android:src="@drawable/ic_search"
-                    app:tint="#999999"/>
-
-                <EditText
-                    android:id="@+id/etSearch"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginStart="8dp"
-                    android:hint="Cari lapangan favoritmu..."
-                    android:textSize="14sp"
-                    android:textColor="#121212"
-                    android:background="@null"
-                    android:inputType="text"/>
-
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
-
-        <!-- Filter Button -->
-        <androidx.cardview.widget.CardView
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_marginStart="8dp"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="2dp"
-            app:cardBackgroundColor="#F5F5F5">
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@drawable/bg_search_rounded"
+            android:paddingStart="14dp"
+            android:paddingEnd="14dp">
 
             <ImageView
-                android:id="@+id/btnFilter"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
                 android:src="@drawable/ic_search"
-                android:padding="12dp"
-                app:tint="#121212"/>
+                app:tint="#999999"/>
 
-        </androidx.cardview.widget.CardView>
-
+            <EditText
+                android:id="@+id/etSearch"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="8dp"
+                android:hint="Cari lapangan favoritmu..."
+                android:textSize="14sp"
+                android:textColor="#121212"
+                android:background="@null"
+                android:inputType="text"/>
+        </LinearLayout>
     </LinearLayout>
 
     <!-- Filter Chips -->
@@ -121,8 +84,8 @@
         android:scrollbars="none"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
-        android:paddingTop="12dp"
-        android:paddingBottom="8dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="12dp"
         android:background="#FFFFFF">
 
         <LinearLayout
@@ -131,11 +94,12 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/chipLokasi"
+                android:id="@+id/chipSemua"
                 android:layout_width="wrap_content"
                 android:layout_height="36dp"
-                android:text="Lokasi"
+                android:text="Semua"
                 android:textSize="13sp"
+                android:textStyle="bold"
                 android:textColor="#FFFFFF"
                 android:gravity="center"
                 android:paddingStart="16dp"
@@ -144,36 +108,49 @@
                 android:layout_marginEnd="8dp"/>
 
             <TextView
+                android:id="@+id/chipVinyl"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:text="Vinyl"
+                android:textSize="13sp"
+                android:textColor="#121212"
+                android:gravity="center"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:background="@drawable/bg_chip_inactive"
+                android:layout_marginEnd="8dp"/>
+
+            <TextView
+                android:id="@+id/chipRumputSintetis"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:text="Rumput Sintetis"
+                android:textSize="13sp"
+                android:textColor="#121212"
+                android:gravity="center"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:background="@drawable/bg_chip_inactive"
+                android:layout_marginEnd="8dp"/>
+
+            <TextView
+                android:id="@+id/chipParquet"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:text="Parquet"
+                android:textSize="13sp"
+                android:textColor="#121212"
+                android:gravity="center"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:background="@drawable/bg_chip_inactive"
+                android:layout_marginEnd="8dp"/>
+
+            <TextView
                 android:id="@+id/chipHarga"
                 android:layout_width="wrap_content"
                 android:layout_height="36dp"
-                android:text="Harga"
-                android:textSize="13sp"
-                android:textColor="#121212"
-                android:gravity="center"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"
-                android:background="@drawable/bg_chip_inactive"
-                android:layout_marginEnd="8dp"/>
-
-            <TextView
-                android:id="@+id/chipFasilitas"
-                android:layout_width="wrap_content"
-                android:layout_height="36dp"
-                android:text="Fasilitas"
-                android:textSize="13sp"
-                android:textColor="#121212"
-                android:gravity="center"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"
-                android:background="@drawable/bg_chip_inactive"
-                android:layout_marginEnd="8dp"/>
-
-            <TextView
-                android:id="@+id/chipWaktu"
-                android:layout_width="wrap_content"
-                android:layout_height="36dp"
-                android:text="Waktu"
+                android:text="Harga ▾"
                 android:textSize="13sp"
                 android:textColor="#121212"
                 android:gravity="center"
@@ -185,45 +162,116 @@
     </HorizontalScrollView>
 
     <!-- Result Count -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:paddingTop="16dp"
-        android:paddingBottom="8dp">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Terdekat Sekarang"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:textColor="#121212"/>
-
-        <TextView
-            android:id="@+id/tvResultCount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="24 Lapangan ditemukan"
-            android:textSize="12sp"
-            android:textColor="#999999"/>
-
-    </LinearLayout>
-
-    <!-- Result List -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvSearchResult"
+    <!-- Konten utama, bisa di-scroll -->
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:paddingTop="8dp"
-        android:clipToPadding="false"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Section: Lapangan Baru Ditambahkan -->
+
+            <LinearLayout
+                android:id="@+id/layoutLapanganBaru"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingTop="16dp"
+                android:paddingBottom="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:text="Temukan Lapangan"
+                    android:textColor="@color/primary_green"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/textView2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:text="Lapangan Baru Ditambahkan"
+                    android:textColor="#121212"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvLapanganBaru"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="8dp"
+                    android:clipToPadding="false"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="8dp"
+                android:background="#F5F5F5"/>
+
+            <!-- Result Count -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:paddingTop="14dp"
+                android:paddingBottom="8dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Semua Lapangan"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="#121212"/>
+
+                <TextView
+                    android:id="@+id/tvResultCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0 Lapangan ditemukan"
+                    android:textSize="12sp"
+                    android:textColor="#999999"/>
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvSearchResult"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:nestedScrollingEnabled="false"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+
+            <!-- Pagination -->
+            <LinearLayout
+                android:id="@+id/layoutPagination"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:paddingTop="8dp"
+                android:paddingBottom="24dp"/>
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 
 </LinearLayout>

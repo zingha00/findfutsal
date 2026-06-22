@@ -51,27 +51,27 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
+                android:background="#178944"
                 android:gravity="center"
-                android:background="#1A4D2E"
+                android:orientation="vertical"
                 android:padding="20dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Selesaikan dalam"
-                    android:textSize="12sp"
-                    android:textColor="#A8D5B5"/>
+                    android:textColor="#A8D5B5"
+                    android:textSize="12sp" />
 
                 <TextView
                     android:id="@+id/tvCountdown"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
                     android:text="15:00"
-                    android:textSize="32sp"
-                    android:textStyle="bold"
                     android:textColor="@color/white"
-                    android:layout_marginTop="4dp"/>
+                    android:textSize="32sp"
+                    android:textStyle="bold" />
 
             </LinearLayout>
 
@@ -109,11 +109,10 @@
                         android:id="@+id/ivQris"
                         android:layout_width="200dp"
                         android:layout_height="200dp"
-                        android:src="@drawable/placeholder_image"
+                        android:src="@drawable/ic_qrcode"
                         android:visibility="gone"
                         android:layout_marginBottom="12dp"/>
 
-                    <!-- Nomor rekening/e-wallet (muncul kalau bukan QRIS) -->
                     <LinearLayout
                         android:id="@+id/layoutAccountNumber"
                         android:layout_width="match_parent"

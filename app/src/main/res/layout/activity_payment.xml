@@ -32,9 +32,9 @@
                     android:id="@+id/btnBack"
                     android:layout_width="36dp"
                     android:layout_height="36dp"
-                    android:src="@drawable/ic_arrow_left"
-                    android:background="@drawable/bg_facility"
-                    android:padding="8dp"/>
+                    android:background="@drawable/bg_chip_active"
+                    android:padding="8dp"
+                    android:src="@drawable/ic_arrow_left" />
 
                 <TextView
                     android:layout_width="0dp"

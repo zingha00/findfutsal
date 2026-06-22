@@ -12,33 +12,33 @@
     <LinearLayout
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:background="@drawable/bg_icon_green"
-        android:gravity="center"
-        android:layout_marginBottom="24dp">
+        android:layout_marginBottom="24dp"
+        android:background="@drawable/bg_chip_active"
+        android:gravity="center">
 
         <ImageView
             android:layout_width="52dp"
             android:layout_height="52dp"
-            android:src="@drawable/ic_booking"/>
+            android:src="@drawable/ic_booking" />
     </LinearLayout>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
         android:text="Booking Berhasil!"
+        android:textColor="@color/primary_green"
         android:textSize="24sp"
-        android:textStyle="bold"
-        android:textColor="#1A2E1A"
-        android:layout_marginBottom="8dp"/>
+        android:textStyle="bold" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Pesanan kamu sedang menunggu konfirmasi dari pemilik lapangan."
-        android:textSize="14sp"
-        android:textColor="@color/text_secondary"
+        android:layout_marginBottom="8dp"
         android:gravity="center"
-        android:layout_marginBottom="8dp"/>
+        android:text="Pesanan kamu sedang menunggu konfirmasi dari pemilik lapangan."
+        android:textColor="@color/text_secondary"
+        android:textSize="14sp" />
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -166,13 +166,13 @@
         android:id="@+id/btnLihatPesanan"
         android:layout_width="match_parent"
         android:layout_height="52dp"
+        android:layout_marginBottom="12dp"
+        android:backgroundTint="@color/primary_dark"
         android:text="Lihat Pesanan"
+        android:textColor="@color/text_on_primary"
         android:textSize="15sp"
         android:textStyle="bold"
-        android:textColor="@color/text_on_primary"
-        android:backgroundTint="@color/primary_dark"
-        android:layout_marginBottom="12dp"
-        app:cornerRadius="12dp"/>
+        app:cornerRadius="12dp" />
 
     <Button
         android:id="@+id/btnKembaliHome"

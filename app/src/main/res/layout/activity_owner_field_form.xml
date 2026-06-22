@@ -11,12 +11,12 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/primary_dark"
-        app:title="Tambah Lapangan"
-        app:titleTextColor="@color/text_on_primary"
-        app:navigationIcon="@drawable/ic_arrow_left"
+        android:background="@color/background"
         app:navigationContentDescription="Kembali"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+        app:navigationIcon="@drawable/ic_arrow_left_black"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:title="Tambah Lapangan"
+        app:titleTextColor="@color/primary_green" />
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"

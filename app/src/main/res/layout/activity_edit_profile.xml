@@ -16,51 +16,51 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="#FFFFFF"
             android:orientation="vertical"
-            android:background="#1A4D2E"
             android:paddingStart="20dp"
-            android:paddingEnd="20dp"
             android:paddingTop="16dp"
+            android:paddingEnd="20dp"
             android:paddingBottom="32dp">
 
             <!-- Toolbar -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
                 <ImageView
                     android:id="@+id/btnBack"
                     android:layout_width="36dp"
                     android:layout_height="36dp"
-                    android:src="@drawable/ic_arrow_left"
-                    app:tint="#FFFFFF"
+                    android:layout_marginEnd="12dp"
                     android:padding="6dp"
-                    android:layout_marginEnd="12dp"/>
+                    android:src="@drawable/ic_arrow_left"
+                    app:tint="@color/black" />
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Edit Profil"
+                    android:textColor="@color/primary_green"
                     android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:textColor="#FFFFFF"/>
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/btnSave"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Simpan"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    android:textColor="#00A86B"
-                    android:background="@drawable/bg_rating"
+                    android:background="@drawable/bg_slot_selected"
                     android:paddingStart="14dp"
-                    android:paddingEnd="14dp"
                     android:paddingTop="6dp"
-                    android:paddingBottom="6dp"/>
+                    android:paddingEnd="14dp"
+                    android:paddingBottom="6dp"
+                    android:text="Simpan"
+                    android:textColor="@color/input_bg"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
 
             </LinearLayout>
 
@@ -68,9 +68,9 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
+                android:layout_marginTop="16dp"
                 android:gravity="center"
-                android:layout_marginTop="16dp">
+                android:orientation="vertical">
 
                 <FrameLayout
                     android:layout_width="wrap_content"
@@ -81,8 +81,8 @@
                         android:layout_width="90dp"
                         android:layout_height="90dp"
                         android:src="@drawable/ic_profile"
-                        app:civ_border_width="3dp"
-                        app:civ_border_color="#00A86B"/>
+                        app:civ_border_color="#00A86B"
+                        app:civ_border_width="3dp" />
 
                     <LinearLayout
                         android:id="@+id/btnChangePhoto"
@@ -90,14 +90,15 @@
                         android:layout_height="28dp"
                         android:layout_gravity="bottom|end"
                         android:background="@drawable/bg_slot_available"
-                        android:gravity="center"
                         android:clickable="true"
-                        android:focusable="true">
+                        android:focusable="true"
+                        android:gravity="center">
+
                         <ImageView
                             android:layout_width="14dp"
                             android:layout_height="14dp"
                             android:src="@drawable/ic_edit"
-                            app:tint="#1A4D2E"/>
+                            app:tint="#1A4D2E" />
                     </LinearLayout>
 
                 </FrameLayout>
@@ -107,8 +108,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:text="Ketuk foto untuk mengubah"
-                    android:textSize="11sp"
-                    android:textColor="#A8D5B5"/>
+                    android:textColor="@color/black"
+                    android:textSize="12sp" />
 
             </LinearLayout>
         </LinearLayout>
