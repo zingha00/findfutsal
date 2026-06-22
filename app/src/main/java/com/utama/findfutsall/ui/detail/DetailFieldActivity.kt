@@ -5,8 +5,10 @@ import android.graphics.Color
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.gridlayout.widget.GridLayout
@@ -20,6 +22,8 @@ import com.utama.findfutsall.utils.SessionManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody.Companion.toRequestBody
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -38,6 +42,22 @@ class DetailFieldActivity : AppCompatActivity() {
     private var currentPhotoUrl = ""
 
     private val bookedSlots = mutableListOf<String>()
+
+    // ---- State untuk Rating & Komentar ----
+    private var canReview = false
+    private var reviewBookingId = 0
+    private var selectedRating = 0
+    private var reviewPhotoUri: android.net.Uri? = null
+
+    private val pickReviewPhoto = registerForActivityResult(
+        androidx.activity.result.contract.ActivityResultContracts.GetContent()
+    ) { uri: android.net.Uri? ->
+        uri?.let {
+            reviewPhotoUri = it
+            binding.ivReviewPhotoPreview.visibility = View.VISIBLE
+            Glide.with(this).load(it).centerCrop().into(binding.ivReviewPhotoPreview)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,7 +97,7 @@ class DetailFieldActivity : AppCompatActivity() {
                     val mapIntent = Intent(Intent.ACTION_VIEW, uri)
                     startActivity(mapIntent)
                 } catch (e: Exception) {
-                    android.widget.Toast.makeText(this, "Link Maps tidak valid", android.widget.Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Link Maps tidak valid", Toast.LENGTH_SHORT).show()
                 }
             }
         } else {
@@ -111,6 +131,9 @@ class DetailFieldActivity : AppCompatActivity() {
 
         // Date pills
         setupDatePills(openTime, closeTime)
+
+        // Rating & Komentar
+        setupReviews()
 
         // Cek status favorit awal
         checkFavoriteStatus()
@@ -192,7 +215,7 @@ class DetailFieldActivity : AppCompatActivity() {
                 val p = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
                 layoutParams = p
             }
-            val icon = android.widget.ImageView(this).apply {
+            val icon = ImageView(this).apply {
                 val p = LinearLayout.LayoutParams(32.dp, 32.dp)
                 layoutParams = p
                 setImageResource(getFacilityIcon(fac))
@@ -459,6 +482,215 @@ class DetailFieldActivity : AppCompatActivity() {
             facilityName.contains("WiFi", ignoreCase = true)       -> R.drawable.ic_wifi
             facilityName.contains("CCTV", ignoreCase = true)       -> R.drawable.ic_cctv
             else -> R.drawable.ic_search
+        }
+    }
+
+    // ============================================================
+    // ================== RATING & KOMENTAR ======================
+    // ============================================================
+
+    private fun setupReviews() {
+        loadReviews()
+        checkCanReview()
+        setupStarRating()
+        binding.btnAddPhoto.setOnClickListener { pickReviewPhoto.launch("image/*") }
+        binding.btnSendComment.setOnClickListener { submitReview() }
+    }
+
+    private fun setupStarRating() {
+        val stars = listOf(binding.star1, binding.star2, binding.star3, binding.star4, binding.star5)
+        stars.forEachIndexed { index, star ->
+            star.setOnClickListener {
+                selectedRating = index + 1
+                stars.forEachIndexed { i, s ->
+                    s.setImageResource(
+                        if (i < selectedRating) android.R.drawable.btn_star_big_on
+                        else android.R.drawable.btn_star_big_off
+                    )
+                }
+            }
+        }
+    }
+
+    private fun checkCanReview() {
+        lifecycleScope.launch {
+            try {
+                val response = ApiClient.instance.checkCanReview(
+                    mapOf("user_id" to sessionManager.getUserId(), "field_id" to fieldId)
+                )
+                android.util.Log.d("REVIEWS", "checkCanReview response: ${response.body()}")
+                if (response.isSuccessful && response.body() != null) {
+                    val body = response.body()!!
+                    canReview = body["can_review"] as? Boolean ?: false
+                    reviewBookingId = (body["booking_id"] as? Double)?.toInt() ?: 0
+
+                    binding.layoutCommentForm.visibility = if (canReview) View.VISIBLE else View.GONE
+                    binding.tvMustBookToComment.visibility = if (canReview) View.GONE else View.VISIBLE
+                }
+            } catch (e: Exception) {
+                android.util.Log.e("REVIEWS", "Error checkCanReview: ${e.message}")
+                binding.layoutCommentForm.visibility = View.GONE
+                binding.tvMustBookToComment.visibility = View.VISIBLE
+            }
+        }
+    }
+
+    private fun loadReviews() {
+        lifecycleScope.launch {
+            try {
+                val response = ApiClient.instance.getReviews(mapOf("field_id" to fieldId))
+                android.util.Log.d("REVIEWS", "getReviews response: ${response.body()}")
+                if (response.isSuccessful && response.body() != null) {
+                    val body = response.body()!!
+                    val avgRating = (body["avg_rating"] as? Double) ?: 0.0
+                    val total = (body["total"] as? Double)?.toInt() ?: 0
+                    @Suppress("UNCHECKED_CAST")
+                    val reviews = body["reviews"] as? List<Map<String, Any>> ?: emptyList()
+
+                    binding.tvAvgRating.text = String.format("%.1f", avgRating)
+                    binding.tvReviewCountVisible.text = "($total ulasan)"
+
+                    renderReviewList(reviews)
+                }
+            } catch (e: Exception) {
+                android.util.Log.e("REVIEWS", "Error load reviews: ${e.message}")
+            }
+        }
+    }
+
+    private fun renderReviewList(reviews: List<Map<String, Any>>) {
+        binding.rvReviewsVisible.removeAllViews()
+        binding.tvNoReviews.visibility = if (reviews.isEmpty()) View.VISIBLE else View.GONE
+
+        reviews.forEach { review ->
+            val itemView = layoutInflater.inflate(R.layout.item_review, binding.rvReviewsVisible, false)
+
+            val ivPhoto   = itemView.findViewById<de.hdodenhof.circleimageview.CircleImageView>(R.id.ivReviewerPhoto)
+            val tvName    = itemView.findViewById<TextView>(R.id.tvReviewerName)
+            val tvDate    = itemView.findViewById<TextView>(R.id.tvReviewDate)
+            val tvComment = itemView.findViewById<TextView>(R.id.tvReviewComment)
+            val ivReviewPhoto = itemView.findViewById<ImageView>(R.id.ivReviewPhoto)
+            val layoutStars   = itemView.findViewById<LinearLayout>(R.id.layoutStars)
+
+            tvName.text = review["user_name"]?.toString() ?: "Pengguna"
+            tvDate.text = review["created_at"]?.toString()?.take(10) ?: ""
+            tvComment.text = review["comment"]?.toString() ?: ""
+
+            val rating = (review["rating"] as? Double)?.toInt() ?: 0
+            repeat(5) { i ->
+                val star = ImageView(this)
+                val size = (14 * resources.displayMetrics.density).toInt()
+                star.layoutParams = LinearLayout.LayoutParams(size, size)
+                star.setImageResource(
+                    if (i < rating) android.R.drawable.btn_star_big_on
+                    else android.R.drawable.btn_star_big_off
+                )
+                layoutStars.addView(star)
+            }
+
+            val userPhoto = review["user_photo"]?.toString() ?: ""
+            if (userPhoto.isNotEmpty()) {
+                Glide.with(this).load(userPhoto).placeholder(R.drawable.ic_profile).into(ivPhoto)
+            }
+
+            val reviewPhoto = review["photo"]?.toString() ?: ""
+            if (reviewPhoto.isNotEmpty()) {
+                ivReviewPhoto.visibility = View.VISIBLE
+                Glide.with(this).load(reviewPhoto).centerCrop().into(ivReviewPhoto)
+            }
+
+            binding.rvReviewsVisible.addView(itemView)
+        }
+    }
+
+    private fun submitReview() {
+        val comment = binding.etComment.text.toString().trim()
+        if (selectedRating == 0) {
+            Toast.makeText(this, "Pilih rating bintang dulu", Toast.LENGTH_SHORT).show()
+            return
+        }
+        if (comment.isEmpty()) {
+            Toast.makeText(this, "Tulis komentar dulu", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        binding.btnSendComment.isEnabled = false
+        binding.btnSendComment.text = "Mengirim..."
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                val client = okhttp3.OkHttpClient()
+                val builder = okhttp3.MultipartBody.Builder().setType(okhttp3.MultipartBody.FORM)
+                    .addFormDataPart("user_id", sessionManager.getUserId().toString())
+                    .addFormDataPart("field_id", fieldId.toString())
+                    .addFormDataPart("booking_id", reviewBookingId.toString())
+                    .addFormDataPart("rating", selectedRating.toString())
+                    .addFormDataPart("comment", comment)
+
+                reviewPhotoUri?.let { uri ->
+                    val inputStream = contentResolver.openInputStream(uri)
+                    val bytes = inputStream?.readBytes()
+                    inputStream?.close()
+                    if (bytes != null) {
+                        builder.addFormDataPart(
+                            "photo", "review.jpg",
+                            bytes.toRequestBody("image/jpeg".toMediaTypeOrNull())
+                        )
+                    }
+                }
+
+                val request = okhttp3.Request.Builder()
+                    .url(com.utama.findfutsall.utils.Constants.BASE_URL + "add_review.php")
+                    .post(builder.build())
+                    .build()
+
+                val response = client.newCall(request).execute()
+                val rawBody = response.body?.string() ?: "{}"
+                android.util.Log.d("REVIEWS", "add_review raw response: $rawBody")
+
+                // PENTING: kalau PHP fatal error, response BUKAN JSON murni
+                // (ada teks HTML <br> tercampur). Daripada crash parsing,
+                // deteksi dulu dan tampilkan pesan yang jelas ke user.
+                if (rawBody.trimStart().startsWith("<")) {
+                    withContext(Dispatchers.Main) {
+                        binding.btnSendComment.isEnabled = true
+                        binding.btnSendComment.text = "Kirim Ulasan"
+                        Toast.makeText(
+                            this@DetailFieldActivity,
+                            "Server error, coba lagi nanti",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                    return@launch
+                }
+
+                val resBody = org.json.JSONObject(rawBody)
+
+                withContext(Dispatchers.Main) {
+                    binding.btnSendComment.isEnabled = true
+                    binding.btnSendComment.text = "Kirim Ulasan"
+
+                    if (resBody.optBoolean("success")) {
+                        Toast.makeText(this@DetailFieldActivity, "Ulasan terkirim, terima kasih!", Toast.LENGTH_SHORT).show()
+                        binding.etComment.text?.clear()
+                        selectedRating = 0
+                        reviewPhotoUri = null
+                        binding.ivReviewPhotoPreview.visibility = View.GONE
+                        listOf(binding.star1, binding.star2, binding.star3, binding.star4, binding.star5)
+                            .forEach { it.setImageResource(android.R.drawable.btn_star_big_off) }
+                        loadReviews()
+                        checkCanReview()
+                    } else {
+                        Toast.makeText(this@DetailFieldActivity, resBody.optString("message", "Gagal kirim ulasan"), Toast.LENGTH_SHORT).show()
+                    }
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    binding.btnSendComment.isEnabled = true
+                    binding.btnSendComment.text = "Kirim Ulasan"
+                    Toast.makeText(this@DetailFieldActivity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
+            }
         }
     }
 

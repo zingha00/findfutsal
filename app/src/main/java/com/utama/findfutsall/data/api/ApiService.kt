@@ -136,4 +136,14 @@ interface ApiService {
     suspend fun updateOwnerData(
         @Body request: Map<String, @JvmSuppressWildcards Any>
     ): Response<Map<String, @JvmSuppressWildcards Any>>
+
+    @POST("check_can_review.php")
+    suspend fun checkCanReview(
+        @Body request: Map<String, @JvmSuppressWildcards Any>
+    ): Response<Map<String, @JvmSuppressWildcards Any>>
+
+    @POST("get_reviews.php")
+    suspend fun getReviews(
+        @Body request: Map<String, @JvmSuppressWildcards Any>
+    ): Response<Map<String, @JvmSuppressWildcards Any>>
 }

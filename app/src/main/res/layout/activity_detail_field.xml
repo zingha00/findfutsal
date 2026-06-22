@@ -96,9 +96,9 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Nama Lapangan"
-                                android:textColor="@color/primary_green"
                                 android:textSize="18sp"
-                                android:textStyle="bold" />
+                                android:textStyle="bold"
+                                android:textColor="#121212"/>
 
                             <LinearLayout
                                 android:layout_width="wrap_content"
@@ -418,10 +418,7 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <!-- Rating & Komentar, SELALU di posisi PALING AKHIR.
-                 Bisa dilihat semua orang kapan saja, tapi mengisi komentar baru
-                 HANYA diizinkan kalau user pernah booking lapangan ini (validasi
-                 dilakukan di server saat submit komentar, lihat add_comment.php) -->
+            <!-- Rating & Komentar, SELALU di posisi PALING AKHIR -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -441,6 +438,7 @@
                     android:orientation="vertical"
                     android:padding="16dp">
 
+                    <!-- Header: judul + rata-rata rating -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -452,52 +450,136 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Rating &amp; Komentar"
-                            android:textSize="15sp"
+                            android:text="Rating &amp; Ulasan"
+                            android:textSize="16sp"
                             android:textStyle="bold"
                             android:textColor="#121212"/>
+
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:src="@android:drawable/btn_star_big_on"
+                            android:layout_marginEnd="4dp"/>
+
+                        <TextView
+                            android:id="@+id/tvAvgRating"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0.0"
+                            android:textSize="15sp"
+                            android:textStyle="bold"
+                            android:textColor="#121212"
+                            android:layout_marginEnd="4dp"/>
 
                         <TextView
                             android:id="@+id/tvReviewCountVisible"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="0 komentar"
-                            android:textSize="12sp"
+                            android:text="(0 ulasan)"
+                            android:textSize="13sp"
                             android:textColor="#999999"/>
                     </LinearLayout>
 
-                    <!-- Form tulis komentar, disembunyikan otomatis di Kotlin
-                         kalau user belum pernah booking lapangan ini -->
+                    <!-- Form kasih ulasan: HANYA muncul kalau user boleh review -->
                     <LinearLayout
                         android:id="@+id/layoutCommentForm"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:background="#F5F5F5"
-                        android:layout_marginBottom="14dp">
+                        android:orientation="vertical"
+                        android:background="#F8F8F8"
+                        android:padding="14dp"
+                        android:layout_marginBottom="14dp"
+                        android:visibility="gone">
 
-                        <EditText
-                            android:id="@+id/etComment"
-                            android:layout_width="0dp"
+                        <TextView
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:background="@android:color/transparent"
-                            android:hint="Tulis komentar..."
+                            android:text="Beri Rating Kamu"
                             android:textSize="13sp"
-                            android:padding="12dp"
-                            android:maxLines="2"/>
+                            android:textStyle="bold"
+                            android:textColor="#121212"
+                            android:layout_marginBottom="10dp"/>
 
-                        <ImageView
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_gravity="center"
+                            android:layout_marginBottom="14dp">
+
+                            <ImageView android:id="@+id/star1" android:layout_width="32dp" android:layout_height="32dp"
+                                android:src="@android:drawable/btn_star_big_off" android:padding="2dp" android:clickable="true" android:focusable="true"/>
+                            <ImageView android:id="@+id/star2" android:layout_width="32dp" android:layout_height="32dp"
+                                android:src="@android:drawable/btn_star_big_off" android:padding="2dp" android:clickable="true" android:focusable="true"/>
+                            <ImageView android:id="@+id/star3" android:layout_width="32dp" android:layout_height="32dp"
+                                android:src="@android:drawable/btn_star_big_off" android:padding="2dp" android:clickable="true" android:focusable="true"/>
+                            <ImageView android:id="@+id/star4" android:layout_width="32dp" android:layout_height="32dp"
+                                android:src="@android:drawable/btn_star_big_off" android:padding="2dp" android:clickable="true" android:focusable="true"/>
+                            <ImageView android:id="@+id/star5" android:layout_width="32dp" android:layout_height="32dp"
+                                android:src="@android:drawable/btn_star_big_off" android:padding="2dp" android:clickable="true" android:focusable="true"/>
+                        </LinearLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Ceritakan pengalaman kamu..."
+                            app:boxBackgroundColor="@color/white"
+                            app:boxCornerRadiusTopStart="10dp"
+                            app:boxCornerRadiusTopEnd="10dp"
+                            app:boxCornerRadiusBottomStart="10dp"
+                            app:boxCornerRadiusBottomEnd="10dp"
+                            android:layout_marginBottom="12dp">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/etComment"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:minLines="3"
+                                android:maxLines="5"
+                                android:gravity="top"
+                                android:inputType="textMultiLine"
+                                android:textSize="13sp"/>
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:layout_marginBottom="12dp">
+
+                            <ImageView
+                                android:id="@+id/ivReviewPhotoPreview"
+                                android:layout_width="56dp"
+                                android:layout_height="56dp"
+                                android:scaleType="centerCrop"
+                                android:background="@drawable/bg_otp_box"
+                                android:visibility="gone"
+                                android:layout_marginEnd="10dp"/>
+
+                            <TextView
+                                android:id="@+id/btnAddPhoto"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="📷 Tambah Foto (Opsional)"
+                                android:textSize="12sp"
+                                android:textColor="@color/primary_green"
+                                android:textStyle="bold"
+                                android:clickable="true"
+                                android:focusable="true"/>
+                        </LinearLayout>
+
+                        <Button
                             android:id="@+id/btnSendComment"
-                            android:layout_width="36dp"
-                            android:layout_height="36dp"
-                            android:layout_marginEnd="8dp"
-                            android:padding="8dp"
-                            android:src="@drawable/ic_arrow_left"
-                            android:rotation="180"
-                            app:tint="@color/primary_green"
-                            android:background="?attr/selectableItemBackgroundBorderless"/>
+                            android:layout_width="match_parent"
+                            android:layout_height="46dp"
+                            android:text="Kirim Ulasan"
+                            android:textSize="13sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/text_on_primary"
+                            android:backgroundTint="@color/primary_green"
+                            app:cornerRadius="10dp"/>
                     </LinearLayout>
 
                     <!-- Info kalau belum pernah booking -->
@@ -505,30 +587,36 @@
                         android:id="@+id/tvMustBookToComment"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Booking lapangan ini dulu untuk bisa memberi komentar"
+                        android:text="Booking dan selesaikan permainan untuk memberi ulasan"
                         android:textSize="12sp"
                         android:textColor="#999999"
-                        android:background="#F5F5F5"
+                        android:background="#F8F8F8"
                         android:padding="12dp"
+                        android:gravity="center"
                         android:layout_marginBottom="14dp"
                         android:visibility="gone"/>
 
+                    <!-- Divider -->
+                    <View android:layout_width="match_parent" android:layout_height="1dp"
+                        android:background="#F0F0F0" android:layout_marginBottom="14dp"/>
+
                     <!-- List komentar -->
-                    <androidx.recyclerview.widget.RecyclerView
+                    <LinearLayout
                         android:id="@+id/rvReviewsVisible"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:nestedScrollingEnabled="false"/>
+                        android:orientation="vertical"/>
 
                     <TextView
                         android:id="@+id/tvNoReviews"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Belum ada komentar, jadilah yang pertama!"
+                        android:text="Belum ada ulasan, jadilah yang pertama!"
                         android:textSize="13sp"
                         android:textColor="#999999"
                         android:gravity="center"
-                        android:padding="20dp"/>
+                        android:padding="20dp"
+                        android:visibility="gone"/>
 
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
