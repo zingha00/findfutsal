@@ -25,6 +25,7 @@ class OwnerBerandaFragment : Fragment() {
     private var _binding: FragmentOwnerBerandaBinding? = null
     private val binding get() = _binding!!
     private lateinit var sessionManager: SessionManager
+    private var currentMapsLink = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -68,8 +69,6 @@ class OwnerBerandaFragment : Fragment() {
         binding.tvSlotTersedia.setOnClickListener { showSlotDatePicker() }
     }
 
-    private var currentMapsLink = ""
-
     private fun openEditVenue() {
         val intent = Intent(requireContext(), EditVenueActivity::class.java).apply {
             putExtra(EditVenueActivity.EXTRA_NAME, binding.tvVenueName.text.toString())
@@ -92,11 +91,6 @@ class OwnerBerandaFragment : Fragment() {
         }
     }
 
-    /**
-     * Klik "Slot Tersedia" -- buka kalender untuk cek slot jam di tanggal lain,
-     * bukan cuma hari ini. Hasilnya request ulang ke get_owner_stats.php
-     * dengan parameter slot_date yang dipilih.
-     */
     private fun showSlotDatePicker() {
         val picker = com.google.android.material.datepicker.MaterialDatePicker.Builder.datePicker()
             .setTitleText("Pilih Tanggal")
@@ -185,6 +179,16 @@ class OwnerBerandaFragment : Fragment() {
         }
     }
 
+    /**
+     * FIX BUG: sebelumnya baris "binding.tvTotalRevenue.text" TIDAK PERNAH
+     * di-assign apapun (cuma membaca nilai, tidak menyimpan), sehingga
+     * Total Pendapatan selalu tampil "Rp 0" walau data API sudah benar.
+     * Sekarang benar-benar di-set ke nilai pendapatan yang sudah diparsing.
+     *
+     * FIX TYPO: karakter unicode "↑" sebelumnya kadang tidak ter-render
+     * dengan benar di beberapa device/font, muncul sebagai "ij" atau
+     * karakter aneh lain. Dihapus, diganti teks polos tanpa simbol unicode.
+     */
     private fun updateStatsUI(data: Map<String, Any>) {
         if (_binding == null) return
 
@@ -206,8 +210,8 @@ class OwnerBerandaFragment : Fragment() {
         val target       = parseDouble("target")
         val pencapaian   = parseDouble("pencapaian")
 
-        binding.tvTotalRevenue.text
-        binding.tvRevenueGrowth.text = "↑ Pendapatan bulan ini"
+        binding.tvTotalRevenue.text  = "Rp ${formatAngka(pendapatan)}"
+        binding.tvRevenueGrowth.text = "Pendapatan bulan ini"
         binding.tvPendapatan.text    = "Rp ${formatAngka(pendapatan)}"
         binding.tvBiaya.text         = "Rp ${formatAngka(biaya)}"
         binding.tvTotalBooking.text  = totalBooking.toString()
@@ -217,7 +221,6 @@ class OwnerBerandaFragment : Fragment() {
         binding.tvDashPencapaian.text = "Rp ${formatAngka(pencapaian)}"
         binding.tvDashTarget.text     = "Rp ${formatAngka(target)}"
     }
-
 
     private fun loadBookingTerbaru() {
         if (_binding == null) return
@@ -283,12 +286,11 @@ class OwnerBerandaFragment : Fragment() {
             tvStatus.setTextColor(textColor)
 
             itemView.setOnClickListener {
-                (activity as? OwnerDashboardActivity)?.navigateTo(1) // pindah ke tab Booking
+                (activity as? OwnerDashboardActivity)?.navigateTo(1)
             }
 
             binding.containerBookingTerbaru.addView(itemView)
 
-            // Divider antar item, kecuali item terakhir
             if (index < bookings.size - 1) {
                 val divider = View(requireContext()).apply {
                     layoutParams = android.widget.LinearLayout.LayoutParams(

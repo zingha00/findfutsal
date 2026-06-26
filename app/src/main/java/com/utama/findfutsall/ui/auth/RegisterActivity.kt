@@ -154,7 +154,7 @@ class RegisterActivity : AppCompatActivity() {
     private fun observeViewModel() {
         viewModel.isLoading.observe(this) { isLoading ->
             binding.btnRegister.isEnabled = !isLoading
-            binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+            binding.loadingOverlay.visibility = if (isLoading) View.VISIBLE else View.GONE
         }
 
         viewModel.registerResult.observe(this) { result ->

@@ -106,22 +106,19 @@ class OwnerProfilFragment : Fragment() {
         binding.switchDarkMode.setOnCheckedChangeListener { _, isChecked ->
             pref.edit().putBoolean("dark_mode", isChecked).apply()
 
-            // Animasi fade sebelum mode berubah
-            val rootView = requireActivity().window.decorView
-            rootView.animate()
-                .alpha(0f)
-                .setDuration(200)
-                .withEndAction {
-                    AppCompatDelegate.setDefaultNightMode(
-                        if (isChecked) AppCompatDelegate.MODE_NIGHT_YES
-                        else AppCompatDelegate.MODE_NIGHT_NO
-                    )
-                    rootView.animate()
-                        .alpha(1f)
-                        .setDuration(200)
-                        .start()
-                }
-                .start()
+            // setDefaultNightMode otomatis recreate Activity di balik layar,
+            // jadi animasi manual (alpha fade) selalu putus di tengah jalan.
+            // overridePendingTransition akan dipakai Android untuk transisi
+            // antara Activity lama -> baru saat proses recreate terjadi.
+            requireActivity().overridePendingTransition(
+                android.R.anim.fade_in,
+                android.R.anim.fade_out
+            )
+
+            AppCompatDelegate.setDefaultNightMode(
+                if (isChecked) AppCompatDelegate.MODE_NIGHT_YES
+                else AppCompatDelegate.MODE_NIGHT_NO
+            )
         }
     }
 
