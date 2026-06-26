@@ -14,13 +14,15 @@ class OwnerDashboardActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityOwnerDashboardBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         setupBottomNav()
 
-        if (savedInstanceState == null) {
-            loadFragment(OwnerBerandaFragment())
-            binding.bottomNav.selectedItemId = R.id.nav_beranda
-        }
+        val selectedTab = savedInstanceState?.getInt("selected_tab") ?: R.id.nav_beranda
+        binding.bottomNav.selectedItemId = selectedTab
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putInt("selected_tab", binding.bottomNav.selectedItemId)
     }
 
     private fun setupBottomNav() {
@@ -29,9 +31,7 @@ class OwnerDashboardActivity : AppCompatActivity() {
                 R.id.nav_beranda  -> loadFragment(OwnerBerandaFragment())
                 R.id.nav_booking  -> loadFragment(OwnerBookingFragment())
                 R.id.nav_lapangan -> loadFragment(OwnerLapanganFragment())
-                R.id.nav_keuangan -> loadFragment(OwnerPlaceholderFragment.newInstance(
-                    "Keuangan", "Laporan pendapatan dan keuangan venue"
-                ))
+                R.id.nav_keuangan -> loadFragment(OwnerKeuanganFragment())
                 R.id.nav_profil   -> loadFragment(OwnerProfilFragment())
             }
             true

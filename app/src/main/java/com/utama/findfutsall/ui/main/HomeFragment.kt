@@ -18,12 +18,16 @@ import com.utama.findfutsall.R
 import com.utama.findfutsall.adapter.FieldAdapter
 import com.utama.findfutsall.adapter.FieldHorizontalAdapter
 import com.utama.findfutsall.adapter.PromoAdapter
+import com.utama.findfutsall.data.api.ApiClient
 import com.utama.findfutsall.data.model.Field
 import com.utama.findfutsall.data.model.Promo
 import com.utama.findfutsall.databinding.FragmentHomeBinding
 import com.utama.findfutsall.ui.detail.DetailFieldActivity
 import com.utama.findfutsall.utils.Constants
+import com.utama.findfutsall.utils.SessionManager
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
@@ -37,6 +41,7 @@ class HomeFragment : Fragment() {
     private lateinit var fieldAdapter: FieldAdapter
     private lateinit var fieldHorizontalAdapter: FieldHorizontalAdapter
     private lateinit var promoAdapter: PromoAdapter
+    private lateinit var session: SessionManager
     private val handler = Handler(Looper.getMainLooper())
     private var currentPage = 0
     private val dots = mutableListOf<ImageView>()
@@ -61,11 +66,11 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        session = SessionManager(requireContext())
         setupPromo()
         setupRecyclerViews()
         setupClickListeners()
-        loadFields()
-        binding.rvCategory.visibility = View.GONE
+        loadFieldsWithFavorites()
     }
 
     private fun setupPromo() {
@@ -115,7 +120,6 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupRecyclerViews() {
-        // Horizontal — lapangan terdekat
         fieldHorizontalAdapter = FieldHorizontalAdapter(emptyList()) { field ->
             openDetail(field)
         }
@@ -123,10 +127,11 @@ class HomeFragment : Fragment() {
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         binding.rvFieldsHorizontal.adapter = fieldHorizontalAdapter
 
-        // Vertical — rekomendasi
-        fieldAdapter = FieldAdapter(emptyList()) { field ->
-            openDetail(field)
-        }
+        fieldAdapter = FieldAdapter(
+            fields = emptyList(),
+            onItemClick = { field -> openDetail(field) },
+            onFavoriteClick = { field -> syncFavoriteToServer(field) }
+        )
         binding.rvFields.adapter = fieldAdapter
     }
 
@@ -144,30 +149,69 @@ class HomeFragment : Fragment() {
             putExtra("field_open_time", field.openTime)
             putExtra("field_close_time", field.closeTime)
             putExtra("field_phone", field.phone)
+            putExtra("field_maps_link", field.mapsLink)
         }
         startActivity(intent)
     }
 
     private fun setupClickListeners() {
         binding.tvSearch.setOnClickListener {
-            (activity as? com.utama.findfutsall.MainActivity)
-                ?.setSelectedNavItem(R.id.nav_explore)
+            (activity as? MainActivity)?.setSelectedNavItem(R.id.nav_explore)
         }
     }
 
-    private fun loadFields() {
-        lifecycleScope.launch {
+    private fun syncFavoriteToServer(field: Field) {
+        val userId = session.getUserId()
+        lifecycleScope.launch(Dispatchers.IO) {
             try {
-                val fields = withContext(Dispatchers.IO) { fetchFields() }
+                ApiClient.instance.toggleFavorite(
+                    mapOf("user_id" to userId, "field_id" to field.id)
+                )
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    if (isAdded && _binding != null) {
+                        fieldAdapter.toggleFavorite(field.id)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun loadFieldsWithFavorites() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            try {
+                val fields: List<Field>
+                val favIds: Set<Int>
+                withContext(Dispatchers.IO) {
+                    val fieldsDeferred = async { fetchFields() }
+                    val favIdsDeferred = async { fetchFavoriteIds() }
+                    fields = fieldsDeferred.await()
+                    favIds = favIdsDeferred.await()
+                }
                 if (_binding == null) return@launch
                 fieldHorizontalAdapter.updateData(fields)
                 fieldAdapter.updateData(fields)
+                fieldAdapter.setFavorites(favIds)
             } catch (e: Exception) {
                 if (_binding == null) return@launch
                 fieldHorizontalAdapter.updateData(emptyList())
                 fieldAdapter.updateData(emptyList())
             }
         }
+    }
+
+    private suspend fun fetchFavoriteIds(): Set<Int> {
+        return try {
+            val response = ApiClient.instance.getFavorites(
+                mapOf("user_id" to session.getUserId())
+            )
+            if (response.isSuccessful && response.body() != null) {
+                val body = response.body()!!
+                @Suppress("UNCHECKED_CAST")
+                val list = body["data"] as? List<Map<String, Any>> ?: emptyList()
+                list.map { (it["id"] as? Double)?.toInt() ?: 0 }.toSet()
+            } else emptySet()
+        } catch (e: Exception) { emptySet() }
     }
 
     private fun fetchFields(): List<Field> {
@@ -193,7 +237,8 @@ class HomeFragment : Fragment() {
                 description = obj.optString("description").ifEmpty { null },
                 facilities  = obj.optString("facilities").ifEmpty { null },
                 openTime    = obj.optString("openTime").ifEmpty { "06:00" },
-                closeTime   = obj.optString("closeTime").ifEmpty { "23:00" }
+                closeTime   = obj.optString("closeTime").ifEmpty { "23:00" },
+                mapsLink    = obj.optString("maps_link").ifEmpty { null }
             )
         }
     }
@@ -205,7 +250,7 @@ class HomeFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        loadFields()
+        loadFieldsWithFavorites()
         handler.postDelayed(slideRunnable, 3000)
     }
 

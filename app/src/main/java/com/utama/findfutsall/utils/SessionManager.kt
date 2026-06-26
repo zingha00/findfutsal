@@ -50,7 +50,11 @@ class SessionManager(context: Context) {
         return try {
             pref.getInt(Constants.KEY_USER_ID, 0)
         } catch (e: Exception) {
-            val asString = try { pref.getString(Constants.KEY_USER_ID, "0") } catch (e2: Exception) { "0" }
+            val asString = try {
+                pref.getString(Constants.KEY_USER_ID, "0")
+            } catch (e2: Exception) {
+                "0"
+            }
             asString?.toIntOrNull() ?: 0
         }
     }
@@ -135,19 +139,19 @@ class SessionManager(context: Context) {
             (0 until jsonArray.length()).map { i ->
                 val obj = jsonArray.getJSONObject(i)
                 Field(
-                    id          = obj.getInt("id"),
-                    name        = obj.getString("name"),
-                    address     = obj.getString("address"),
-                    price       = obj.getInt("price"),
-                    rating      = obj.optDouble("rating", 0.0).toFloat(),
-                    photo       = obj.optString("photo").ifEmpty { null },
-                    category    = obj.optString("category", ""),
-                    distance    = obj.optString("distance").ifEmpty { null },
-                    phone       = obj.optString("phone").ifEmpty { null },
+                    id = obj.getInt("id"),
+                    name = obj.getString("name"),
+                    address = obj.getString("address"),
+                    price = obj.getInt("price"),
+                    rating = obj.optDouble("rating", 0.0).toFloat(),
+                    photo = obj.optString("photo").ifEmpty { null },
+                    category = obj.optString("category", ""),
+                    distance = obj.optString("distance").ifEmpty { null },
+                    phone = obj.optString("phone").ifEmpty { null },
                     description = obj.optString("description").ifEmpty { null },
-                    facilities  = obj.optString("facilities").ifEmpty { null },
-                    openTime    = obj.optString("openTime").ifEmpty { null },
-                    closeTime   = obj.optString("closeTime").ifEmpty { null }
+                    facilities = obj.optString("facilities").ifEmpty { null },
+                    openTime = obj.optString("openTime").ifEmpty { null },
+                    closeTime = obj.optString("closeTime").ifEmpty { null }
                 )
             }
         } catch (e: Exception) {
@@ -173,4 +177,7 @@ class SessionManager(context: Context) {
     fun clearSession() {
         pref.edit().clear().apply()
     }
+
+    fun updateUsername(username: String) =
+        pref.edit().putString(Constants.KEY_USER_USERNAME, username).apply()
 }

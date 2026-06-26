@@ -12,8 +12,9 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.auth.api.signin.GoogleSignInStatusCodes
 import com.google.android.gms.common.api.ApiException
-import com.utama.findfutsall.MainActivity
+import com.utama.findfutsall.ui.main.MainActivity
 import com.utama.findfutsall.R
 import com.utama.findfutsall.databinding.ActivityLoginBinding
 import com.utama.findfutsall.ui.owner.OwnerDashboardActivity
@@ -40,7 +41,9 @@ class LoginActivity : AppCompatActivity() {
                 token = account.idToken ?: ""
             )
         } catch (e: ApiException) {
-            Toast.makeText(this, "Google Sign-In gagal: ${e.message}", Toast.LENGTH_SHORT).show()
+            if (e.statusCode != GoogleSignInStatusCodes.SIGN_IN_CANCELLED) {
+                Toast.makeText(this, "Google Sign-In gagal: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
@@ -120,14 +123,15 @@ class LoginActivity : AppCompatActivity() {
 
     private fun observeViewModel() {
         viewModel.isLoading.observe(this) { isLoading ->
-            binding.btnLogin.isEnabled      = !isLoading
-            binding.progressBar.visibility  = if (isLoading) View.VISIBLE else View.GONE
+            binding.btnLogin.isEnabled     = !isLoading
+            binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
         }
 
         viewModel.loginResult.observe(this) { result ->
             result?.onSuccess { response ->
                 if (response.success) {
                     response.user?.let { user ->
+                        sessionManager.clearSession()
                         sessionManager.saveLoginSession(
                             token    = response.token ?: "",
                             userId   = user.id,
@@ -154,6 +158,7 @@ class LoginActivity : AppCompatActivity() {
             result.onSuccess { response ->
                 if (response.success) {
                     response.user?.let { user ->
+                        sessionManager.clearSession()
                         sessionManager.saveLoginSession(
                             token    = response.token ?: "",
                             userId   = user.id,

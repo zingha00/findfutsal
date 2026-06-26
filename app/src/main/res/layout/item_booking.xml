@@ -24,15 +24,16 @@
             android:gravity="center_vertical">
 
             <!-- Foto Lapangan -->
+
+            <!-- Info Lapangan -->
             <ImageView
                 android:id="@+id/ivFieldPhoto"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
+                android:background="@drawable/bg_logo"
                 android:scaleType="centerCrop"
-                android:src="@drawable/findfutsall"
-                android:background="@drawable/bg_logo"/>
+                android:src="@drawable/placeholder_image" />
 
-            <!-- Info Lapangan -->
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -67,14 +68,14 @@
                 android:id="@+id/tvStatus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="MENDATANG"
-                android:textSize="10sp"
-                android:textColor="#FFFFFF"
-                android:background="@drawable/bg_chip_active"
+                android:background="@drawable/bg_facility"
                 android:paddingStart="10dp"
-                android:paddingEnd="10dp"
                 android:paddingTop="4dp"
-                android:paddingBottom="4dp"/>
+                android:paddingEnd="10dp"
+                android:paddingBottom="4dp"
+                android:text="MENDATANG"
+                android:textColor="@color/primary_dark"
+                android:textSize="10sp" />
 
         </LinearLayout>
 

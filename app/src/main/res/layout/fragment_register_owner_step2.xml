@@ -13,14 +13,14 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <!-- Card Jenis Permukaan -->
+        <!-- Card Jam Operasional -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
             app:cardCornerRadius="12dp"
             app:cardElevation="2dp"
-            app:cardBackgroundColor="#FFFFFF">
+            app:cardBackgroundColor="@color/bg_card">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -28,210 +28,42 @@
                 android:orientation="vertical"
                 android:padding="16dp">
 
-                <!-- Title -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
-                    android:layout_marginBottom="14dp">
+                    android:layout_marginBottom="6dp">
 
                     <TextView
                         android:layout_width="28dp"
                         android:layout_height="28dp"
-                        android:text="☑"
-                        android:textSize="18sp"
-                        android:textColor="#00A86B"
+                        android:text="🕐"
+                        android:textSize="16sp"
                         android:gravity="center"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Jenis Permukaan *"
+                        android:text="Jam Operasional Venue"
                         android:textSize="16sp"
                         android:textStyle="bold"
                         android:textColor="#121212"
                         android:layout_marginStart="8dp"/>
                 </LinearLayout>
 
-                <!-- Checkbox Grid 2 kolom -->
-                <GridLayout
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:columnCount="2"
-                    android:rowCount="2"
-                    android:useDefaultMargins="false">
+                    android:text="Jam operasional ini berlaku untuk semua lapangan di venue kamu"
+                    android:textSize="12sp"
+                    android:textColor="#999999"
+                    android:layout_marginBottom="16dp"/>
 
-                    <CheckBox
-                        android:id="@+id/cbRumputSintetis"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_columnWeight="1"
-                        android:text="Rumput Sintetis"
-                        android:textSize="14sp"
-                        android:textColor="#121212"
-                        android:buttonTint="#00A86B"
-                        android:paddingStart="4dp"
-                        android:paddingTop="8dp"
-                        android:paddingBottom="8dp"/>
-
-                    <CheckBox
-                        android:id="@+id/cbParquet"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_columnWeight="1"
-                        android:text="Parquet"
-                        android:textSize="14sp"
-                        android:textColor="#121212"
-                        android:buttonTint="#00A86B"
-                        android:paddingStart="4dp"
-                        android:paddingTop="8dp"
-                        android:paddingBottom="8dp"/>
-
-                    <CheckBox
-                        android:id="@+id/cbVinyl"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_columnWeight="1"
-                        android:text="Vinyl"
-                        android:textSize="14sp"
-                        android:textColor="#121212"
-                        android:buttonTint="#00A86B"
-                        android:paddingStart="4dp"
-                        android:paddingTop="8dp"
-                        android:paddingBottom="8dp"/>
-
-                    <CheckBox
-                        android:id="@+id/cbSemen"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_columnWeight="1"
-                        android:text="Semen"
-                        android:textSize="14sp"
-                        android:textColor="#121212"
-                        android:buttonTint="#00A86B"
-                        android:paddingStart="4dp"
-                        android:paddingTop="8dp"
-                        android:paddingBottom="8dp"/>
-
-                </GridLayout>
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
-
-        <!-- Card Harga & Operasional -->
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="2dp"
-            app:cardBackgroundColor="#FFFFFF">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
-
-                <!-- Title -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:layout_marginBottom="14dp">
-
-                    <TextView
-                        android:layout_width="28dp"
-                        android:layout_height="28dp"
-                        android:text="$"
-                        android:textSize="16sp"
-                        android:textColor="#00A86B"
-                        android:textStyle="bold"
-                        android:gravity="center"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Harga &amp; Operasional"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:textColor="#121212"
-                        android:layout_marginStart="8dp"/>
-                </LinearLayout>
-
-                <!-- Jumlah Lapangan -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Jumlah Lapangan"
-                    android:textSize="13sp"
-                    android:textColor="#121212"
-                    android:textStyle="bold"
-                    android:layout_marginBottom="6dp"/>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="14dp"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                    app:boxCornerRadiusTopStart="8dp"
-                    app:boxCornerRadiusTopEnd="8dp"
-                    app:boxCornerRadiusBottomStart="8dp"
-                    app:boxCornerRadiusBottomEnd="8dp"
-                    app:boxStrokeColor="#E0E0E0">
-
-                    <AutoCompleteTextView
-                        android:id="@+id/actvJumlahLapangan"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="1 Lapangan"
-                        android:textSize="14sp"
-                        android:paddingTop="14dp"
-                        android:paddingBottom="14dp"
-                        android:focusable="false"
-                        android:clickable="true"/>
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <!-- Harga per Jam -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Harga per Jam *"
-                    android:textSize="13sp"
-                    android:textColor="#121212"
-                    android:textStyle="bold"
-                    android:layout_marginBottom="6dp"/>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="14dp"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    app:boxCornerRadiusTopStart="8dp"
-                    app:boxCornerRadiusTopEnd="8dp"
-                    app:boxCornerRadiusBottomStart="8dp"
-                    app:boxCornerRadiusBottomEnd="8dp"
-                    app:boxStrokeColor="#E0E0E0"
-                    app:prefixText="Rp  ">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etHargaPerJam"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="80.000"
-                        android:textSize="14sp"
-                        android:inputType="numberDecimal"
-                        android:paddingTop="14dp"
-                        android:paddingBottom="14dp"/>
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <!-- Jam Buka & Tutup -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginBottom="4dp">
+                    android:orientation="horizontal">
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -240,26 +72,14 @@
                         android:orientation="vertical"
                         android:layout_marginEnd="8dp">
 
-                        <LinearLayout
+                        <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:gravity="center_vertical"
-                            android:layout_marginBottom="6dp">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="🕐"
-                                android:textSize="13sp"/>
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text=" Jam Buka"
-                                android:textSize="13sp"
-                                android:textColor="#121212"
-                                android:textStyle="bold"/>
-                        </LinearLayout>
+                            android:text="Jam Buka"
+                            android:textSize="13sp"
+                            android:textColor="#121212"
+                            android:textStyle="bold"
+                            android:layout_marginBottom="6dp"/>
 
                         <com.google.android.material.textfield.TextInputLayout
                             android:layout_width="match_parent"
@@ -269,7 +89,7 @@
                             app:boxCornerRadiusTopEnd="8dp"
                             app:boxCornerRadiusBottomStart="8dp"
                             app:boxCornerRadiusBottomEnd="8dp"
-                            app:boxStrokeColor="#E0E0E0">
+                            app:boxStrokeColor="@color/divider">
 
                             <AutoCompleteTextView
                                 android:id="@+id/actvJamBuka"
@@ -290,26 +110,14 @@
                         android:layout_weight="1"
                         android:orientation="vertical">
 
-                        <LinearLayout
+                        <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:gravity="center_vertical"
-                            android:layout_marginBottom="6dp">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="🕐"
-                                android:textSize="13sp"/>
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text=" Jam Tutup"
-                                android:textSize="13sp"
-                                android:textColor="#121212"
-                                android:textStyle="bold"/>
-                        </LinearLayout>
+                            android:text="Jam Tutup"
+                            android:textSize="13sp"
+                            android:textColor="#121212"
+                            android:textStyle="bold"
+                            android:layout_marginBottom="6dp"/>
 
                         <com.google.android.material.textfield.TextInputLayout
                             android:layout_width="match_parent"
@@ -319,7 +127,7 @@
                             app:boxCornerRadiusTopEnd="8dp"
                             app:boxCornerRadiusBottomStart="8dp"
                             app:boxCornerRadiusBottomEnd="8dp"
-                            app:boxStrokeColor="#E0E0E0">
+                            app:boxStrokeColor="@color/divider">
 
                             <AutoCompleteTextView
                                 android:id="@+id/actvJamTutup"
@@ -334,7 +142,6 @@
                         </com.google.android.material.textfield.TextInputLayout>
                     </LinearLayout>
                 </LinearLayout>
-
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
@@ -345,7 +152,7 @@
             android:layout_marginBottom="12dp"
             app:cardCornerRadius="12dp"
             app:cardElevation="2dp"
-            app:cardBackgroundColor="#FFFFFF">
+            app:cardBackgroundColor="@color/bg_card">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -353,33 +160,39 @@
                 android:orientation="vertical"
                 android:padding="16dp">
 
-                <!-- Title -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
-                    android:layout_marginBottom="14dp">
+                    android:layout_marginBottom="6dp">
 
                     <TextView
                         android:layout_width="28dp"
                         android:layout_height="28dp"
                         android:text="☆"
                         android:textSize="18sp"
-                        android:textColor="#00A86B"
+                        android:textColor="@color/primary_green"
                         android:gravity="center"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Fasilitas Tersedia"
+                        android:text="Fasilitas Umum Venue"
                         android:textSize="16sp"
                         android:textStyle="bold"
                         android:textColor="#121212"
                         android:layout_marginStart="8dp"/>
                 </LinearLayout>
 
-                <!-- Grid Fasilitas -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Fasilitas yang tersedia untuk semua pengunjung venue"
+                    android:textSize="12sp"
+                    android:textColor="#999999"
+                    android:layout_marginBottom="14dp"/>
+
                 <GridLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

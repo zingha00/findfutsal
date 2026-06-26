@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId = "com.utama.findfutsall"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
@@ -31,6 +31,7 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
+        isCoreLibraryDesugaringEnabled = true
     }
 
     kotlinOptions {
@@ -48,6 +49,7 @@ android {
 }
 
 dependencies {
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.3")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -81,6 +83,13 @@ dependencies {
 
     // Shimmer Loading
     implementation("com.facebook.shimmer:shimmer:0.5.0")
+
+    // MPAndroidChart
+    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
+
+    // Export Laporan (PDF & Excel)
+    implementation("com.itextpdf:itextpdf:5.5.13.5")
+    implementation("org.apache.poi:poi-ooxml:5.2.5")
 
     // Fragment KTX
     implementation("androidx.fragment:fragment-ktx:1.8.4")

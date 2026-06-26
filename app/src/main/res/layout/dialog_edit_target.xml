@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="#FFFFFF"
+    android:padding="24dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ubah Target Bulanan"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="#1A2E1A"
+        android:layout_marginBottom="6dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Pilih cepat atau ketik nominal target pendapatan bulanan"
+        android:textSize="13sp"
+        android:textColor="#888888"
+        android:layout_marginBottom="18dp"/>
+
+    <!-- Chip rekomendasi nominal -->
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="none"
+        android:layout_marginBottom="18dp">
+
+        <LinearLayout
+            android:id="@+id/layoutChipsTarget"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"/>
+    </HorizontalScrollView>
+
+    <!-- Input manual -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilTargetAmount"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Nominal Target"
+        app:prefixText="Rp"
+        app:boxCornerRadiusTopStart="12dp"
+        app:boxCornerRadiusTopEnd="12dp"
+        app:boxCornerRadiusBottomStart="12dp"
+        app:boxCornerRadiusBottomEnd="12dp"
+        app:boxStrokeColor="@color/primary_green">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etTargetAmount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:textSize="16sp"
+            android:textStyle="bold"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="end"
+        android:layout_marginTop="20dp">
+
+        <Button
+            android:id="@+id/btnBatalTarget"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Batal"
+            android:textColor="#999999"
+            android:layout_marginEnd="8dp"/>
+
+        <Button
+            android:id="@+id/btnSimpanTarget"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:text="Simpan"
+            android:textColor="@color/text_on_primary"
+            android:backgroundTint="@color/primary_green"
+            app:cornerRadius="10dp"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"/>
+    </LinearLayout>
+
+</LinearLayout>

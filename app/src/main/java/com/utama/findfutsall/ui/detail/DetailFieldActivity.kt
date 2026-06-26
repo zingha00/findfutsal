@@ -5,14 +5,25 @@ import android.graphics.Color
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.gridlayout.widget.GridLayout
+import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.utama.findfutsall.R
+import com.utama.findfutsall.data.api.ApiClient
 import com.utama.findfutsall.databinding.ActivityDetailFieldBinding
+import com.utama.findfutsall.utils.PriceFormatter
 import com.utama.findfutsall.utils.SessionManager
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody.Companion.toRequestBody
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -27,8 +38,26 @@ class DetailFieldActivity : AppCompatActivity() {
     private var selectedDate  = ""
     private var selectedStart = ""
     private var selectedEnd   = ""
+    private var isFavorite    = false
+    private var currentPhotoUrl = ""
 
     private val bookedSlots = mutableListOf<String>()
+
+    // ---- State untuk Rating & Komentar ----
+    private var canReview = false
+    private var reviewBookingId = 0
+    private var selectedRating = 0
+    private var reviewPhotoUri: android.net.Uri? = null
+
+    private val pickReviewPhoto = registerForActivityResult(
+        androidx.activity.result.contract.ActivityResultContracts.GetContent()
+    ) { uri: android.net.Uri? ->
+        uri?.let {
+            reviewPhotoUri = it
+            binding.ivReviewPhotoPreview.visibility = View.VISIBLE
+            Glide.with(this).load(it).centerCrop().into(binding.ivReviewPhotoPreview)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,6 +78,7 @@ class DetailFieldActivity : AppCompatActivity() {
         val fieldFac      = intent.getStringExtra("field_facilities") ?: ""
         val openTime      = intent.getStringExtra("field_open_time") ?: "06:00"
         val closeTime     = intent.getStringExtra("field_close_time") ?: "23:00"
+        val mapsLink      = intent.getStringExtra("field_maps_link") ?: ""
 
         // Bind data
         binding.tvFieldName.text = fieldName
@@ -57,22 +87,43 @@ class DetailFieldActivity : AppCompatActivity() {
         binding.tvCategory.text  = fieldCategory.ifEmpty { "Futsal" }
         binding.tvJamBuka.text   = "Buka $openTime - $closeTime"
         binding.tvDescription.text = fieldDesc.ifEmpty { "Lapangan futsal berkualitas di Bandung." }
-        binding.tvTotalPrice.text = "Rp ${formatPrice(fieldPrice)}/jam"
+        binding.tvTotalPrice.text = "${PriceFormatter.format(fieldPrice)}/jam"
+
+        if (mapsLink.isNotEmpty()) {
+            binding.tvLihatMaps.visibility = View.VISIBLE
+            binding.tvLihatMaps.setOnClickListener {
+                try {
+                    val uri = android.net.Uri.parse(mapsLink)
+                    val mapIntent = Intent(Intent.ACTION_VIEW, uri)
+                    startActivity(mapIntent)
+                } catch (e: Exception) {
+                    Toast.makeText(this, "Link Maps tidak valid", Toast.LENGTH_SHORT).show()
+                }
+            }
+        } else {
+            binding.tvLihatMaps.visibility = View.GONE
+        }
 
         // Load foto
         val photoName = fieldPhoto ?: ""
-        when {
-            photoName.startsWith("http") -> {
-                Glide.with(this).load(photoName)
-                    .placeholder(R.drawable.findfutsall)
-                    .centerCrop().into(binding.ivFieldPhoto)
-            }
-            photoName.isNotEmpty() -> {
-                val resId = resources.getIdentifier(photoName, "drawable", packageName)
-                if (resId != 0) binding.ivFieldPhoto.setImageResource(resId)
-                else binding.ivFieldPhoto.setImageResource(R.drawable.findfutsall)
-            }
-            else -> binding.ivFieldPhoto.setImageResource(R.drawable.findfutsall)
+        val baseUrl   = com.utama.findfutsall.utils.Constants.BASE_URL.replace("/api/", "/")
+        val fullUrl   = when {
+            photoName.startsWith("http") -> photoName
+            photoName.isNotEmpty()       -> "$baseUrl$photoName"
+            else                         -> null
+        }
+
+        currentPhotoUrl = fullUrl ?: ""
+        if (fullUrl != null) {
+            Glide.with(this)
+                .load(fullUrl)
+                .diskCacheStrategy(com.bumptech.glide.load.engine.DiskCacheStrategy.ALL)
+                .placeholder(R.drawable.placeholder_image)
+                .error(R.drawable.placeholder_image_error)
+                .centerCrop()
+                .into(binding.ivFieldPhoto)
+        } else {
+            binding.ivFieldPhoto.setImageResource(R.drawable.placeholder_image)
         }
 
         // Fasilitas
@@ -81,12 +132,73 @@ class DetailFieldActivity : AppCompatActivity() {
         // Date pills
         setupDatePills(openTime, closeTime)
 
+        // Rating & Komentar
+        setupReviews()
+
+        // Cek status favorit awal
+        checkFavoriteStatus()
+
         // Bottom bar
         binding.btnBookNow.isEnabled = false
         binding.btnBookNow.alpha     = 0.5f
         binding.btnBack.setOnClickListener { finish() }
-        binding.btnFavorite.setOnClickListener { /* TODO */ }
+        binding.btnFavorite.setOnClickListener { toggleFavorite() }
         binding.btnBookNow.setOnClickListener { doBooking() }
+    }
+
+    private fun checkFavoriteStatus() {
+        lifecycleScope.launch {
+            try {
+                val response = ApiClient.instance.getFavorites(
+                    mapOf("user_id" to sessionManager.getUserId())
+                )
+                if (response.isSuccessful && response.body() != null) {
+                    val body = response.body()!!
+                    @Suppress("UNCHECKED_CAST")
+                    val list = body["data"] as? List<Map<String, Any>> ?: emptyList()
+                    val favIds = list.map { (it["id"] as? Double)?.toInt() ?: 0 }.toSet()
+                    isFavorite = favIds.contains(fieldId)
+                    updateFavoriteIcon()
+                }
+            } catch (e: Exception) {
+                // Diamkan, biarkan default false
+            }
+        }
+    }
+
+    private fun toggleFavorite() {
+        val willBeFav = !isFavorite
+        isFavorite = willBeFav
+        updateFavoriteIcon()
+
+        binding.btnFavorite.animate()
+            .scaleX(1.3f).scaleY(1.3f)
+            .setDuration(120)
+            .withEndAction {
+                binding.btnFavorite.animate()
+                    .scaleX(1f).scaleY(1f)
+                    .setDuration(120)
+                    .start()
+            }.start()
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                ApiClient.instance.toggleFavorite(
+                    mapOf("user_id" to sessionManager.getUserId(), "field_id" to fieldId)
+                )
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    isFavorite = !willBeFav
+                    updateFavoriteIcon()
+                }
+            }
+        }
+    }
+
+    private fun updateFavoriteIcon() {
+        binding.btnFavorite.setColorFilter(
+            ContextCompat.getColor(this, if (isFavorite) R.color.error_red else android.R.color.white)
+        )
     }
 
     private fun setupFasilitas(facilities: String) {
@@ -103,10 +215,10 @@ class DetailFieldActivity : AppCompatActivity() {
                 val p = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
                 layoutParams = p
             }
-            val icon = android.widget.ImageView(this).apply {
+            val icon = ImageView(this).apply {
                 val p = LinearLayout.LayoutParams(32.dp, 32.dp)
                 layoutParams = p
-                setImageResource(R.drawable.ic_search)
+                setImageResource(getFacilityIcon(fac))
                 setBackgroundResource(R.drawable.bg_facility)
                 setPadding(6.dp, 6.dp, 6.dp, 6.dp)
                 setColorFilter(Color.parseColor("#00A86B"))
@@ -176,25 +288,45 @@ class DetailFieldActivity : AppCompatActivity() {
             pill.addView(tvNum)
 
             pill.setOnClickListener {
-                // Reset semua pill
                 for (j in 0 until binding.layoutDatePills.childCount) {
                     val p2 = binding.layoutDatePills.getChildAt(j) as LinearLayout
                     p2.setBackgroundResource(R.drawable.bg_chip_inactive)
                     (p2.getChildAt(0) as TextView).setTextColor(Color.parseColor("#999999"))
                     (p2.getChildAt(1) as TextView).setTextColor(Color.parseColor("#121212"))
                 }
-                // Aktifkan pill ini
                 pill.setBackgroundResource(R.drawable.bg_chip_active)
                 tvDay.setTextColor(Color.WHITE)
                 tvNum.setTextColor(Color.WHITE)
 
                 selectedDate = fullDate
                 binding.tvSelectedMonth.text = sdfMonth.format(cal.time)
-                setupTimeSlots(openTime, closeTime)
                 binding.cardPilihJam.visibility = View.VISIBLE
+                fetchBookedSlotsAndRender(openTime, closeTime)
             }
 
             binding.layoutDatePills.addView(pill)
+        }
+    }
+
+    private fun fetchBookedSlotsAndRender(openTime: String, closeTime: String) {
+        bookedSlots.clear()
+        lifecycleScope.launch {
+            try {
+                val response = ApiClient.instance.getBookedSlots(
+                    mapOf("field_id" to fieldId, "date" to selectedDate)
+                )
+                if (response.isSuccessful && response.body() != null) {
+                    val body = response.body()!!
+                    if (body["success"] == true) {
+                        @Suppress("UNCHECKED_CAST")
+                        val slots = body["booked_slots"] as? List<String> ?: emptyList()
+                        bookedSlots.addAll(slots)
+                    }
+                }
+            } catch (e: Exception) {
+                // Kalau gagal fetch, biarkan bookedSlots kosong
+            }
+            setupTimeSlots(openTime, closeTime)
         }
     }
 
@@ -248,7 +380,7 @@ class DetailFieldActivity : AppCompatActivity() {
             }
 
             val tvPrice = TextView(this).apply {
-                text      = "Rp ${formatPrice(fieldPrice)}"
+                text      = PriceFormatter.format(fieldPrice)
                 textSize  = 10f
                 gravity   = Gravity.CENTER
                 setTextColor(
@@ -272,7 +404,7 @@ class DetailFieldActivity : AppCompatActivity() {
                 card.setOnClickListener {
                     selectedStart = startHour
                     selectedEnd   = endHour
-                    updateSlotSelection(slot, slots)
+                    updateSlotSelection(slot)
                     showRincian()
                 }
             }
@@ -292,7 +424,7 @@ class DetailFieldActivity : AppCompatActivity() {
         return slots
     }
 
-    private fun updateSlotSelection(selected: String, allSlots: List<String>) {
+    private fun updateSlotSelection(selected: String) {
         for (i in 0 until binding.gridTimeSlots.childCount) {
             val card = binding.gridTimeSlots.getChildAt(i) as? androidx.cardview.widget.CardView
                 ?: continue
@@ -301,7 +433,7 @@ class DetailFieldActivity : AppCompatActivity() {
             val slot   = tvSlot.text.toString()
             val startH = slot.split(" - ")[0]
 
-            if (bookedSlots.contains(startH)) return
+            if (bookedSlots.contains(startH)) continue
 
             if (slot == selected) {
                 card.setCardBackgroundColor(Color.parseColor("#1A4D2E"))
@@ -318,9 +450,9 @@ class DetailFieldActivity : AppCompatActivity() {
     private fun showRincian() {
         val serviceFee = 5000
         val total      = fieldPrice + serviceFee
-        binding.tvRincianSewa.text  = "Rp ${formatPrice(fieldPrice)}"
-        binding.tvTotalRincian.text = "Rp ${formatPrice(total)}"
-        binding.tvTotalPrice.text   = "Rp ${formatPrice(total)}"
+        binding.tvRincianSewa.text  = PriceFormatter.format(fieldPrice)
+        binding.tvTotalRincian.text = PriceFormatter.format(total)
+        binding.tvTotalPrice.text   = PriceFormatter.format(total)
         binding.cardRincian.visibility = View.VISIBLE
         binding.btnBookNow.isEnabled   = true
         binding.btnBookNow.alpha       = 1f
@@ -332,6 +464,7 @@ class DetailFieldActivity : AppCompatActivity() {
             putExtra("field_id",      fieldId)
             putExtra("field_name",    binding.tvFieldName.text.toString())
             putExtra("field_address", binding.tvAddress.text.toString())
+            putExtra("field_photo",   currentPhotoUrl)
             putExtra("field_date",    selectedDate)
             putExtra("field_start",   selectedStart)
             putExtra("field_end",     selectedEnd)
@@ -340,8 +473,225 @@ class DetailFieldActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    private fun formatPrice(price: Int): String {
-        return String.format("%,d", price).replace(",", ".")
+    private fun getFacilityIcon(facilityName: String): Int {
+        return when {
+            facilityName.contains("Parkir", ignoreCase = true)     -> R.drawable.ic_parking
+            facilityName.contains("Toilet", ignoreCase = true)     -> R.drawable.ic_toilet
+            facilityName.contains("Ruang Ganti", ignoreCase = true) -> R.drawable.ic_changing_room
+            facilityName.contains("Kantin", ignoreCase = true)     -> R.drawable.ic_canteen
+            facilityName.contains("WiFi", ignoreCase = true)       -> R.drawable.ic_wifi
+            facilityName.contains("CCTV", ignoreCase = true)       -> R.drawable.ic_cctv
+            else -> R.drawable.ic_search
+        }
+    }
+
+    // ============================================================
+    // ================== RATING & KOMENTAR ======================
+    // ============================================================
+
+    private fun setupReviews() {
+        loadReviews()
+        checkCanReview()
+        setupStarRating()
+        binding.btnAddPhoto.setOnClickListener { pickReviewPhoto.launch("image/*") }
+        binding.btnSendComment.setOnClickListener { submitReview() }
+    }
+
+    private fun setupStarRating() {
+        val stars = listOf(binding.star1, binding.star2, binding.star3, binding.star4, binding.star5)
+        stars.forEachIndexed { index, star ->
+            star.setOnClickListener {
+                selectedRating = index + 1
+                stars.forEachIndexed { i, s ->
+                    s.setImageResource(
+                        if (i < selectedRating) android.R.drawable.btn_star_big_on
+                        else android.R.drawable.btn_star_big_off
+                    )
+                }
+            }
+        }
+    }
+
+    private fun checkCanReview() {
+        lifecycleScope.launch {
+            try {
+                val response = ApiClient.instance.checkCanReview(
+                    mapOf("user_id" to sessionManager.getUserId(), "field_id" to fieldId)
+                )
+                android.util.Log.d("REVIEWS", "checkCanReview response: ${response.body()}")
+                if (response.isSuccessful && response.body() != null) {
+                    val body = response.body()!!
+                    canReview = body["can_review"] as? Boolean ?: false
+                    reviewBookingId = (body["booking_id"] as? Double)?.toInt() ?: 0
+
+                    binding.layoutCommentForm.visibility = if (canReview) View.VISIBLE else View.GONE
+                    binding.tvMustBookToComment.visibility = if (canReview) View.GONE else View.VISIBLE
+                }
+            } catch (e: Exception) {
+                android.util.Log.e("REVIEWS", "Error checkCanReview: ${e.message}")
+                binding.layoutCommentForm.visibility = View.GONE
+                binding.tvMustBookToComment.visibility = View.VISIBLE
+            }
+        }
+    }
+
+    private fun loadReviews() {
+        lifecycleScope.launch {
+            try {
+                val response = ApiClient.instance.getReviews(mapOf("field_id" to fieldId))
+                android.util.Log.d("REVIEWS", "getReviews response: ${response.body()}")
+                if (response.isSuccessful && response.body() != null) {
+                    val body = response.body()!!
+                    val avgRating = (body["avg_rating"] as? Double) ?: 0.0
+                    val total = (body["total"] as? Double)?.toInt() ?: 0
+                    @Suppress("UNCHECKED_CAST")
+                    val reviews = body["reviews"] as? List<Map<String, Any>> ?: emptyList()
+
+                    binding.tvAvgRating.text = String.format("%.1f", avgRating)
+                    binding.tvReviewCountVisible.text = "($total ulasan)"
+
+                    renderReviewList(reviews)
+                }
+            } catch (e: Exception) {
+                android.util.Log.e("REVIEWS", "Error load reviews: ${e.message}")
+            }
+        }
+    }
+
+    private fun renderReviewList(reviews: List<Map<String, Any>>) {
+        binding.rvReviewsVisible.removeAllViews()
+        binding.tvNoReviews.visibility = if (reviews.isEmpty()) View.VISIBLE else View.GONE
+
+        reviews.forEach { review ->
+            val itemView = layoutInflater.inflate(R.layout.item_review, binding.rvReviewsVisible, false)
+
+            val ivPhoto   = itemView.findViewById<de.hdodenhof.circleimageview.CircleImageView>(R.id.ivReviewerPhoto)
+            val tvName    = itemView.findViewById<TextView>(R.id.tvReviewerName)
+            val tvDate    = itemView.findViewById<TextView>(R.id.tvReviewDate)
+            val tvComment = itemView.findViewById<TextView>(R.id.tvReviewComment)
+            val ivReviewPhoto = itemView.findViewById<ImageView>(R.id.ivReviewPhoto)
+            val layoutStars   = itemView.findViewById<LinearLayout>(R.id.layoutStars)
+
+            tvName.text = review["user_name"]?.toString() ?: "Pengguna"
+            tvDate.text = review["created_at"]?.toString()?.take(10) ?: ""
+            tvComment.text = review["comment"]?.toString() ?: ""
+
+            val rating = (review["rating"] as? Double)?.toInt() ?: 0
+            repeat(5) { i ->
+                val star = ImageView(this)
+                val size = (14 * resources.displayMetrics.density).toInt()
+                star.layoutParams = LinearLayout.LayoutParams(size, size)
+                star.setImageResource(
+                    if (i < rating) android.R.drawable.btn_star_big_on
+                    else android.R.drawable.btn_star_big_off
+                )
+                layoutStars.addView(star)
+            }
+
+            val userPhoto = review["user_photo"]?.toString() ?: ""
+            if (userPhoto.isNotEmpty()) {
+                Glide.with(this).load(userPhoto).placeholder(R.drawable.ic_profile).into(ivPhoto)
+            }
+
+            val reviewPhoto = review["photo"]?.toString() ?: ""
+            if (reviewPhoto.isNotEmpty()) {
+                ivReviewPhoto.visibility = View.VISIBLE
+                Glide.with(this).load(reviewPhoto).centerCrop().into(ivReviewPhoto)
+            }
+
+            binding.rvReviewsVisible.addView(itemView)
+        }
+    }
+
+    private fun submitReview() {
+        val comment = binding.etComment.text.toString().trim()
+        if (selectedRating == 0) {
+            Toast.makeText(this, "Pilih rating bintang dulu", Toast.LENGTH_SHORT).show()
+            return
+        }
+        if (comment.isEmpty()) {
+            Toast.makeText(this, "Tulis komentar dulu", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        binding.btnSendComment.isEnabled = false
+        binding.btnSendComment.text = "Mengirim..."
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                val client = okhttp3.OkHttpClient()
+                val builder = okhttp3.MultipartBody.Builder().setType(okhttp3.MultipartBody.FORM)
+                    .addFormDataPart("user_id", sessionManager.getUserId().toString())
+                    .addFormDataPart("field_id", fieldId.toString())
+                    .addFormDataPart("booking_id", reviewBookingId.toString())
+                    .addFormDataPart("rating", selectedRating.toString())
+                    .addFormDataPart("comment", comment)
+
+                reviewPhotoUri?.let { uri ->
+                    val inputStream = contentResolver.openInputStream(uri)
+                    val bytes = inputStream?.readBytes()
+                    inputStream?.close()
+                    if (bytes != null) {
+                        builder.addFormDataPart(
+                            "photo", "review.jpg",
+                            bytes.toRequestBody("image/jpeg".toMediaTypeOrNull())
+                        )
+                    }
+                }
+
+                val request = okhttp3.Request.Builder()
+                    .url(com.utama.findfutsall.utils.Constants.BASE_URL + "add_review.php")
+                    .post(builder.build())
+                    .build()
+
+                val response = client.newCall(request).execute()
+                val rawBody = response.body?.string() ?: "{}"
+                android.util.Log.d("REVIEWS", "add_review raw response: $rawBody")
+
+                // PENTING: kalau PHP fatal error, response BUKAN JSON murni
+                // (ada teks HTML <br> tercampur). Daripada crash parsing,
+                // deteksi dulu dan tampilkan pesan yang jelas ke user.
+                if (rawBody.trimStart().startsWith("<")) {
+                    withContext(Dispatchers.Main) {
+                        binding.btnSendComment.isEnabled = true
+                        binding.btnSendComment.text = "Kirim Ulasan"
+                        Toast.makeText(
+                            this@DetailFieldActivity,
+                            "Server error, coba lagi nanti",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                    return@launch
+                }
+
+                val resBody = org.json.JSONObject(rawBody)
+
+                withContext(Dispatchers.Main) {
+                    binding.btnSendComment.isEnabled = true
+                    binding.btnSendComment.text = "Kirim Ulasan"
+
+                    if (resBody.optBoolean("success")) {
+                        Toast.makeText(this@DetailFieldActivity, "Ulasan terkirim, terima kasih!", Toast.LENGTH_SHORT).show()
+                        binding.etComment.text?.clear()
+                        selectedRating = 0
+                        reviewPhotoUri = null
+                        binding.ivReviewPhotoPreview.visibility = View.GONE
+                        listOf(binding.star1, binding.star2, binding.star3, binding.star4, binding.star5)
+                            .forEach { it.setImageResource(android.R.drawable.btn_star_big_off) }
+                        loadReviews()
+                        checkCanReview()
+                    } else {
+                        Toast.makeText(this@DetailFieldActivity, resBody.optString("message", "Gagal kirim ulasan"), Toast.LENGTH_SHORT).show()
+                    }
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    binding.btnSendComment.isEnabled = true
+                    binding.btnSendComment.text = "Kirim Ulasan"
+                    Toast.makeText(this@DetailFieldActivity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
     }
 
     private val Int.dp: Int get() = (this * resources.displayMetrics.density).toInt()

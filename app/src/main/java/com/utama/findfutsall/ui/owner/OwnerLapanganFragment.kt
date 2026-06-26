@@ -1,6 +1,5 @@
 package com.utama.findfutsall.ui.owner
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
@@ -14,6 +13,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.utama.findfutsall.adapter.OwnerFieldAdapter
 import com.utama.findfutsall.data.api.ApiClient
 import com.utama.findfutsall.data.model.Field
 import com.utama.findfutsall.databinding.FragmentOwnerLapanganBinding
@@ -39,7 +39,7 @@ class OwnerLapanganFragment : Fragment() {
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
         if (result.resultCode == FieldFormActivity.RESULT_SAVED) {
-            loadLapangan() // Refresh setelah tambah/edit
+            loadLapangan()
         }
     }
 
@@ -63,10 +63,10 @@ class OwnerLapanganFragment : Fragment() {
 
     private fun setupRecyclerView() {
         adapter = OwnerFieldAdapter(
-            fields   = allFields,
-            onEdit   = { field -> openEditForm(field) },
+            fields = allFields,
+            onEdit = { field -> openEditForm(field) },
             onDelete = { field -> deleteLapangan(field) },
-            onView   = { field ->
+            onMore = { field ->
                 Toast.makeText(requireContext(), "Detail: ${field.name}", Toast.LENGTH_SHORT).show()
             }
         )
@@ -131,13 +131,14 @@ class OwnerLapanganFragment : Fragment() {
 
                         @Suppress("UNCHECKED_CAST")
                         val rawFields = body["fields"] as? List<Map<String, Any>> ?: emptyList()
-                        val total = body["total"]?.toString()?.toDoubleOrNull()?.toInt() ?: rawFields.size
+                        val total     = body["total"]?.toString()?.toDoubleOrNull()?.toInt() ?: rawFields.size
+                        val tersedia  = body["tersedia"]?.toString()?.toDoubleOrNull()?.toInt() ?: 0
 
                         allFields.clear()
                         allFields.addAll(rawFields.map { parseField(it) })
 
                         adapter.notifyDataSetChanged()
-                        updateStats(total)
+                        updateStats(total, tersedia)
 
                         binding.root.post { showFields(allFields.isNotEmpty()) }
                     } else {
@@ -169,7 +170,7 @@ class OwnerLapanganFragment : Fragment() {
                         }
                         val body = json.toString()
                             .toRequestBody("application/json".toMediaTypeOrNull())
-                        val request = Request.Builder().url(url).post(body).build()
+                        val request  = Request.Builder().url(url).post(body).build()
                         val response = OkHttpClient().newCall(request).execute()
                         val resBody  = JSONObject(response.body?.string() ?: "{}")
 
@@ -177,7 +178,8 @@ class OwnerLapanganFragment : Fragment() {
                             if (resBody.optBoolean("success")) {
                                 allFields.removeAll { it.id == field.id }
                                 adapter.notifyDataSetChanged()
-                                updateStats(allFields.size)
+                                val tersedia = allFields.count { it.isActive }
+                                updateStats(allFields.size, tersedia)
                                 showFields(allFields.isNotEmpty())
                                 Toast.makeText(requireContext(), "Lapangan dihapus", Toast.LENGTH_SHORT).show()
                             } else {
@@ -208,14 +210,16 @@ class OwnerLapanganFragment : Fragment() {
             description = data["description"]?.toString()?.takeIf { it.isNotEmpty() },
             facilities  = data["facilities"]?.toString()?.takeIf { it.isNotEmpty() },
             openTime    = data["openTime"]?.toString() ?: "06:00",
-            closeTime   = data["closeTime"]?.toString() ?: "23:00"
+            closeTime   = data["closeTime"]?.toString() ?: "23:00",
+            isActive    = data["isActive"]?.toString()?.toBooleanStrictOrNull() ?: true,
+            status      = data["status"]?.toString() ?: "active"
         )
     }
 
-    private fun updateStats(total: Int) {
+    private fun updateStats(total: Int, tersedia: Int) {
         if (_binding == null) return
         binding.tvStatTotalLapangan.text = total.toString()
-        binding.tvStatTersedia.text      = total.toString()
+        binding.tvStatTersedia.text      = tersedia.toString()
     }
 
     private fun showFields(hasData: Boolean) {

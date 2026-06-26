@@ -4,24 +4,29 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="12dp"
+    android:layout_marginBottom="14dp"
     app:cardCornerRadius="16dp"
-    app:cardElevation="2dp"
-    app:cardBackgroundColor="#FFFFFF">
+    app:cardElevation="0dp"
+    app:cardBackgroundColor="#FFFFFF"
+    app:strokeWidth="1dp"
+    app:strokeColor="#F0F0F0">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:orientation="vertical">
 
-        <!-- Row 1: ID Booking + Status -->
+        <!-- Header: ID + Status -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:layout_marginBottom="8dp">
+            android:background="#FAFAFA"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="12dp"
+            android:paddingBottom="12dp">
 
             <TextView
                 android:id="@+id/tvBookingId"
@@ -31,150 +36,155 @@
                 android:text="#BK-001"
                 android:textSize="12sp"
                 android:textColor="#00A86B"
-                android:textStyle="bold"/>
+                android:textStyle="bold"
+                android:letterSpacing="0.02"/>
 
             <TextView
                 android:id="@+id/tvBookingStatus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Menunggu"
-                android:textSize="11sp"
-                android:textStyle="bold"
-                android:textColor="#856404"
-                android:background="@drawable/bg_tag"
+                android:background="#FFF5E7"
                 android:paddingStart="10dp"
+                android:paddingTop="5dp"
                 android:paddingEnd="10dp"
-                android:paddingTop="4dp"
-                android:paddingBottom="4dp"/>
+                android:paddingBottom="5dp"
+                android:text="Menunggu"
+                android:textColor="#FF9800"
+                android:textSize="10sp"
+                android:textStyle="bold" />
         </LinearLayout>
 
-        <!-- Nama Pelanggan -->
-        <TextView
-            android:id="@+id/tvCustomerName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Nama Pelanggan"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:textColor="#121212"
-            android:layout_marginBottom="2dp"/>
-
-        <!-- Divider -->
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#F0F0F0"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"/>
-
-        <!-- Detail Booking -->
+        <!-- Body -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginBottom="6dp">
-            <ImageView android:layout_width="14dp" android:layout_height="14dp"
-                android:src="@drawable/ic_futsal" app:tint="#00A86B"
-                android:layout_marginEnd="8dp"/>
-            <TextView android:id="@+id/tvFieldName"
-                android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="Nama Lapangan" android:textSize="13sp" android:textColor="#333333"/>
-        </LinearLayout>
+            android:orientation="vertical"
+            android:padding="16dp">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginBottom="6dp">
-            <ImageView android:layout_width="14dp" android:layout_height="14dp"
-                android:src="@drawable/ic_booking" app:tint="#00A86B"
-                android:layout_marginEnd="8dp"/>
-            <TextView android:id="@+id/tvPlayDate"
-                android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="Senin, 01 Jan 2025 | 08:00 - 10:00"
-                android:textSize="13sp" android:textColor="#333333"/>
-        </LinearLayout>
+            <!-- Nama Pelanggan -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="12dp">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginBottom="12dp">
-            <ImageView android:layout_width="14dp" android:layout_height="14dp"
-                android:src="@drawable/ic_wallet" app:tint="#00A86B"
-                android:layout_marginEnd="8dp"/>
-            <TextView android:id="@+id/tvTotalPrice"
-                android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="Rp 150.000" android:textSize="14sp"
-                android:textStyle="bold" android:textColor="#00A86B"/>
-        </LinearLayout>
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/ivUserPhoto"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:src="@drawable/ic_profile"
+                    app:civ_border_width="1dp"
+                    app:civ_border_color="#00A86B"
+                    android:layout_marginEnd="12dp"/>
 
-        <!-- Tombol Aksi -->
-        <LinearLayout
-            android:id="@+id/layoutAksi"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/tvCustomerName"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Nama Pelanggan"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:textColor="#121212"/>
 
-            <!-- Konfirmasi -->
+            </LinearLayout>
+
+            <!-- Divider -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#F0F0F0"
+                android:layout_marginBottom="12dp"/>
+
+            <!-- Lapangan -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="8dp">
+                <ImageView
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
+                    android:src="@drawable/ic_futsal"
+                    app:tint="#999999"
+                    android:layout_marginEnd="8dp"/>
+                <TextView
+                    android:id="@+id/tvFieldName"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Nama Lapangan"
+                    android:textSize="13sp"
+                    android:textColor="#666666"
+                    android:maxLines="1"
+                    android:ellipsize="end"/>
+            </LinearLayout>
+
+            <!-- Tanggal & Jam -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="14dp">
+                <ImageView
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
+                    android:src="@drawable/ic_booking"
+                    app:tint="#999999"
+                    android:layout_marginEnd="8dp"/>
+                <TextView
+                    android:id="@+id/tvPlayDate"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Senin, 01 Jan 2025 | 08:00 - 10:00"
+                    android:textSize="13sp"
+                    android:textColor="#666666"/>
+            </LinearLayout>
+
+            <!-- Harga -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:background="#F0FBF6"
+                android:padding="12dp"
+                android:layout_marginBottom="14dp">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Total Pembayaran"
+                    android:textSize="12sp"
+                    android:textColor="#666666"/>
+                <TextView
+                    android:id="@+id/tvTotalPrice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Rp 150.000"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:textColor="#00A86B"/>
+            </LinearLayout>
+
+            <!-- SATU tombol untuk SEMUA status. Konfirmasi/Tolak dipindah
+                 ke halaman OwnerBookingDetailActivity, hanya muncul di sana
+                 kalau status masih Menunggu. -->
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnKonfirmasi"
-                android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:layout_weight="1"
-                android:layout_marginEnd="8dp"
-                android:text="Konfirmasi"
+                android:id="@+id/btnDetail"
+                android:layout_width="match_parent"
+                android:layout_height="42dp"
+                android:text="Lihat Detail"
+                android:textColor="@color/divider"
                 android:textSize="12sp"
-                android:textColor="#FFFFFF"
-                app:backgroundTint="#1A4D2E"
-                app:cornerRadius="8dp"/>
+                android:textStyle="bold"
+                app:backgroundTint="@color/primary_green"
+                app:cornerRadius="10dp" />
 
-            <!-- WhatsApp -->
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnWhatsapp"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginEnd="8dp"
-                android:text=""
-                android:insetTop="0dp"
-                android:insetBottom="0dp"
-                app:backgroundTint="#25D366"
-                app:cornerRadius="8dp"
-                app:icon="@drawable/ic_phone"
-                app:iconGravity="textStart"
-                app:iconPadding="0dp"
-                app:iconSize="20dp"
-                app:iconTint="#FFFFFF"/>
-
-            <!-- Batal -->
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnBatal"
-                android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:layout_weight="1"
-                android:text="Tolak"
-                android:textSize="12sp"
-                android:textColor="#FF3B30"
-                app:backgroundTint="#FFEBEE"
-                app:cornerRadius="8dp"
-                app:strokeColor="#FF3B30"
-                app:strokeWidth="1dp"/>
         </LinearLayout>
-
-        <!-- Tombol Detail saja (untuk status selain Menunggu) -->
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnDetail"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:text="Lihat Detail"
-            android:textSize="12sp"
-            android:textColor="#1A4D2E"
-            app:backgroundTint="#E8FFF5"
-            app:cornerRadius="8dp"
-            android:visibility="gone"/>
-
     </LinearLayout>
 </androidx.cardview.widget.CardView>

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.utama.findfutsall">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -15,7 +16,7 @@
         android:networkSecurityConfig="@xml/network_security_config"
         android:theme="@style/Theme.FindFutsall">
 
-        <!-- Splash Screen -->
+        <!-- ═══════════════ AUTH ═══════════════ -->
         <activity
             android:name=".ui.auth.SplashActivity"
             android:exported="true"
@@ -27,43 +28,78 @@
             </intent-filter>
         </activity>
 
-        <!-- Login -->
         <activity
             android:name=".ui.auth.LoginActivity"
             android:exported="false"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="adjustResize"/>
 
-        <!-- Register -->
         <activity
             android:name=".ui.auth.RegisterActivity"
             android:exported="false"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="adjustResize"/>
 
-        <!-- Forgot Password -->
         <activity
             android:name=".ui.auth.ForgotPasswordActivity"
-            android:exported="false" />
+            android:exported="false"/>
 
-        <!-- Main -->
         <activity
-            android:name=".MainActivity"
-            android:exported="false" />
+            android:name=".ui.auth.VerifyOtpActivity"
+            android:exported="false"/>
 
-        <!-- Detail Lapangan -->
+        <activity
+            android:name=".ui.auth.ResetPasswordActivity"
+            android:exported="false"/>
+
+        <!-- ═══════════════ MAIN (USER) ═══════════════ -->
+        <activity
+            android:name=".ui.main.MainActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan"/>
+
+        <activity
+            android:name=".ui.main.EditProfileActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize"/>
+
+        <activity
+            android:name=".ui.main.ChangePasswordActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize"/>
+
+        <activity
+            android:name=".ui.main.SecurityPrivacyActivity"
+            android:exported="false"/>
+
+        <activity
+            android:name=".ui.main.StaticPageActivity"
+            android:exported="false"/>
+
+        <activity
+            android:name=".ui.main.HelpCenterActivity"
+            android:exported="false"/>
+
+        <activity
+            android:name=".ui.main.BookingDetailActivity"
+            android:exported="false"/>
+
+        <!-- ═══════════════ DETAIL & BOOKING (USER) ═══════════════ -->
         <activity
             android:name=".ui.detail.DetailFieldActivity"
             android:exported="false"/>
 
-        <!-- Payment -->
         <activity
             android:name=".ui.detail.PaymentActivity"
             android:exported="false"/>
 
-        <!-- Payment Instruction -->
         <activity
             android:name=".ui.detail.PaymentInstructionActivity"
             android:exported="false"/>
 
+        <activity
+            android:name=".ui.detail.BookingSuccessActivity"
+            android:exported="false"/>
+
+        <!-- ═══════════════ OWNER ═══════════════ -->
         <activity
             android:name=".ui.owner.RegisterOwnerActivity"
             android:exported="false"
@@ -75,7 +111,9 @@
 
         <activity
             android:name=".ui.owner.OwnerDashboardActivity"
-            android:exported="false"/>
+            android:exported="false"
+            android:configChanges="uiMode"
+            android:windowSoftInputMode="adjustPan"/>
 
         <activity
             android:name=".ui.owner.OwnerFieldFormActivity"
@@ -87,11 +125,37 @@
             android:exported="false"
             android:windowSoftInputMode="adjustResize"/>
 
-        <!-- Admin Dashboard -->
         <activity
-            android:name=".ui.admin.AdminDashboardActivity"
+            android:name=".ui.owner.EditVenueActivity"
             android:exported="false"
-            android:windowSoftInputMode="adjustResize"/>
+            android:windowSoftInputMode="adjustPan"/>
+
+        <activity
+            android:name=".ui.owner.OwnerBookingDetailActivity"
+            android:exported="false"/>
+
+        <activity
+            android:name=".ui.owner.AboutAppActivity"
+            android:exported="false"/>
+
+        <activity
+            android:name=".ui.owner.PaymentMethodsActivity"
+            android:exported="false"/>
+
+        <activity
+            android:name=".ui.owner.AddPaymentMethodActivity"
+            android:exported="false"/>
+
+        <!-- ═══════════════ PROVIDER ═══════════════ -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths"/>
+        </provider>
 
     </application>
 

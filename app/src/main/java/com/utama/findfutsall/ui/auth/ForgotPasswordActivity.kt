@@ -1,5 +1,6 @@
 package com.utama.findfutsall.ui.auth
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -12,6 +13,7 @@ class ForgotPasswordActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityForgotPasswordBinding
     private val viewModel: AuthViewModel by viewModels()
+    private var currentEmail = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,6 +38,7 @@ class ForgotPasswordActivity : AppCompatActivity() {
             }
 
             binding.tilEmail.error = null
+            currentEmail = email
             viewModel.forgotPassword(email)
         }
     }
@@ -51,8 +54,11 @@ class ForgotPasswordActivity : AppCompatActivity() {
 
             result.onSuccess { message ->
                 Toast.makeText(this, message, Toast.LENGTH_LONG).show()
-                finish()
                 viewModel.resetForgotPasswordResult()
+
+                val intent = Intent(this, VerifyOtpActivity::class.java)
+                intent.putExtra(VerifyOtpActivity.EXTRA_EMAIL, currentEmail)
+                startActivity(intent)
             }
             result.onFailure { error ->
                 Toast.makeText(this, "Error: ${error.message}", Toast.LENGTH_SHORT).show()

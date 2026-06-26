@@ -16,25 +16,18 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <!-- Foto + Tombol Atas -->
+            <!-- Foto saja, tanpa overlay nama/rating -->
             <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="280dp">
+                android:layout_height="240dp">
 
                 <ImageView
                     android:id="@+id/ivFieldPhoto"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/findfutsall"/>
+                    android:src="@drawable/placeholder_image"/>
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="120dp"
-                    android:layout_gravity="bottom"
-                    android:background="@drawable/bg_photo_gradient"/>
-
-                <!-- Top buttons -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -62,100 +55,21 @@
                         android:src="@drawable/ic_favorite"
                         android:background="@drawable/bg_favorite_btn"
                         android:padding="8dp"
-                        app:tint="#FFFFFF"/>
-                </LinearLayout>
-
-                <!-- Badge harga di bawah foto -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp"
-                    android:paddingBottom="12dp">
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:id="@+id/tvFieldName"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Nama Lapangan"
-                            android:textSize="18sp"
-                            android:textStyle="bold"
-                            android:textColor="#FFFFFF"/>
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:gravity="center_vertical"
-                            android:layout_marginTop="4dp">
-
-                            <ImageView
-                                android:layout_width="12dp"
-                                android:layout_height="12dp"
-                                android:src="@drawable/ic_location"
-                                app:tint="#CCFFFFFF"
-                                android:layout_marginEnd="4dp"/>
-
-                            <TextView
-                                android:id="@+id/tvAddress"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Alamat"
-                                android:textSize="12sp"
-                                android:textColor="#CCFFFFFF"/>
-                        </LinearLayout>
-                    </LinearLayout>
-
-                    <!-- Rating -->
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:background="@drawable/bg_rating"
-                        android:paddingStart="10dp"
-                        android:paddingEnd="10dp"
-                        android:paddingTop="6dp"
-                        android:paddingBottom="6dp">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="★"
-                            android:textSize="12sp"
-                            android:textColor="#FFD700"
-                            android:layout_marginEnd="4dp"/>
-
-                        <TextView
-                            android:id="@+id/tvRating"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="4.8"
-                            android:textSize="13sp"
-                            android:textStyle="bold"
-                            android:textColor="#FFFFFF"/>
-                    </LinearLayout>
+                        app:tint="@color/white"/>
                 </LinearLayout>
             </FrameLayout>
 
-            <!-- Info Card -->
+            <!-- Nama + Alamat + Rating + Fasilitas + Tentang Lapangan, semua jadi SATU card -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
-                android:layout_marginBottom="0dp"
+                android:layout_marginBottom="8dp"
                 app:cardCornerRadius="16dp"
-                app:cardElevation="3dp"
-                app:cardBackgroundColor="#FFFFFF">
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="@color/bg_card"
+                app:strokeWidth="1dp"
+                app:strokeColor="#F0F0F0">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -163,13 +77,106 @@
                     android:orientation="vertical"
                     android:padding="16dp">
 
-                    <!-- Tags + Jam Buka -->
+                    <!-- Nama + Alamat + Rating -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:gravity="center_vertical"
-                        android:layout_marginBottom="12dp">
+                        android:layout_marginBottom="14dp">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tvFieldName"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Nama Lapangan"
+                                android:textSize="18sp"
+                                android:textStyle="bold"
+                                android:textColor="#121212"/>
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical"
+                                android:layout_marginTop="4dp">
+
+                                <ImageView
+                                    android:layout_width="12dp"
+                                    android:layout_height="12dp"
+                                    android:src="@drawable/ic_location"
+                                    app:tint="#999999"
+                                    android:layout_marginEnd="4dp"/>
+
+                                <TextView
+                                    android:id="@+id/tvAddress"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Alamat"
+                                    android:textSize="12sp"
+                                    android:textColor="#999999"/>
+                            </LinearLayout>
+
+                            <TextView
+                                android:id="@+id/tvLihatMaps"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Lihat di Maps ↗"
+                                android:textSize="12sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/primary_green"
+                                android:layout_marginTop="6dp"
+                                android:padding="2dp"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:visibility="gone"/>
+                        </LinearLayout>
+
+                        <!-- Rating -->
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:background="@drawable/bg_rating"
+                            android:paddingStart="10dp"
+                            android:paddingEnd="10dp"
+                            android:paddingTop="6dp"
+                            android:paddingBottom="6dp">
+
+                            <ImageView
+                                android:layout_width="13dp"
+                                android:layout_height="13dp"
+                                android:src="@android:drawable/btn_star_big_on"
+                                android:layout_marginEnd="4dp"/>
+
+                            <TextView
+                                android:id="@+id/tvRating"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="0.0"
+                                android:textSize="13sp"
+                                android:textStyle="bold"
+                                android:textColor="#121212"/>
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <!-- Divider -->
+                    <View android:layout_width="match_parent" android:layout_height="1dp"
+                        android:background="#F0F0F0" android:layout_marginBottom="14dp"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="14dp">
 
                         <TextView
                             android:id="@+id/tvCategory"
@@ -178,20 +185,21 @@
                             android:background="@drawable/bg_tag"
                             android:paddingStart="12dp"
                             android:paddingEnd="12dp"
-                            android:paddingTop="4dp"
-                            android:paddingBottom="4dp"
+                            android:paddingTop="6dp"
+                            android:paddingBottom="6dp"
                             android:text="Vinyl"
-                            android:textColor="#00A86B"
-                            android:textSize="11sp"/>
+                            android:textColor="@color/primary_green"
+                            android:textSize="11sp"
+                            android:textStyle="bold"/>
 
                         <View android:layout_width="0dp" android:layout_height="1dp" android:layout_weight="1"/>
 
                         <ImageView
-                            android:layout_width="12dp"
-                            android:layout_height="12dp"
+                            android:layout_width="13dp"
+                            android:layout_height="13dp"
                             android:src="@drawable/ic_notification"
-                            app:tint="#00A86B"
-                            android:layout_marginEnd="4dp"/>
+                            app:tint="@color/primary_green"
+                            android:layout_marginEnd="5dp"/>
 
                         <TextView
                             android:id="@+id/tvJamBuka"
@@ -199,19 +207,16 @@
                             android:layout_height="wrap_content"
                             android:text="Buka 06:00 - 23:00"
                             android:textSize="12sp"
-                            android:textColor="#00A86B"/>
+                            android:textStyle="bold"
+                            android:textColor="@color/primary_green"/>
                     </LinearLayout>
-
-                    <!-- Divider -->
-                    <View android:layout_width="match_parent" android:layout_height="1dp"
-                        android:background="#F0F0F0" android:layout_marginBottom="14dp"/>
 
                     <!-- Fasilitas -->
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Fasilitas"
-                        android:textSize="15sp"
+                        android:text="Fasilitas Utama"
+                        android:textSize="14sp"
                         android:textStyle="bold"
                         android:textColor="#121212"
                         android:layout_marginBottom="12dp"/>
@@ -220,19 +225,19 @@
                         android:id="@+id/layoutFasilitas"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"/>
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="14dp"/>
 
                     <!-- Divider -->
                     <View android:layout_width="match_parent" android:layout_height="1dp"
-                        android:background="#F0F0F0" android:layout_marginTop="14dp"
-                        android:layout_marginBottom="14dp"/>
+                        android:background="#F0F0F0" android:layout_marginBottom="14dp"/>
 
-                    <!-- Deskripsi -->
+                    <!-- Tentang Lapangan -->
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Tentang Lapangan"
-                        android:textSize="15sp"
+                        android:textSize="14sp"
                         android:textStyle="bold"
                         android:textColor="#121212"
                         android:layout_marginBottom="8dp"/>
@@ -248,15 +253,18 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <!-- Pilih Tanggal -->
+            <!-- Pilih Tanggal (langkah 1) -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                android:layout_marginBottom="0dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="8dp"
                 app:cardCornerRadius="16dp"
-                app:cardElevation="3dp"
-                app:cardBackgroundColor="#FFFFFF">
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="@color/bg_card"
+                app:strokeWidth="1dp"
+                app:strokeColor="#F0F0F0">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -269,7 +277,22 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:gravity="center_vertical"
-                        android:layout_marginBottom="12dp">
+                        android:layout_marginBottom="14dp">
+
+                        <LinearLayout
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:gravity="center"
+                            android:background="@drawable/bg_chip_active"
+                            android:layout_marginEnd="8dp">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="1"
+                                android:textSize="11sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/white"/>
+                        </LinearLayout>
 
                         <TextView
                             android:layout_width="0dp"
@@ -286,11 +309,10 @@
                             android:layout_height="wrap_content"
                             android:text=""
                             android:textSize="12sp"
-                            android:textColor="#00A86B"
+                            android:textColor="@color/primary_green"
                             android:textStyle="bold"/>
                     </LinearLayout>
 
-                    <!-- Date Pills (horizontal scroll) -->
                     <HorizontalScrollView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -305,17 +327,20 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <!-- Pilih Jam -->
+            <!-- Pilih Jam (langkah 2, muncul setelah pilih tanggal) -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardPilihJam"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                android:layout_marginBottom="0dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="8dp"
                 android:visibility="gone"
                 app:cardCornerRadius="16dp"
-                app:cardElevation="3dp"
-                app:cardBackgroundColor="#FFFFFF">
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="@color/bg_card"
+                app:strokeWidth="1dp"
+                app:strokeColor="#F0F0F0">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -323,14 +348,37 @@
                     android:orientation="vertical"
                     android:padding="16dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Pilih Jam"
-                        android:textSize="15sp"
-                        android:textStyle="bold"
-                        android:textColor="#121212"
-                        android:layout_marginBottom="12dp"/>
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="14dp">
+
+                        <LinearLayout
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:gravity="center"
+                            android:background="@drawable/bg_chip_active"
+                            android:layout_marginEnd="8dp">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="2"
+                                android:textSize="11sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/white"/>
+                        </LinearLayout>
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Pilih Jam"
+                            android:textSize="15sp"
+                            android:textStyle="bold"
+                            android:textColor="#121212"/>
+                    </LinearLayout>
 
                     <androidx.gridlayout.widget.GridLayout
                         android:id="@+id/gridTimeSlots"
@@ -341,17 +389,48 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <!-- Rincian Harga -->
+            <!-- Rincian Harga dipindah ke halaman Payment saat klik Booking Sekarang,
+                 jadi card ini disembunyikan permanen di sini supaya tidak duplikat.
+                 ID dipertahankan agar DetailFieldActivity.kt tidak perlu diubah. -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardRincian"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                android:layout_marginBottom="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="8dp"
                 android:visibility="gone"
                 app:cardCornerRadius="16dp"
-                app:cardElevation="3dp"
-                app:cardBackgroundColor="#FFFFFF">
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="@color/bg_card"
+                app:strokeWidth="1dp"
+                app:strokeColor="#F0F0F0">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:orientation="vertical">
+
+                    <TextView android:id="@+id/tvRincianSewa"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                    <TextView android:id="@+id/tvTotalRincian"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Rating & Komentar, SELALU di posisi PALING AKHIR -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="@color/bg_card"
+                app:strokeWidth="1dp"
+                app:strokeColor="#F0F0F0">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -359,55 +438,186 @@
                     android:orientation="vertical"
                     android:padding="16dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Rincian Harga"
-                        android:textSize="15sp"
-                        android:textStyle="bold"
-                        android:textColor="#121212"
-                        android:layout_marginBottom="12dp"/>
-
+                    <!-- Header: judul + rata-rata rating -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:layout_marginBottom="8dp">
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content"
-                            android:layout_weight="1" android:text="Sewa Lapangan"
-                            android:textSize="13sp" android:textColor="#666666"/>
-                        <TextView android:id="@+id/tvRincianSewa"
-                            android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="Rp 0" android:textSize="13sp" android:textColor="#121212"/>
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="14dp">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Rating &amp; Ulasan"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:textColor="#121212"/>
+
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:src="@android:drawable/btn_star_big_on"
+                            android:layout_marginEnd="4dp"/>
+
+                        <TextView
+                            android:id="@+id/tvAvgRating"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0.0"
+                            android:textSize="15sp"
+                            android:textStyle="bold"
+                            android:textColor="#121212"
+                            android:layout_marginEnd="4dp"/>
+
+                        <TextView
+                            android:id="@+id/tvReviewCountVisible"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="(0 ulasan)"
+                            android:textSize="13sp"
+                            android:textColor="#999999"/>
                     </LinearLayout>
 
+                    <!-- Form kasih ulasan: HANYA muncul kalau user boleh review -->
                     <LinearLayout
+                        android:id="@+id/layoutCommentForm"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content"
-                            android:layout_weight="1" android:text="Biaya Layanan"
-                            android:textSize="13sp" android:textColor="#666666"/>
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="Rp 5.000" android:textSize="13sp" android:textColor="#121212"/>
+                        android:orientation="vertical"
+                        android:background="#F8F8F8"
+                        android:padding="14dp"
+                        android:layout_marginBottom="14dp"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Beri Rating Kamu"
+                            android:textSize="13sp"
+                            android:textStyle="bold"
+                            android:textColor="#121212"
+                            android:layout_marginBottom="10dp"/>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_gravity="center"
+                            android:layout_marginBottom="14dp">
+
+                            <ImageView android:id="@+id/star1" android:layout_width="32dp" android:layout_height="32dp"
+                                android:src="@android:drawable/btn_star_big_off" android:padding="2dp" android:clickable="true" android:focusable="true"/>
+                            <ImageView android:id="@+id/star2" android:layout_width="32dp" android:layout_height="32dp"
+                                android:src="@android:drawable/btn_star_big_off" android:padding="2dp" android:clickable="true" android:focusable="true"/>
+                            <ImageView android:id="@+id/star3" android:layout_width="32dp" android:layout_height="32dp"
+                                android:src="@android:drawable/btn_star_big_off" android:padding="2dp" android:clickable="true" android:focusable="true"/>
+                            <ImageView android:id="@+id/star4" android:layout_width="32dp" android:layout_height="32dp"
+                                android:src="@android:drawable/btn_star_big_off" android:padding="2dp" android:clickable="true" android:focusable="true"/>
+                            <ImageView android:id="@+id/star5" android:layout_width="32dp" android:layout_height="32dp"
+                                android:src="@android:drawable/btn_star_big_off" android:padding="2dp" android:clickable="true" android:focusable="true"/>
+                        </LinearLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Ceritakan pengalaman kamu..."
+                            app:boxBackgroundColor="@color/white"
+                            app:boxCornerRadiusTopStart="10dp"
+                            app:boxCornerRadiusTopEnd="10dp"
+                            app:boxCornerRadiusBottomStart="10dp"
+                            app:boxCornerRadiusBottomEnd="10dp"
+                            android:layout_marginBottom="12dp">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/etComment"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:minLines="3"
+                                android:maxLines="5"
+                                android:gravity="top"
+                                android:inputType="textMultiLine"
+                                android:textSize="13sp"/>
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:layout_marginBottom="12dp">
+
+                            <ImageView
+                                android:id="@+id/ivReviewPhotoPreview"
+                                android:layout_width="56dp"
+                                android:layout_height="56dp"
+                                android:scaleType="centerCrop"
+                                android:background="@drawable/bg_otp_box"
+                                android:visibility="gone"
+                                android:layout_marginEnd="10dp"/>
+
+                            <TextView
+                                android:id="@+id/btnAddPhoto"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="📷 Tambah Foto (Opsional)"
+                                android:textSize="12sp"
+                                android:textColor="@color/primary_green"
+                                android:textStyle="bold"
+                                android:clickable="true"
+                                android:focusable="true"/>
+                        </LinearLayout>
+
+                        <Button
+                            android:id="@+id/btnSendComment"
+                            android:layout_width="match_parent"
+                            android:layout_height="46dp"
+                            android:text="Kirim Ulasan"
+                            android:textSize="13sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/text_on_primary"
+                            android:backgroundTint="@color/primary_green"
+                            app:cornerRadius="10dp"/>
                     </LinearLayout>
 
+                    <!-- Info kalau belum pernah booking -->
+                    <TextView
+                        android:id="@+id/tvMustBookToComment"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Booking dan selesaikan permainan untuk memberi ulasan"
+                        android:textSize="12sp"
+                        android:textColor="#999999"
+                        android:background="#F8F8F8"
+                        android:padding="12dp"
+                        android:gravity="center"
+                        android:layout_marginBottom="14dp"
+                        android:visibility="gone"/>
+
+                    <!-- Divider -->
                     <View android:layout_width="match_parent" android:layout_height="1dp"
-                        android:background="#F0F0F0" android:layout_marginTop="12dp"
-                        android:layout_marginBottom="12dp"/>
+                        android:background="#F0F0F0" android:layout_marginBottom="14dp"/>
 
+                    <!-- List komentar -->
                     <LinearLayout
+                        android:id="@+id/rvReviewsVisible"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content"
-                            android:layout_weight="1" android:text="Total Bayar"
-                            android:textSize="15sp" android:textStyle="bold" android:textColor="#121212"/>
-                        <TextView android:id="@+id/tvTotalRincian"
-                            android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="Rp 0" android:textSize="15sp"
-                            android:textStyle="bold" android:textColor="#00A86B"/>
-                    </LinearLayout>
+                        android:orientation="vertical"/>
+
+                    <TextView
+                        android:id="@+id/tvNoReviews"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Belum ada ulasan, jadilah yang pertama!"
+                        android:textSize="13sp"
+                        android:textColor="#999999"
+                        android:gravity="center"
+                        android:padding="20dp"
+                        android:visibility="gone"/>
+
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
@@ -420,11 +630,6 @@
                 android:layout_height="wrap_content" android:visibility="gone"/>
             <TextView android:id="@+id/tvPriceWeekend" android:layout_width="wrap_content"
                 android:layout_height="wrap_content" android:visibility="gone"/>
-            <TextView android:id="@+id/tvReviewCount" android:layout_width="wrap_content"
-                android:layout_height="wrap_content" android:visibility="gone"/>
-            <androidx.recyclerview.widget.RecyclerView android:id="@+id/rvReviews"
-                android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:visibility="gone"/>
             <Button android:id="@+id/btnSearch" android:layout_width="wrap_content"
                 android:layout_height="wrap_content" android:visibility="gone"/>
             <Button android:id="@+id/btnPilihJadwal" android:layout_width="wrap_content"
@@ -451,7 +656,7 @@
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:layout_gravity="bottom"
-        android:background="#FFFFFF"
+        android:background="@color/surface"
         android:orientation="horizontal"
         android:gravity="center_vertical"
         android:paddingStart="16dp"
@@ -467,7 +672,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="MULAI DARI"
+                android:text="TOTAL BOOKING"
                 android:textSize="10sp"
                 android:textColor="#999999"
                 android:letterSpacing="0.05"/>
@@ -476,7 +681,7 @@
                 android:id="@+id/tvTotalPrice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Rp 0 / jam"
+                android:text="Rp0/jam"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 android:textColor="#121212"/>
@@ -488,11 +693,12 @@
             android:layout_height="48dp"
             android:text="Booking Sekarang"
             android:textSize="14sp"
-            android:textColor="#FFFFFF"
-            app:backgroundTint="#00A86B"
+            android:textStyle="bold"
+            android:textColor="@color/text_on_primary"
+            app:backgroundTint="@color/primary_green"
             app:cornerRadius="12dp"
             app:icon="@drawable/ic_arrow_left"
-            app:iconTint="#FFFFFF"
+            app:iconTint="@color/text_on_primary"
             app:iconGravity="end"/>
 
     </LinearLayout>

@@ -39,13 +39,6 @@
                 android:textStyle="bold"
                 android:textColor="#121212"/>
 
-            <ImageView
-                android:id="@+id/ivNotification"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_notification"
-                app:tint="#121212"/>
-
         </LinearLayout>
 
         <!-- Profile Header -->
@@ -57,6 +50,26 @@
             android:paddingTop="24dp"
             android:paddingBottom="24dp"
             android:background="#FFFFFF">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="16dp"
+                android:paddingTop="20dp"
+                android:paddingEnd="16dp"
+                android:paddingBottom="10dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Profil Saya"
+                    android:textColor="@color/primary_green"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/ivPhoto"
@@ -87,7 +100,7 @@
 
         </LinearLayout>
 
-        <!-- Owner Status Card (pending / approved) -->
+        <!-- Owner Status Card -->
         <androidx.cardview.widget.CardView
             android:id="@+id/cardOwnerStatus"
             android:layout_width="match_parent"
@@ -174,17 +187,17 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Daftar Menjadi\nPemilik Lapangan"
-                        android:textSize="15sp"
-                        android:textStyle="bold"
-                        android:textColor="#FFFFFF"/>
+                        android:textColor="#FFFFFF"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
                         android:text="Mulai kelola lapangan futsal\nAnda secara profesional sekarang!"
-                        android:textSize="11sp"
-                        android:textColor="#CCFFFFFF"/>
+                        android:textColor="#CCFFFFFF"
+                        android:textSize="10sp" />
 
                     <Button
                         android:id="@+id/btnDaftarPemilik"
@@ -202,7 +215,7 @@
                 <ImageView
                     android:layout_width="60dp"
                     android:layout_height="60dp"
-                    android:src="@drawable/ic_home"
+                    android:src="@drawable/ic_futsal"
                     app:tint="#CCFFFFFF"/>
 
             </LinearLayout>
@@ -232,36 +245,91 @@
                     android:layout_height="52dp"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp">
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:clickable="true"
+                    android:focusable="true">
 
-                    <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:src="@drawable/ic_user"
-                        app:tint="#00A86B"/>
+                    <LinearLayout
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:gravity="center"
+                        android:background="@drawable/bg_slot_available"
+                        android:layout_marginEnd="12dp">
+                        <ImageView
+                            android:layout_width="15dp"
+                            android:layout_height="15dp"
+                            android:src="@drawable/ic_user"
+                            app:tint="#1A4D2E"/>
+                    </LinearLayout>
 
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:layout_marginStart="12dp"
                         android:text="Pengaturan Profil"
-                        android:textSize="14sp"
-                        android:textColor="#121212"/>
+                        android:textColor="#121212"
+                        android:textSize="16sp" />
 
                     <ImageView
-                        android:layout_width="16dp"
-                        android:layout_height="16dp"
-                        android:src="@android:drawable/ic_media_next"
-                        app:tint="#999999"/>
+                        android:layout_width="14dp"
+                        android:layout_height="14dp"
+                        android:src="@drawable/ic_arrow_right"
+                        app:tint="#BBBBBB"/>
 
                 </LinearLayout>
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:layout_marginStart="16dp"
+                    android:layout_marginStart="12dp"
+                    android:background="#F5F5F5"/>
+
+                <!-- Keamanan & Privasi -->
+                <LinearLayout
+                    android:id="@+id/menuSecurity"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <LinearLayout
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:gravity="center"
+                        android:background="@drawable/bg_slot_available"
+                        android:layout_marginEnd="12dp">
+                        <ImageView
+                            android:layout_width="15dp"
+                            android:layout_height="15dp"
+                            android:src="@drawable/ic_lock"
+                            app:tint="#1A4D2E"/>
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Keamanan &amp; Privasi"
+                        android:textColor="#121212"
+                        android:textSize="16sp" />
+
+                    <ImageView
+                        android:layout_width="14dp"
+                        android:layout_height="14dp"
+                        android:src="@drawable/ic_arrow_right"
+                        app:tint="#BBBBBB"/>
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="12dp"
                     android:background="#F5F5F5"/>
 
                 <!-- Notifikasi -->
@@ -270,23 +338,29 @@
                     android:layout_height="52dp"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp">
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp">
 
-                    <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:src="@drawable/ic_notification"
-                        app:tint="#00A86B"/>
+                    <LinearLayout
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:gravity="center"
+                        android:background="@drawable/bg_slot_available"
+                        android:layout_marginEnd="12dp">
+                        <ImageView
+                            android:layout_width="15dp"
+                            android:layout_height="15dp"
+                            android:src="@drawable/ic_notification"
+                            app:tint="#1A4D2E"/>
+                    </LinearLayout>
 
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:layout_marginStart="12dp"
                         android:text="Notifikasi"
-                        android:textSize="14sp"
-                        android:textColor="#121212"/>
+                        android:textColor="#121212"
+                        android:textSize="16sp" />
 
                     <androidx.appcompat.widget.SwitchCompat
                         android:id="@+id/switchNotification"
@@ -301,54 +375,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:layout_marginStart="16dp"
-                    android:background="#F5F5F5"/>
-
-                <!-- Pengaturan Pembayaran -->
-                <LinearLayout
-                    android:id="@+id/menuPayment"
-                    android:layout_width="match_parent"
-                    android:layout_height="52dp"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp">
-
-                    <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:src="@drawable/ic_lock"
-                        app:tint="#00A86B"/>
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginStart="12dp"
-                        android:text="Pengaturan Pembayaran"
-                        android:textSize="14sp"
-                        android:textColor="#121212"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="8dp"
-                        android:text="Tambah"
-                        android:textSize="12sp"
-                        android:textColor="#00A86B"/>
-
-                    <ImageView
-                        android:layout_width="16dp"
-                        android:layout_height="16dp"
-                        android:src="@android:drawable/ic_media_next"
-                        app:tint="#999999"/>
-
-                </LinearLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginStart="16dp"
+                    android:layout_marginStart="12dp"
                     android:background="#F5F5F5"/>
 
                 <!-- Syarat & Ketentuan -->
@@ -358,36 +385,91 @@
                     android:layout_height="52dp"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp">
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:clickable="true"
+                    android:focusable="true">
 
-                    <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:src="@drawable/ic_search"
-                        app:tint="#00A86B"/>
+                    <LinearLayout
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:gravity="center"
+                        android:background="@drawable/bg_slot_available"
+                        android:layout_marginEnd="12dp">
+                        <ImageView
+                            android:layout_width="15dp"
+                            android:layout_height="15dp"
+                            android:src="@drawable/ic_booking"
+                            app:tint="#1A4D2E"/>
+                    </LinearLayout>
 
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:layout_marginStart="12dp"
                         android:text="Syarat &amp; Ketentuan"
-                        android:textSize="14sp"
-                        android:textColor="#121212"/>
+                        android:textColor="#121212"
+                        android:textSize="16sp" />
 
                     <ImageView
-                        android:layout_width="16dp"
-                        android:layout_height="16dp"
-                        android:src="@android:drawable/ic_media_next"
-                        app:tint="#999999"/>
+                        android:layout_width="14dp"
+                        android:layout_height="14dp"
+                        android:src="@drawable/ic_arrow_right"
+                        app:tint="#BBBBBB"/>
 
                 </LinearLayout>
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:layout_marginStart="16dp"
+                    android:layout_marginStart="12dp"
+                    android:background="#F5F5F5"/>
+
+                <!-- Kebijakan Privasi -->
+                <LinearLayout
+                    android:id="@+id/menuPrivacy"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <LinearLayout
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:gravity="center"
+                        android:background="@drawable/bg_slot_available"
+                        android:layout_marginEnd="12dp">
+                        <ImageView
+                            android:layout_width="15dp"
+                            android:layout_height="15dp"
+                            android:src="@drawable/ic_lock"
+                            app:tint="#1A4D2E"/>
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Kebijakan Privasi"
+                        android:textColor="#121212"
+                        android:textSize="16sp" />
+
+                    <ImageView
+                        android:layout_width="14dp"
+                        android:layout_height="14dp"
+                        android:src="@drawable/ic_arrow_right"
+                        app:tint="#BBBBBB"/>
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="12dp"
                     android:background="#F5F5F5"/>
 
                 <!-- Pusat Bantuan -->
@@ -397,68 +479,37 @@
                     android:layout_height="52dp"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp">
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:clickable="true"
+                    android:focusable="true">
 
-                    <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:src="@drawable/ic_phone"
-                        app:tint="#00A86B"/>
+                    <LinearLayout
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:gravity="center"
+                        android:background="@drawable/bg_slot_available"
+                        android:layout_marginEnd="12dp">
+                        <ImageView
+                            android:layout_width="15dp"
+                            android:layout_height="15dp"
+                            android:src="@drawable/ic_phone"
+                            app:tint="#1A4D2E"/>
+                    </LinearLayout>
 
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:layout_marginStart="12dp"
                         android:text="Pusat Bantuan"
-                        android:textSize="14sp"
-                        android:textColor="#121212"/>
+                        android:textColor="#121212"
+                        android:textSize="16sp" />
 
                     <ImageView
-                        android:layout_width="16dp"
-                        android:layout_height="16dp"
-                        android:src="@android:drawable/ic_media_next"
-                        app:tint="#999999"/>
-
-                </LinearLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginStart="16dp"
-                    android:background="#F5F5F5"/>
-
-                <!-- Privacy Policy -->
-                <LinearLayout
-                    android:id="@+id/menuPrivacy"
-                    android:layout_width="match_parent"
-                    android:layout_height="52dp"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp">
-
-                    <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:src="@drawable/ic_lock"
-                        app:tint="#00A86B"/>
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginStart="12dp"
-                        android:text="Privacy Policy"
-                        android:textSize="14sp"
-                        android:textColor="#121212"/>
-
-                    <ImageView
-                        android:layout_width="16dp"
-                        android:layout_height="16dp"
-                        android:src="@android:drawable/ic_media_next"
-                        app:tint="#999999"/>
+                        android:layout_width="14dp"
+                        android:layout_height="14dp"
+                        android:src="@drawable/ic_arrow_right"
+                        app:tint="#BBBBBB"/>
 
                 </LinearLayout>
 
@@ -482,23 +533,31 @@
                 android:layout_height="52dp"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp">
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:clickable="true"
+                android:focusable="true">
 
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:src="@drawable/ic_profile"
-                    app:tint="#FF3B30"/>
+                <LinearLayout
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:gravity="center"
+                    android:background="@drawable/bg_slot_unavailable"
+                    android:layout_marginEnd="12dp">
+                    <ImageView
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:src="@drawable/ic_arrow_left"
+                        app:tint="#FF3B30"/>
+                </LinearLayout>
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:layout_marginStart="12dp"
                     android:text="Keluar"
-                    android:textSize="14sp"
-                    android:textColor="#FF3B30"/>
+                    android:textColor="#FF3B30"
+                    android:textSize="16sp" />
 
             </LinearLayout>
         </androidx.cardview.widget.CardView>
@@ -509,9 +568,9 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginBottom="24dp"
-            android:text="Versi 2.4.0 (Bandung Active)"
+            android:text="FindFutsall v1.0.0"
             android:textSize="11sp"
-            android:textColor="#999999"/>
+            android:textColor="#BBBBBB"/>
 
     </LinearLayout>
 

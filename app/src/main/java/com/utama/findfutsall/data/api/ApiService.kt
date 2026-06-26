@@ -27,6 +27,16 @@ interface ApiService {
         @Body request: Map<String, String>
     ): Response<Map<String, Any>>
 
+    @POST("verify_otp.php")
+    suspend fun verifyOtp(
+        @Body request: Map<String, String>
+    ): Response<Map<String, Any>>
+
+    @POST("reset_password.php")
+    suspend fun resetPassword(
+        @Body request: Map<String, String>
+    ): Response<Map<String, Any>>
+
     @POST("google_auth.php")
     suspend fun googleAuth(
         @Body request: Map<String, String>
@@ -49,6 +59,91 @@ interface ApiService {
 
     @POST("get_owner_stats.php")
     suspend fun getOwnerStats(
+        @Body request: Map<String, @JvmSuppressWildcards Any>
+    ): Response<Map<String, @JvmSuppressWildcards Any>>
+
+    @POST("booking.php")
+    suspend fun createBooking(
+        @Body request: Map<String, @JvmSuppressWildcards Any>
+    ): Response<Map<String, @JvmSuppressWildcards Any>>
+
+    @POST("get_user_bookings.php")
+    suspend fun getUserBookings(
+        @Body request: Map<String, @JvmSuppressWildcards Any>
+    ): Response<Map<String, @JvmSuppressWildcards Any>>
+
+    @POST("get_owner_bookings.php")
+    suspend fun getOwnerBookings(
+        @Body request: Map<String, @JvmSuppressWildcards Any>
+    ): Response<Map<String, @JvmSuppressWildcards Any>>
+
+    @POST("toggle_favorite.php")
+    suspend fun toggleFavorite(
+        @Body request: Map<String, @JvmSuppressWildcards Any>
+    ): Response<Map<String, @JvmSuppressWildcards Any>>
+
+    @POST("get_favorites.php")
+    suspend fun getFavorites(
+        @Body request: Map<String, @JvmSuppressWildcards Any>
+    ): Response<Map<String, @JvmSuppressWildcards Any>>
+
+    @POST("cancel_booking.php")
+    suspend fun cancelBooking(
+        @Body request: Map<String, @JvmSuppressWildcards Any>
+    ): Response<Map<String, @JvmSuppressWildcards Any>>
+
+    @POST("get_booked_slots.php")
+    suspend fun getBookedSlots(
+        @Body request: Map<String, @JvmSuppressWildcards Any>
+    ): Response<Map<String, @JvmSuppressWildcards Any>>
+
+    @POST("add_payment_method.php")
+    suspend fun addPaymentMethod(
+        @Body request: Map<String, @JvmSuppressWildcards Any>
+    ): Response<Map<String, @JvmSuppressWildcards Any>>
+
+    @POST("get_payment_methods.php")
+    suspend fun getPaymentMethods(
+        @Body request: Map<String, @JvmSuppressWildcards Any>
+    ): Response<Map<String, @JvmSuppressWildcards Any>>
+
+    @POST("delete_payment_method.php")
+    suspend fun deletePaymentMethod(
+        @Body request: Map<String, @JvmSuppressWildcards Any>
+    ): Response<Map<String, @JvmSuppressWildcards Any>>
+
+    @POST("get_owner_payment_methods.php")
+    suspend fun getOwnerPaymentMethods(
+        @Body request: Map<String, @JvmSuppressWildcards Any>
+    ): Response<Map<String, @JvmSuppressWildcards Any>>
+
+    @POST("update_booking_status.php")
+    suspend fun updateBookingStatus(
+        @Body request: Map<String, @JvmSuppressWildcards Any>
+    ): Response<Map<String, @JvmSuppressWildcards Any>>
+
+    @POST("get_owner_keuangan.php")
+    suspend fun getKeuangan(
+        @Body request: Map<String, @JvmSuppressWildcards Any>
+    ): Response<com.utama.findfutsall.data.model.KeuanganResponse>
+
+    @POST("update_owner_target.php")
+    suspend fun updateOwnerTarget(
+        @Body request: Map<String, @JvmSuppressWildcards Any>
+    ): Response<Map<String, @JvmSuppressWildcards Any>>
+
+    @POST("update_owner_data.php")
+    suspend fun updateOwnerData(
+        @Body request: Map<String, @JvmSuppressWildcards Any>
+    ): Response<Map<String, @JvmSuppressWildcards Any>>
+
+    @POST("check_can_review.php")
+    suspend fun checkCanReview(
+        @Body request: Map<String, @JvmSuppressWildcards Any>
+    ): Response<Map<String, @JvmSuppressWildcards Any>>
+
+    @POST("get_reviews.php")
+    suspend fun getReviews(
         @Body request: Map<String, @JvmSuppressWildcards Any>
     ): Response<Map<String, @JvmSuppressWildcards Any>>
 }

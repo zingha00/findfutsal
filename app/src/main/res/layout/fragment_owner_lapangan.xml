@@ -1,66 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:background="#F5F5F5">
 
     <!-- Header -->
     <LinearLayout
-        android:id="@+id/headerLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/primary_darker"
         android:orientation="vertical"
-        android:background="#1A4D2E"
         android:paddingStart="20dp"
-        android:paddingEnd="20dp"
         android:paddingTop="20dp"
+        android:paddingEnd="20dp"
         android:paddingBottom="20dp">
 
-        <!-- Title Row -->
-        <LinearLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginBottom="16dp">
+            android:letterSpacing="0.1"
+            android:text="VENUE ADMIN"
+            android:textColor="#00A86B"
+            android:textSize="10sp"
+            android:textStyle="bold" />
 
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="Daftar Lapangan"
+            android:textColor="#FFFFFF"
+            android:textSize="22sp"
+            android:textStyle="bold" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="VENUE ADMIN"
-                    android:textSize="10sp"
-                    android:textColor="#00A86B"
-                    android:letterSpacing="0.1"
-                    android:textStyle="bold"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="16dp"
+            android:text="Manajemen status, informasi, dan ketersediaan lapangan Anda."
+            android:textColor="#A8D5B5"
+            android:textSize="11sp" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Daftar Lapangan"
-                    android:textSize="22sp"
-                    android:textStyle="bold"
-                    android:textColor="#FFFFFF"
-                    android:layout_marginTop="2dp"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Manajemen status, informasi, dan ketersediaan lapangan Anda."
-                    android:textSize="11sp"
-                    android:textColor="#A8D5B5"
-                    android:layout_marginTop="4dp"/>
-            </LinearLayout>
-        </LinearLayout>
-
-        <!-- Stats Row -->
+        <!-- Stats -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -69,30 +54,33 @@
             <androidx.cardview.widget.CardView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:layout_marginEnd="8dp"
+                android:layout_weight="1"
+                app:cardBackgroundColor="#E8FFF5"
                 app:cardCornerRadius="12dp"
-                app:cardElevation="0dp"
-                app:cardBackgroundColor="#E8FFF5">
+                app:cardElevation="0dp">
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:padding="14dp">
+
                     <TextView
                         android:id="@+id/tvStatTotalLapangan"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="0"
+                        android:textColor="#1A4D2E"
                         android:textSize="28sp"
-                        android:textStyle="bold"
-                        android:textColor="#1A4D2E"/>
+                        android:textStyle="bold" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Total Lapangan"
-                        android:textSize="10sp"
-                        android:textColor="#00A86B"/>
+                        android:textColor="#00A86B"
+                        android:textSize="10sp" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
@@ -100,176 +88,124 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                app:cardBackgroundColor="#1F6B3E"
                 app:cardCornerRadius="12dp"
-                app:cardElevation="0dp"
-                app:cardBackgroundColor="#1F6B3E">
+                app:cardElevation="0dp">
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:padding="14dp">
+
                     <TextView
                         android:id="@+id/tvStatTersedia"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="0"
+                        android:textColor="#FFFFFF"
                         android:textSize="28sp"
-                        android:textStyle="bold"
-                        android:textColor="#FFFFFF"/>
+                        android:textStyle="bold" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Tersedia"
-                        android:textSize="10sp"
-                        android:textColor="#A8D5B5"/>
+                        android:textColor="#A8D5B5"
+                        android:textSize="10sp" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
         </LinearLayout>
     </LinearLayout>
 
-    <!-- Content -->
-    <androidx.core.widget.NestedScrollView
+    <!-- Tambah + Search -->
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="178dp"
-        android:fillViewport="true">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="#FFFFFF"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp"
+        android:elevation="4dp">
 
-        <LinearLayout
+        <!-- Tombol Tambah -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/btnTambahLapangan"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="48dp"
+            android:layout_marginBottom="10dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="#1A4D2E"
+            android:clickable="true"
+            android:focusable="true">
 
-            <!-- Search + Tambah -->
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:background="#FFFFFF"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"
-                android:paddingTop="12dp"
-                android:paddingBottom="12dp"
-                android:elevation="4dp">
-
-                <!-- Tombol Tambah -->
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/btnTambahLapangan"
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:layout_marginBottom="10dp"
-                    app:cardCornerRadius="12dp"
-                    app:cardElevation="2dp"
-                    app:cardBackgroundColor="#1A4D2E"
-                    android:clickable="true"
-                    android:focusable="true">
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="horizontal"
-                        android:gravity="center">
-                        <ImageView
-                            android:layout_width="18dp"
-                            android:layout_height="18dp"
-                            android:src="@android:drawable/ic_input_add"
-                            app:tint="#FFFFFF"
-                            android:layout_marginEnd="8dp"/>
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Tambah Lapangan"
-                            android:textSize="14sp"
-                            android:textStyle="bold"
-                            android:textColor="#FFFFFF"/>
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
-
-                <!-- Search Bar -->
-                <androidx.cardview.widget.CardView
-                    android:layout_width="match_parent"
-                    android:layout_height="42dp"
-                    app:cardCornerRadius="21dp"
-                    app:cardElevation="0dp"
-                    app:cardBackgroundColor="#F5F5F5">
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:paddingStart="14dp"
-                        android:paddingEnd="14dp">
-                        <ImageView
-                            android:layout_width="16dp"
-                            android:layout_height="16dp"
-                            android:src="@drawable/ic_search"
-                            app:tint="#999999"
-                            android:layout_marginEnd="8dp"/>
-                        <EditText
-                            android:id="@+id/etSearchLapangan"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:hint="Cari lapangan..."
-                            android:textSize="13sp"
-                            android:textColor="#121212"
-                            android:textColorHint="#BBBBBB"
-                            android:background="@null"
-                            android:inputType="text"
-                            android:imeOptions="actionSearch"
-                            android:singleLine="true"/>
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
-            </LinearLayout>
-
-            <!-- RecyclerView -->
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvLapangan"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"
-                android:paddingTop="12dp"
-                android:paddingBottom="16dp"
-                android:nestedScrollingEnabled="false"
-                android:clipToPadding="false"/>
-
-            <!-- Empty State -->
-            <LinearLayout
-                android:id="@+id/layoutEmpty"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
+                android:layout_height="match_parent"
+                android:background="@color/primary_green"
                 android:gravity="center"
-                android:paddingTop="60dp"
-                android:paddingBottom="60dp"
-                android:visibility="gone">
-                <ImageView
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:src="@drawable/ic_search"
-                    app:tint="#CCCCCC"
-                    android:layout_marginBottom="16dp"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Belum ada lapangan"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:textColor="#121212"
-                    android:layout_marginBottom="6dp"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Klik tombol di atas untuk menambah lapangan baru"
-                    android:textSize="13sp"
-                    android:textColor="#999999"
-                    android:gravity="center"
-                    android:paddingStart="32dp"
-                    android:paddingEnd="32dp"/>
-            </LinearLayout>
-        </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
+                android:orientation="horizontal">
 
-    <!-- Loading -->
+                <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_marginEnd="8dp"
+                    android:src="@android:drawable/ic_input_add"
+                    app:tint="#FFFFFF" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="+ Tambah Lapangan"
+                    android:textColor="#FFFFFF"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Search -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="42dp"
+            app:cardCornerRadius="21dp"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="#F5F5F5"
+            app:strokeWidth="1dp"
+            app:strokeColor="#E0E0E0">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingStart="14dp"
+                android:paddingEnd="14dp">
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/ic_search"
+                    app:tint="#999999"
+                    android:layout_marginEnd="8dp"/>
+                <EditText
+                    android:id="@+id/etSearchLapangan"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:hint="Cari nama atau tipe lapangan..."
+                    android:textSize="13sp"
+                    android:textColor="#121212"
+                    android:textColorHint="#BBBBBB"
+                    android:background="@null"
+                    android:inputType="text"
+                    android:imeOptions="actionSearch"
+                    android:singleLine="true"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+    </LinearLayout>
+
+    <!-- Progress -->
     <ProgressBar
         android:id="@+id/progressLapangan"
         android:layout_width="wrap_content"
@@ -277,4 +213,50 @@
         android:layout_gravity="center"
         android:visibility="gone"/>
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+    <!-- RecyclerView -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvLapangan"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="16dp"
+        android:clipToPadding="false"/>
+
+    <!-- Empty State -->
+    <LinearLayout
+        android:id="@+id/layoutEmpty"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:visibility="gone">
+        <ImageView
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:src="@drawable/ic_futsal"
+            app:tint="#CCCCCC"
+            android:layout_marginBottom="16dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Belum ada lapangan"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#121212"
+            android:layout_marginBottom="6dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Klik tombol di atas untuk menambah lapangan baru"
+            android:textSize="13sp"
+            android:textColor="#999999"
+            android:gravity="center"
+            android:paddingStart="32dp"
+            android:paddingEnd="32dp"/>
+    </LinearLayout>
+
+</LinearLayout>
